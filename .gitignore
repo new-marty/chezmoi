@@ -22,5 +22,10 @@ Thumbs.db
 # Ignore chezmoi state files (if any)
 .chezmoi.state
 
-# Note: .secrets.tmpl is tracked (template), but actual .secrets should not be committed
-# chezmoi will handle this automatically
+# Secrets files - DO NOT COMMIT
+dot_secrets.tmpl
+*.secrets
+*.secrets.tmpl
+# Note: Actual .secrets files should never be committed
+# Use chezmoi encryption or 1Password for secrets management
+
