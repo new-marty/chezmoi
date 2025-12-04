@@ -1,0 +1,65 @@
+# Shell options
+unsetopt correct correctall
+DISABLE_CORRECTION="true"
+setopt auto_pushd auto_cd
+
+# Completion settings
+autoload -U compinit && compinit
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*:default' menu select=1
+
+# History settings
+export HISTFILE=~/.zsh_history
+export HISTSIZE=100000
+export SAVEHIST=100000
+setopt share_history hist_ignore_dups hist_ignore_all_dups hist_ignore_space hist_reduce_blanks
+
+# Tool configurations
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+autoload -U +X bashcompinit && bashcompinit
+eval "$(thefuck --alias)"
+
+# atuin - enhanced history with suggestions
+eval "$(atuin init zsh)"
+
+# zoxide - smarter cd command
+eval "$(zoxide init zsh)"
+
+# navi - cheat sheets
+eval "$(navi widget zsh)"
+
+# Load Sheldon (plugins are managed via ~/.config/sheldon/sheldon.toml)
+eval "$(sheldon source)"
+
+cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}
+sheldon_cache="$cache_dir/sheldon.zsh"
+sheldon_toml="$HOME/.config/sheldon/plugins.toml"
+
+if [[ ! -r "$sheldon_cache" || "$sheldon_toml" -nt "$sheldon_cache" ]]; then
+  mkdir -p "$cache_dir"
+  sheldon source >"$sheldon_cache"
+fi
+source "$sheldon_cache"
+unset cache_dir sheldon_cache sheldon_toml
+
+# Customize atuin key bindings (after sheldon loading)
+# Restore up/down arrow keys to default history behavior
+bindkey '^[[A' up-line-or-history   # Up arrow key
+bindkey '^[[B' down-line-or-history # Down arrow key
+bindkey '^[OA' up-line-or-history   # Up arrow key (alternative)
+bindkey '^[OB' down-line-or-history # Down arrow key (alternative)
+
+# Restore peco for Ctrl+R and bind atuin to Ctrl+H
+bindkey '^R' peco-select-history  # Ctrl+R: peco history search
+bindkey '^H' _atuin_search_widget # Ctrl+H: atuin enhanced history search
+
+# Restore standard key bindings
+bindkey '^U' backward-kill-line # Ctrl+U: kill from cursor to beginning of line
+
+# Ensure suggestion widgets work properly (after all other bindings)
+bindkey '^G' show_command_templates # Ctrl+G for command templates
+bindkey '^S' smart_command_suggest  # Ctrl+S for smart suggestions
+bindkey '^F' show_frequent_commands # Ctrl+F for frequent commands
+bindkey '^N' navi_widget            # Ctrl+N for navi cheat sheets
+
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"

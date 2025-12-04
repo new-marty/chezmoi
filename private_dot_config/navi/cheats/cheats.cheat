@@ -1,0 +1,250 @@
+% git
+
+# Stage all changes
+git add .
+
+# Commit with message
+git commit -m "<message>"
+
+# Push to origin
+git push origin HEAD
+
+# Create and switch to new branch
+git checkout -b <branch_name>
+
+# Merge without fast-forward
+git merge --no-ff <branch_name>
+
+# Interactive rebase
+git rebase -i HEAD~<number_of_commits>
+
+# Show file changes
+git diff <file_name>
+
+# Show commit history
+git log --oneline -<number_of_commits>
+
+% npm/pnpm
+
+# Install dependencies
+pnpm install
+
+# Run development server
+pnpm run dev
+
+# Build project
+pnpm run build
+
+# Run tests
+pnpm run test
+
+# Add package
+pnpm add <package_name>
+
+# Add dev dependency
+pnpm add -D <package_name>
+
+# Remove package
+pnpm remove <package_name>
+
+# Update dependencies
+pnpm update
+
+# Run specific script
+pnpm run <script_name>
+
+% docker
+
+# Build image
+docker build -t <image_name> .
+
+# Run container
+docker run -p <host_port>:<container_port> <image_name>
+
+# List containers
+docker ps
+
+# Stop container
+docker stop <container_id>
+
+# Remove container
+docker rm <container_id>
+
+# List images
+docker images
+
+# Remove image
+docker rmi <image_name>
+
+# Execute command in container
+docker exec -it <container_id> <command>
+
+% docker-compose
+
+# Start services
+docker-compose up -d
+
+# Stop services
+docker-compose down
+
+# Show logs
+docker-compose logs -f
+
+# Build services
+docker-compose build
+
+# Restart service
+docker-compose restart <service_name>
+
+# Scale service
+docker-compose up -d --scale <service_name>=<number>
+
+% system
+
+# Find files by name
+find . -name "<pattern>"
+
+# Find files by type
+find . -type f -name "<pattern>"
+
+# Search in files
+grep -r "<pattern>" .
+
+# Search in files with line numbers
+grep -rn "<pattern>" .
+
+# Show disk usage
+du -sh <directory>
+
+# Show file system disk space
+df -h
+
+# Show running processes
+ps aux
+
+# Kill process by PID
+kill -9 <pid>
+
+# Kill process by name
+pkill <process_name>
+
+# Change file permissions
+chmod <permissions> <file>
+
+# Change ownership
+chown <user>:<group> <file>
+
+% network
+
+# Show network connections
+netstat -tulpn
+
+# Show listening ports
+lsof -i :<port>
+
+# Test connection
+curl -I <url>
+
+# Download file
+wget <url>
+
+# Upload file via SCP
+scp <local_file> <user>@<host>:<remote_path>
+
+# SSH connect
+ssh <user>@<host>
+
+% brew
+
+# Install package
+brew install <package_name>
+
+# Uninstall package
+brew uninstall <package_name>
+
+# Search package
+brew search <package_name>
+
+# Show package info
+brew info <package_name>
+
+# Update brew
+brew update
+
+# Upgrade packages
+brew upgrade
+
+# List installed packages
+brew list
+
+# Clean up
+brew cleanup
+
+% terraform
+
+# Initialize terraform
+terraform init
+
+# Plan changes
+terraform plan
+
+# Apply changes
+terraform apply
+
+# Destroy infrastructure
+terraform destroy
+
+# Show current state
+terraform show
+
+# Format configuration
+terraform fmt
+
+% custom
+
+# Edit command templates
+cursor ~/.dotfiles/.zsh/suggestions.zsh
+
+# Edit navi cheat sheets
+cursor ~/.dotfiles/navi/cheats.cheat
+
+# Edit zsh configuration
+cursor ~/.dotfiles/.zshrc
+
+# Edit terminal theme
+cursor ~/.dotfiles/.zsh/steeef.zsh-theme
+
+# Show current key bindings
+bindkey | grep -E "(\\^R|\\^H|\\^G|\\^S|\\^F|\\^N)"
+
+# Reload shell configuration
+source ~/.zshrc
+
+# Check git status
+git status
+
+# Show dotfiles help
+help
+
+% kubernetes
+
+# Get pods
+kubectl get pods
+
+# Describe pod
+kubectl describe pod <pod_name>
+
+# Get logs
+kubectl logs <pod_name>
+
+# Execute command in pod
+kubectl exec -it <pod_name> -- <command>
+
+# Apply configuration
+kubectl apply -f <file>
+
+# Delete resource
+kubectl delete <resource_type> <resource_name>
+
+# Port forward
+kubectl port-forward <pod_name> <local_port>:<remote_port> 

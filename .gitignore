@@ -1,0 +1,26 @@
+# Ignore OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ignore editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Ignore temporary files
+*.tmp
+*.bak
+*.log
+
+# Ignore chezmoi state files (if any)
+.chezmoi.state
+
+# Note: .secrets.tmpl is tracked (template), but actual .secrets should not be committed
+# chezmoi will handle this automatically
