@@ -1,0 +1,10 @@
+# =============================================================================
+# Work Mac Packages - Work use only
+# =============================================================================
+
+# Add work-specific packages here
+# Example:
+# cask "microsoft-teams"
+# cask "webex"
+# brew "some-work-tool"
+

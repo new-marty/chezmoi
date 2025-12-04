@@ -1,0 +1,112 @@
+# =============================================================================
+# Common Packages - Shared across all machines
+# =============================================================================
+
+# Taps
+tap "mongodb/brew"
+tap "stripe/stripe-cli"
+
+# Core CLI Tools
+brew "chezmoi"
+brew "bat"
+brew "ccat"
+brew "curl"
+brew "eza"
+brew "fd"
+brew "fzf"
+brew "gh"
+brew "jq"
+brew "navi"
+brew "peco"
+brew "ripgrep"
+brew "sheldon"
+brew "thefuck"
+brew "tree"
+brew "zoxide"
+brew "atuin"
+
+# Shell & Terminal
+brew "zsh"
+
+# Version Control
+brew "git"
+
+# Programming Languages & Runtimes
+brew "go"
+brew "node"
+brew "nvm"
+brew "python@3.11"
+brew "pyenv"
+brew "pyenv-virtualenv"
+brew "rust"
+brew "rustup"
+
+# Build Tools
+brew "autoconf"
+brew "gcc"
+brew "pkgconf"
+
+# Cloud & DevOps
+brew "awscli"
+brew "aws-sso-cli"
+brew "terraform"
+brew "flyctl"
+
+# Containers
+brew "docker", link: false
+brew "docker-compose"
+
+# Databases
+brew "mysql"
+brew "postgresql@14"
+brew "mongosh"
+
+# Package Managers
+brew "composer"
+brew "yarn"
+brew "uv"
+
+# Network Tools
+brew "aria2"
+brew "nmap"
+brew "nghttp2"
+brew "openconnect"
+brew "openvpn"
+
+# Security
+brew "age"
+brew "openssl@3"
+brew "gnupg"
+
+# Text Processing
+brew "pandoc"
+brew "prettier"
+
+# Common Casks
+cask "1password"
+cask "1password-cli"
+cask "cursor"
+cask "docker-desktop"
+cask "ghostty"
+cask "google-chrome"
+cask "raycast"
+cask "rectangle"
+cask "slack"
+cask "visual-studio-code"
+cask "zoom"
+
+# Fonts
+cask "font-hack-nerd-font"
+
+# Common VSCode Extensions
+vscode "github.copilot"
+vscode "github.copilot-chat"
+vscode "eamodio.gitlens"
+vscode "dbaeumer.vscode-eslint"
+vscode "esbenp.prettier-vscode"
+vscode "ms-python.python"
+vscode "ms-python.vscode-pylance"
+vscode "hashicorp.terraform"
+vscode "redhat.vscode-yaml"
+vscode "ms-azuretools.vscode-docker"
+

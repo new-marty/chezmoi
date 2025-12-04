@@ -1,0 +1,168 @@
+# =============================================================================
+# Personal Mac Packages - Personal use only
+# =============================================================================
+
+# Media & Entertainment
+brew "ffmpeg"
+brew "ffmpeg@6"
+brew "gifski"
+brew "imagemagick"
+brew "yt-dlp"
+cask "discord"
+cask "spotify"
+cask "vlc"
+cask "telegram"
+
+# Creative Tools
+cask "figma"
+cask "drawio"
+cask "cleanshot"
+cask "miro"
+
+# Productivity
+cask "notion"
+cask "notion-calendar"
+cask "notion-mail"
+cask "obsidian"
+cask "fantastical"
+cask "pdf-expert"
+cask "alt-tab"
+cask "caffeine"
+cask "hiddenbar"
+
+# Development - Personal Projects
+brew "ollama"
+brew "sbt"
+brew "swiftformat"
+brew "swiftlint"
+brew "xcbeautify"
+brew "xcode-build-server"
+brew "xcodegen"
+cask "orbstack"
+cask "postman"
+cask "httpie-desktop"
+cask "github"
+cask "gitify"
+
+# Browsers
+cask "chromium"
+cask "firefox"
+cask "zen"
+
+# AI Tools
+cask "chatgpt"
+cask "chatgpt-atlas"
+cask "claude-code"
+cask "itermai"
+
+# Cloud Storage
+cask "google-drive"
+cask "syncthing-app"
+brew "syncthing", restart_service: :changed, link: false
+
+# Utilities
+brew "bento4"
+brew "cabextract"
+brew "cdrtools"
+brew "cloc"
+brew "ghostscript"
+brew "graphviz"
+brew "makemkv"
+brew "wimlib"
+brew "zellij"
+cask "balenaetcher"
+cask "iterm2"
+cask "marta"
+cask "middle"
+cask "unraid-usb-creator-next"
+cask "warp"
+
+# VPN & Security
+cask "nordvpn"
+
+# Communication
+cask "readdle-spark"
+
+# Session Management
+cask "session-manager-plugin"
+
+# Cloud CLI
+cask "gcloud-cli"
+
+# Elgato
+cask "elgato-stream-deck"
+
+# TeX
+cask "mactex"
+
+# Linear
+cask "linear-linear"
+
+# VSCode Extensions - Personal
+vscode "aaron-bond.better-comments"
+vscode "alefragnani.bookmarks"
+vscode "amazonwebservices.codewhisperer-for-command-line-companion"
+vscode "be5invis.vscode-custom-css"
+vscode "bradlc.vscode-tailwindcss"
+vscode "catppuccin.catppuccin-vsc-icons"
+vscode "christian-kohler.path-intellisense"
+vscode "chwoerz.ts-worksheet"
+vscode "cschlosser.doxdocgen"
+vscode "donjayamanne.githistory"
+vscode "dotenv.dotenv-vscode"
+vscode "ecmel.vscode-html-css"
+vscode "felipecaputo.git-project-manager"
+vscode "formulahendry.auto-close-tag"
+vscode "formulahendry.auto-rename-tag"
+vscode "foxundermoon.shell-format"
+vscode "github.vscode-github-actions"
+vscode "github.vscode-pull-request-github"
+vscode "grapecity.gc-excelviewer"
+vscode "gruntfuggly.todo-tree"
+vscode "inferrinizzard.prettier-sql-vscode"
+vscode "ionutvmi.path-autocomplete"
+vscode "janisdd.vscode-edit-csv"
+vscode "kevinrose.vsc-python-indent"
+vscode "mechatroner.rainbow-csv"
+vscode "mgmcdermott.vscode-language-babel"
+vscode "mohsen1.prettify-json"
+vscode "ms-azuretools.vscode-containers"
+vscode "ms-python.debugpy"
+vscode "ms-python.isort"
+vscode "ms-python.vscode-python-envs"
+vscode "ms-toolsai.jupyter"
+vscode "ms-toolsai.jupyter-keymap"
+vscode "ms-toolsai.vscode-jupyter-cell-tags"
+vscode "ms-toolsai.vscode-jupyter-slideshow"
+vscode "ms-vscode-remote.remote-containers"
+vscode "ms-vscode-remote.remote-ssh"
+vscode "ms-vscode-remote.remote-ssh-edit"
+vscode "ms-vscode.makefile-tools"
+vscode "ms-vscode.remote-explorer"
+vscode "ms-vscode.vscode-typescript-next"
+vscode "mustidev.react-snippets"
+vscode "new-marty.poimandres-dark-enhanced"
+vscode "pmndrs.pmndrs"
+vscode "prisma.prisma"
+vscode "shd101wyy.markdown-preview-enhanced"
+vscode "skyran.js-jsx-snippets"
+vscode "streetsidesoftware.code-spell-checker"
+vscode "styled-components.vscode-styled-components"
+vscode "tyriar.lorem-ipsum"
+vscode "usernamehw.errorlens"
+vscode "vscodeshift.material-ui-snippets"
+vscode "wallabyjs.console-ninja"
+vscode "xabikos.javascriptsnippets"
+vscode "xadillax.viml"
+vscode "yoavbls.pretty-ts-errors"
+vscode "yoshinorin.current-file-path"
+vscode "yzane.markdown-pdf"
+vscode "yzhang.markdown-all-in-one"
+vscode "zainchen.json"
+
+# Dependencies (auto-installed, kept for reference)
+# brew "giflib"
+# brew "libpng"
+# brew "xz"
+# ... (other dependencies are auto-managed by Homebrew)
+

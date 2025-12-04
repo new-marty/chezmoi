@@ -1,16 +1,21 @@
 #!/usr/bin/env zsh
 
+# =============================================================================
+# Custom Commands
+# =============================================================================
+
 # *** mkcd ***
+# Create a directory and cd into it
 mkcd() {
     if [[ $# -ne 1 ]]; then
         echo "Usage: mkcd <directory-name>"
         return 1
     fi
-
     mkdir "$1" && cd "$1"
 }
 
 # *** cdf ***
+# Fuzzy find and cd to directory
 function cdf() {
     if [[ "$(pwd)" =~ "$HOME/.*" ]]; then
         target=$(fd -t d | fzf --height 50% --layout=reverse --border --inline-info --preview 'ls -F -1 {}')
@@ -23,22 +28,160 @@ function cdf() {
     fi
 }
 
-# *** brew ***
+# =============================================================================
+# Brew wrapper with interactive Brewfile management
+# =============================================================================
+
+# Get chezmoi source path
+_get_chezmoi_source() {
+    if command -v chezmoi >/dev/null 2>&1; then
+        chezmoi source-path
+    else
+        echo "$HOME/.local/share/chezmoi"
+    fi
+}
+
+# Add package to specific Brewfile template
+_brew_add_to_file() {
+    local package="$1"
+    local file="$2"
+    local type="$3"  # brew, cask, or vscode
+    local source_dir="$(_get_chezmoi_source)"
+    local brewfile="$source_dir/.chezmoitemplates/$file"
+    
+    # Determine the line to add
+    local line
+    case "$type" in
+        cask)   line="cask \"$package\"" ;;
+        vscode) line="vscode \"$package\"" ;;
+        *)      line="brew \"$package\"" ;;
+    esac
+    
+    # Check if already exists
+    if grep -q "^${line}$" "$brewfile" 2>/dev/null; then
+        echo "📦 $package already in $file"
+        return 0
+    fi
+    
+    # Add to file
+    echo "$line" >> "$brewfile"
+    echo "✅ Added $package to $file"
+}
+
+# Remove package from specific Brewfile template
+_brew_remove_from_file() {
+    local package="$1"
+    local file="$2"
+    local type="$3"
+    local source_dir="$(_get_chezmoi_source)"
+    local brewfile="$source_dir/.chezmoitemplates/$file"
+    
+    local pattern
+    case "$type" in
+        cask)   pattern="^cask \"$package\"" ;;
+        vscode) pattern="^vscode \"$package\"" ;;
+        *)      pattern="^brew \"$package\"" ;;
+    esac
+    
+    if grep -q "$pattern" "$brewfile" 2>/dev/null; then
+        sed -i '' "/$pattern/d" "$brewfile"
+        echo "🗑️  Removed $package from $file"
+        return 0
+    fi
+    return 1
+}
+
+# Interactive selection for Brewfile category
+_brew_select_category() {
+    local action="$1"  # add or remove
+    local options=(
+        "common:All machines (common)"
+        "personal_mac:Personal Mac only"
+        "work_mac:Work Mac only"
+        "skip:Skip (don't update Brewfile)"
+    )
+    
+    local prompt
+    if [[ "$action" == "add" ]]; then
+        prompt="Add to which Brewfile?"
+    else
+        prompt="Remove from which Brewfile?"
+    fi
+    
+    local selected=$(printf '%s\n' "${options[@]}" | \
+        fzf --height 40% --layout=reverse --border \
+            --prompt="$prompt " \
+            --header="Use arrow keys to select, Enter to confirm" \
+            --delimiter=":" --with-nth=2)
+    
+    echo "${selected%%:*}"
+}
+
+# Main brew wrapper function
 brew() {
+    local cmd="$1"
+    local exit_code=0
+    
     # Run the original brew command
     command brew "$@"
-
-    # If the command was an install or upgrade, update the Brewfile
-    if [[ "$1" == "install" || "$1" == "upgrade" || "$1" == "uninstall" ]]; then
-        local brewfile_path
-        if command -v chezmoi >/dev/null 2>&1; then
-            brewfile_path="$(chezmoi source-path)/Brewfile"
-        else
-            brewfile_path="$HOME/.local/share/chezmoi/Brewfile"
-        fi
-        echo "Updating Brewfile at $brewfile_path..."
-        command brew bundle dump --force --file="$brewfile_path"
-    fi
+    exit_code=$?
+    
+    # If command failed, don't update Brewfile
+    [[ $exit_code -ne 0 ]] && return $exit_code
+    
+    # Handle install/uninstall commands
+    case "$cmd" in
+        install|uninstall)
+            shift  # Remove command from args
+            local packages=()
+            local type="brew"
+            local is_cask=false
+            
+            # Parse arguments
+            for arg in "$@"; do
+                case "$arg" in
+                    --cask) is_cask=true; type="cask" ;;
+                    -*) ;; # Skip other flags
+                    *) packages+=("$arg") ;;
+                esac
+            done
+            
+            # Process each package
+            for pkg in "${packages[@]}"; do
+                echo ""
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                echo "📦 Package: $pkg ($type)"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                
+                if [[ "$cmd" == "install" ]]; then
+                    local category=$(_brew_select_category "add")
+                    case "$category" in
+                        common|personal_mac|work_mac)
+                            _brew_add_to_file "$pkg" "Brewfile.$category" "$type"
+                            ;;
+                        skip|"")
+                            echo "⏭️  Skipped updating Brewfile"
+                            ;;
+                    esac
+                else  # uninstall
+                    local category=$(_brew_select_category "remove")
+                    case "$category" in
+                        common|personal_mac|work_mac)
+                            _brew_remove_from_file "$pkg" "Brewfile.$category" "$type"
+                            ;;
+                        skip|"")
+                            echo "⏭️  Skipped updating Brewfile"
+                            ;;
+                    esac
+                fi
+            done
+            
+            echo ""
+            echo "💡 Run 'chezmoi apply' to regenerate Brewfile"
+            ;;
+    esac
+    
+    return $exit_code
 }
 
 # *** fcat ***
