@@ -6,7 +6,6 @@ Welcome to the dotfiles documentation.
 
 - [Setup Guide](SETUP.md) - Initial setup and configuration
 - [Custom Commands](COMMANDS.md) - Available custom commands and functions
-- [TODO](TODO.md) - Roadmap and pending tasks
 
 ## Quick Links
 

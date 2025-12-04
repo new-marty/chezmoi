@@ -110,24 +110,24 @@ Same for `brew uninstall` - you can choose which Brewfile to update.
 
 ## Custom Commands
 
-| Command  | Description                                   |
-| -------- | --------------------------------------------- |
-| `help`   | Show custom commands and keybindings          |
-| `fcat`   | Recursively display file contents             |
-| `ts2mp4` | Convert TS files to MP4                       |
-| `mkcd`   | Create directory and cd into it               |
-| `cdf`    | Fuzzy find and cd to directory                |
+| Command  | Description                          |
+| -------- | ------------------------------------ |
+| `help`   | Show custom commands and keybindings |
+| `fcat`   | Recursively display file contents    |
+| `ts2mp4` | Convert TS files to MP4              |
+| `mkcd`   | Create directory and cd into it      |
+| `cdf`    | Fuzzy find and cd to directory       |
 
 ## Keybindings
 
-| Key      | Function                                 |
-| -------- | ---------------------------------------- |
-| `Ctrl+G` | Command templates                        |
-| `Ctrl+S` | Smart suggestions (context-aware)        |
-| `Ctrl+F` | Frequently used commands                 |
-| `Ctrl+N` | Navi cheat sheets                        |
-| `Ctrl+R` | Peco history search                      |
-| `Ctrl+H` | Atuin enhanced history                   |
+| Key      | Function                          |
+| -------- | --------------------------------- |
+| `Ctrl+G` | Command templates                 |
+| `Ctrl+S` | Smart suggestions (context-aware) |
+| `Ctrl+F` | Frequently used commands          |
+| `Ctrl+N` | Navi cheat sheets                 |
+| `Ctrl+R` | Peco history search               |
+| `Ctrl+H` | Atuin enhanced history            |
 
 ## Secrets Management
 

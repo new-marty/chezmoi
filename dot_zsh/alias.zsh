@@ -47,6 +47,14 @@ alias p='python3'
 # terraform
 alias tf='terraform'
 
+# chezmoi
+alias cm='chezmoi'
+alias cma='chezmoi apply'
+alias cmd='chezmoi diff'
+alias cme='chezmoi edit'
+alias cmu='chezmoi update'
+alias cmcd='chezmoi cd'
+
 # help - Show custom commands and keybindings
 alias help='show_dotfiles_help'
 
@@ -127,6 +135,16 @@ function show_dotfiles_help() {
     echo "  p          python3"
     echo "  tf         terraform"
     echo "  dcu        docker-compose up -d"
+    echo ""
+
+    echo "⚙️  CHEZMOI"
+    echo "──────────"
+    echo "  cm         chezmoi"
+    echo "  cma        chezmoi apply"
+    echo "  cmd        chezmoi diff"
+    echo "  cme        chezmoi edit"
+    echo "  cmu        chezmoi update"
+    echo "  cmcd       chezmoi cd"
     echo ""
 
     echo "📖 HELP RESOURCES"
