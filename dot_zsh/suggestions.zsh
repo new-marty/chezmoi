@@ -29,7 +29,7 @@ function show_command_templates() {
         "docker ps"
         "docker images"
         "docker system prune"
-        "cd ~/dotfiles"
+        "chezmoi cd"
         "cd ~/Desktop"
         "cd ~/Documents"
         "ls -la"

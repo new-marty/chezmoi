@@ -30,8 +30,14 @@ brew() {
 
     # If the command was an install or upgrade, update the Brewfile
     if [[ "$1" == "install" || "$1" == "upgrade" || "$1" == "uninstall" ]]; then
-        echo "Updating Brewfile..."
-        command brew bundle dump --force --file=~/dotfiles/Brewfile
+        local brewfile_path
+        if command -v chezmoi >/dev/null 2>&1; then
+            brewfile_path="$(chezmoi source-path)/Brewfile"
+        else
+            brewfile_path="$HOME/.local/share/chezmoi/Brewfile"
+        fi
+        echo "Updating Brewfile at $brewfile_path..."
+        command brew bundle dump --force --file="$brewfile_path"
     fi
 }
 

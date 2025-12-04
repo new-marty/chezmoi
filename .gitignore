@@ -22,10 +22,12 @@ Thumbs.db
 # Ignore chezmoi state files (if any)
 .chezmoi.state
 
-# Secrets files - DO NOT COMMIT
-dot_secrets.tmpl
+# Secrets files - DO NOT COMMIT actual secrets
+# dot_secrets.tmpl is safe to commit - it uses 1Password templates, not actual secrets
 *.secrets
-*.secrets.tmpl
 # Note: Actual .secrets files should never be committed
-# Use chezmoi encryption or 1Password for secrets management
+# The dot_secrets.tmpl uses 1Password CLI to fetch secrets at runtime
+
+# Cursor IDE
+.cursor/
 

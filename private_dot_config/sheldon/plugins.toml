@@ -1,7 +1,7 @@
 shell = "zsh"
 
 [plugins.local-zsh]
-local = "~/dotfiles/.zsh"
+local = "~/.zsh"
 use = ["*.zsh", "*.zsh-theme"]
 
 [templates]

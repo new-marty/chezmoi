@@ -150,7 +150,7 @@ function show_dotfiles_help() {
 
     echo "🔗 MORE INFO"
     echo "────────────"
-    echo "  GitHub: https://github.com/yumabuchi/dotfiles"
-    echo "  README: ~/dotfiles/README.md"
+    echo "  GitHub: https://github.com/new-marty/chezmoi"
+    echo "  Config: chezmoi cd  # to open chezmoi source directory"
     echo ""
 }
