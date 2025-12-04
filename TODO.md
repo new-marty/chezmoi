@@ -6,108 +6,114 @@
 
 chezmoi で管理されているファイル内に、まだ `~/dotfiles` への参照が残っています。
 
-- [ ] **`dot_zsh/commands.zsh`** (34 行目)
+- [x] **`dot_zsh/commands.zsh`** (34 行目) ✅
 
-  - `~/dotfiles/Brewfile` → `$(chezmoi source-path)/Brewfile` に変更
-  - `brew bundle dump` コマンドのパスを修正
-  - chezmoi のテンプレート機能を使って `{{ .chezmoi.sourceDir }}/Brewfile` に変更
+  - `~/dotfiles/Brewfile` → `$(chezmoi source-path)/Brewfile` に変更 ✅
+  - `brew bundle dump` コマンドのパスを修正 ✅
+  - chezmoi のテンプレート機能を使って `{{ .chezmoi.sourceDir }}/Brewfile` に変更 ✅
 
-- [ ] **`dot_zshenv.tmpl`** (21 行目)
+- [x] **`dot_zshenv.tmpl`** (21 行目) ✅
 
-  - `export BAT_CONFIG_PATH="$HOME/dotfiles/bat/bat.conf"` → 削除または修正
-  - `bat.conf` ファイルが存在しないため、この設定を削除するか、bat 設定を chezmoi に追加
+  - `export BAT_CONFIG_PATH="$HOME/dotfiles/bat/bat.conf"` → 削除または修正 ✅
+  - `bat.conf` ファイルが存在しないため、この設定を削除 ✅
   - または `{{ .chezmoi.sourceDir }}/private_dot_config/bat/bat.conf` に変更（bat.conf を作成する場合）
 
-- [ ] **`dot_zsh/alias.zsh`** (help 関数内、153-154 行目)
+- [x] **`dot_zsh/alias.zsh`** (help 関数内、153-154 行目) ✅
 
-  - `~/dotfiles/README.md` への参照を修正
-  - `chezmoi cd` コマンドを使うか、GitHub リポジトリ URL に変更
-  - または `~/.local/share/chezmoi/README.md` に変更
+  - `~/dotfiles/README.md` への参照を修正 ✅
+  - `chezmoi cd` コマンドを使うか、GitHub リポジトリ URL に変更 ✅
+  - または `~/.local/share/chezmoi/README.md` に変更 ✅
 
-- [ ] **`dot_zsh/suggestions.zsh`** (32 行目)
+- [x] **`dot_zsh/suggestions.zsh`** (32 行目) ✅
 
-  - `cd ~/dotfiles` → `chezmoi cd` に変更（chezmoi コマンドを使う）
+  - `cd ~/dotfiles` → `chezmoi cd` に変更（chezmoi コマンドを使う） ✅
   - または `cd ~/.local/share/chezmoi` に変更
 
-- [ ] **`private_dot_config/sheldon/plugins.toml`** (4 行目)
+- [x] **`private_dot_config/sheldon/plugins.toml`** (4 行目) ✅
 
-  - `local = "~/dotfiles/.zsh"` → `local = "~/.zsh"` に変更
-  - chezmoi で管理されているパスに修正
+  - `local = "~/dotfiles/.zsh"` → `local = "~/.zsh"` に変更 ✅
+  - chezmoi で管理されているパスに修正 ✅
 
-- [ ] **`dot_zsh/steeef-poimandres.md`** (74, 78 行目)
+- [x] **`dot_zsh/steeef-poimandres.md`** (74, 78 行目) ✅
 
-  - プロンプト例のパス表示 `~/dotfiles` → `~/.local/share/chezmoi` または `chezmoi cd` に更新
+  - プロンプト例のパス表示 `~/dotfiles` → `~/.local/share/chezmoi` または `chezmoi cd` に更新 ✅
   - または、ドキュメント内の例なのでそのままでも可
 
-- [ ] **`private_dot_config/navi/cheats/cheats.cheat`** (206, 209, 212, 215 行目)
-  - `~/.dotfiles/` への参照を `~/.local/share/chezmoi/` または適切なパスに修正
+- [x] **`private_dot_config/navi/cheats/cheats.cheat`** (206, 209, 212, 215 行目) ✅
+  - `~/.dotfiles/` への参照を `~/.local/share/chezmoi/` または適切なパスに修正 ✅
 
 ### 2. 未移行のファイルの追加
 
 以下のファイル/ディレクトリはまだ chezmoi で管理されていません。
 
-- [ ] **VSCode 設定**
+- [x] **VSCode 設定** ✅
 
-  - `~/dotfiles/vscode/vscode.css` → `private_dot_config/vscode/vscode.css` として追加
-  - `~/dotfiles/vscode/vscode.js` → `private_dot_config/vscode/vscode.js` として追加
-  - `~/dotfiles/.vscode/settings.json` → `private_dot_config/vscode/settings.json` として追加（**漏れていた！**）
-  - 配置先: VSCode の設定ディレクトリは `~/Library/Application Support/Code/User/` (macOS)
-  - 実際の配置先を確認してから適切な場所に配置
-  - VSCode のカスタム CSS/JS は `~/.vscode/` または設定ディレクトリに配置する必要がある
+  - `~/dotfiles/vscode/vscode.css` → `private_dot_config/vscode/vscode.css` として追加 ✅
+  - `~/dotfiles/vscode/vscode.js` → `private_dot_config/vscode/vscode.js` として追加 ✅
+  - `~/dotfiles/.vscode/settings.json` → `private_dot_Library/Application Support/Code/User/settings.json` として追加 ✅
+  - 配置先: VSCode の設定ディレクトリは `~/Library/Application Support/Code/User/` (macOS) ✅
+  - 実際の配置先を確認してから適切な場所に配置 ✅
+  - VSCode のカスタム CSS/JS は `~/.vscode/` または設定ディレクトリに配置する必要がある ✅
 
-- [ ] **Raycast スクリプト**
+- [x] **Raycast スクリプト** ✅
 
-  - `~/dotfiles/raycast/toggle-ghostty.sh` → `private_dot_config/raycast/scripts/toggle-ghostty.sh` として追加
-  - 配置先: `~/.config/raycast/scripts/` (macOS)
-  - 実行権限を付与する必要がある場合は `run_` プレフィックスを使用
+  - `~/dotfiles/raycast/toggle-ghostty.sh` → `private_dot_config/raycast/scripts/executable_toggle-ghostty.sh` として追加 ✅
+  - 配置先: `~/.config/raycast/scripts/` (macOS) ✅
+  - 実行権限を付与する必要がある場合は `executable_` プレフィックスを使用 ✅
 
-- [ ] **bat 設定ファイル**
-  - `bat.conf` を作成して chezmoi で管理するか、設定削除するか決定
+- [x] **bat 設定ファイル** ✅
+  - `bat.conf` を作成して chezmoi で管理するか、設定削除するか決定 ✅
   - 作成する場合: `private_dot_config/bat/bat.conf` として追加
-  - 削除する場合: `dot_zshenv.tmpl` から `BAT_CONFIG_PATH` の設定を削除
+  - 削除する場合: `dot_zshenv.tmpl` から `BAT_CONFIG_PATH` の設定を削除 ✅
 
 ### 3. Git リポジトリへのコミット・プッシュ
 
 chezmoi のリポジトリを GitHub にプッシュする必要があります。
 
-- [ ] **`.gitignore` の作成・確認**
+- [x] **`.gitignore` の作成・確認** ✅
 
-  - 機密情報を含むファイルがコミットされないように確認
-  - `.secrets` は既にテンプレートとして管理されているが、確認が必要
-  - `*.tmpl` ファイル内に機密情報が含まれていないか確認
+  - 機密情報を含むファイルがコミットされないように確認 ✅
+  - `.secrets` は既にテンプレートとして管理されているが、確認が必要 ✅
+  - `*.tmpl` ファイル内に機密情報が含まれていないか確認 ✅
   - `.chezmoiignore` ファイルの作成も検討
 
-- [ ] **Git リポジトリの初期化（未初期化の場合）**
+- [x] **Git リポジトリの初期化（未初期化の場合）** ✅
 
   ```bash
   cd ~/.local/share/chezmoi
   git init
   git branch -M main
   ```
+  ✅ 既に初期化済み
 
-- [ ] **初回コミット**
+- [x] **初回コミット** ✅
 
   ```bash
   cd ~/.local/share/chezmoi
   git add .
   git commit -m "Initial chezmoi migration from dotfiles"
   ```
+  ✅ 完了
 
-- [ ] **GitHub リポジトリの作成**
+- [x] **GitHub リポジトリの作成** ✅
 
   - GitHub で新しいリポジトリを作成（例: `chezmoi-dotfiles`）
+  - ✅ 既存のリポジトリ `new-marty/chezmoi` を使用
 
-- [ ] **リモートへのプッシュ**
+- [x] **リモートへのプッシュ** ✅
 
   ```bash
   git remote add origin git@github.com:yumabuchi/chezmoi-dotfiles.git
   git push -u origin main
   ```
+  - ✅ リモートは既に設定済み (`git@github.com:new-marty/chezmoi.git`)
+  - ✅ プッシュ実行済み（リモートとローカルの履歴をマージしてプッシュ）
 
-- [ ] **chezmoi のリモート設定**
+- [x] **chezmoi のリモート設定** ✅
   ```bash
   chezmoi git remote add origin git@github.com:yumabuchi/chezmoi-dotfiles.git
   ```
+  - ✅ リモートは既に設定済み
 
 ### 4. マルチマシン対応（個人 Mac／会社 Mac／Windows／Linux）
 
@@ -155,10 +161,10 @@ chezmoi のリポジトリを GitHub にプッシュする必要があります�
 
   - または、`Brewfile.common`, `Brewfile.personal_mac`, `Brewfile.work_mac` に分割して `run_once_install_brew.sh.tmpl` で結合
 
-- [ ] **brew ラッパーの修正（chezmoi 対応）**
+- [x] **brew ラッパーの修正（chezmoi 対応）** ✅
 
-  - `dot_zsh/commands.zsh` の `brew` 関数を修正
-  - `chezmoi source-path` を使って Brewfile のパスを取得
+  - `dot_zsh/commands.zsh` の `brew` 関数を修正 ✅
+  - `chezmoi source-path` を使って Brewfile のパスを取得 ✅
   - 実装例:
     ```zsh
     brew() {
@@ -170,6 +176,7 @@ chezmoi のリポジトリを GitHub にプッシュする必要があります�
       fi
     }
     ```
+  - ✅ 実装完了（`dot_zsh/commands.zsh` に反映済み）
   - テンプレートファイルの場合は、実際の Brewfile を生成してから更新する仕組みを検討
 
 - [ ] **Windows/Linux のパッケージ管理対応**
@@ -221,10 +228,10 @@ chezmoi のリポジトリを GitHub にプッシュする必要があります�
 
 ### 5. 動作確認とテスト
 
-- [ ] **chezmoi apply の動作確認（dry-run）**
+- [x] **chezmoi apply の動作確認（dry-run）** ✅
 
-  - `chezmoi apply --dry-run` でエラーがないか確認
-  - 予期しない変更がないか確認
+  - `chezmoi apply --dry-run` でエラーがないか確認 ✅
+  - 予期しない変更がないか確認 ✅
   - エラーが出た場合は修正して再確認
 
 - [ ] **chezmoi apply の実際の適用**
@@ -332,11 +339,11 @@ chezmoi のリポジトリを GitHub にプッシュする必要があります�
 4. ✅ 設定ディレクトリの chezmoi への追加
 5. ✅ .secrets のテンプレート化
 6. ✅ Brewfile の追加
-7. ⚠️ **パス参照の修正** ← 未完了（最優先）
-8. ⚠️ **brew ラッパーの修正** ← 未完了（chezmoi 対応）
-9. ⚠️ **未移行ファイルの追加** ← 未完了
-10. ⚠️ **Git リポジトリへのコミット・プッシュ** ← 未完了
-11. ⚠️ **マルチマシン対応** ← 未完了（.chezmoidata.yaml, Brewfile.tmpl）
+7. ✅ **パス参照の修正** ← 完了
+8. ✅ **brew ラッパーの修正** ← 完了（chezmoi 対応）
+9. ✅ **未移行ファイルの追加** ← 完了
+10. ✅ **Git リポジトリへのコミット・プッシュ** ← 完了（コミット済み、リモート設定済み）
+11. ⚠️ **マルチマシン対応** ← 未完了（.chezmoidata.yaml, Brewfile.tmpl）- オプション
 12. ✅ 動作確認（一部完了）
 13. ✅ 移行ドキュメントの作成
 
@@ -517,25 +524,25 @@ cask "1password"
 
 ### 基本動作確認
 
-- [ ] すべての `~/dotfiles` 参照が削除または修正されている
-- [ ] `brew` コマンドが正しく Brewfile を更新する
-- [ ] `chezmoi apply` でエラーが出ない
-- [ ] `chezmoi diff` で予期しない差分がない
-- [ ] `chezmoi verify` でエラーが出ない（設定されている場合）
+- [x] すべての `~/dotfiles` 参照が削除または修正されている ✅
+- [x] `brew` コマンドが正しく Brewfile を更新する ✅（実装済み）
+- [ ] `chezmoi apply` でエラーが出ない（ユーザーが実行して確認）
+- [x] `chezmoi diff` で予期しない差分がない ✅（確認済み）
+- [x] `chezmoi verify` でエラーが出ない（設定されている場合）✅（設定なし）
 
 ### ファイル移行確認
 
-- [ ] すべての設定ファイルが chezmoi で管理されている
-  - [ ] `.zshrc`, `.zshenv`, `.zprofile` ✅
-  - [ ] `.zsh/*` ディレクトリ ✅
-  - [ ] `Brewfile` ✅
-  - [ ] `.config/ghostty/*` ✅
-  - [ ] `.config/sheldon/*` ✅
-  - [ ] `.config/navi/*` ✅
-  - [ ] `.vscode/settings.json` ⚠️ **漏れていた！追加必要**
-  - [ ] `vscode.css`, `vscode.js` ⚠️
-  - [ ] `raycast/scripts/toggle-ghostty.sh` ⚠️
-  - [ ] `.secrets` (テンプレート化済み) ✅
+- [x] すべての設定ファイルが chezmoi で管理されている ✅
+  - [x] `.zshrc`, `.zshenv`, `.zprofile` ✅
+  - [x] `.zsh/*` ディレクトリ ✅
+  - [x] `Brewfile` ✅
+  - [x] `.config/ghostty/*` ✅
+  - [x] `.config/sheldon/*` ✅
+  - [x] `.config/navi/*` ✅
+  - [x] `.vscode/settings.json` ✅（追加済み）
+  - [x] `vscode.css`, `vscode.js` ✅（追加済み）
+  - [x] `raycast/scripts/toggle-ghostty.sh` ✅（追加済み）
+  - [x] `.secrets` (テンプレート化済み) ✅
 
 ### 動作確認
 
@@ -554,9 +561,9 @@ cask "1password"
 
 ### Git とバックアップ
 
-- [ ] Git リポジトリにプッシュされている
-- [ ] `.gitignore` が適切に設定されている
-- [ ] 機密情報がコミットされていない
+- [x] Git リポジトリにプッシュされている ✅
+- [x] `.gitignore` が適切に設定されている ✅
+- [x] 機密情報がコミットされていない ✅（.secrets.tmpl のみ、実際の .secrets はコミットされていない）
 
 ### ドキュメント
 
@@ -587,13 +594,13 @@ cask "1password"
 
   - ホームディレクトリの設定ファイルが chezmoi で管理されているか確認
 
-- [ ] **すべての dotfiles 参照が修正されているか確認**
+- [x] **すべての dotfiles 参照が修正されているか確認** ✅
 
   ```bash
   rg -i "dotfiles|~/dotfiles|\$HOME/dotfiles" ~/.local/share/chezmoi
   ```
 
-  - 参照が残っている場合は修正
+  - ✅ 参照は修正済み（コメントや関数名内の参照は問題なし）
 
 - [ ] **実際のホームディレクトリにシンボリックリンクが残っていないか確認**
   ```bash
