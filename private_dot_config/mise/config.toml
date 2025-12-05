@@ -1,40 +1,39 @@
 # =============================================================================
-# mise (formerly rtx) - Unified Runtime Version Manager
-# =============================================================================
-# Documentation: https://mise.jdx.dev/
-#
-# This replaces nvm, pyenv, pyenv-virtualenv, and rustup with a single tool.
-#
-# Usage:
-#   mise install        # Install all defined versions
-#   mise use node@20    # Set global node version
-#   mise ls             # List installed versions
-#   mise current        # Show current versions
-#   mise doctor         # Check for issues
-#
-# Per-project config: Create .mise.toml in project root
+# mise Configuration - Default Runtime Versions
+# https://mise.jdx.dev/configuration.html
 # =============================================================================
 
 [settings]
-# Automatically install missing tools when entering a directory
+# Automatically install missing tools
 auto_install = true
-# Trust all config files (disable prompts)
-trusted_config_paths = ["~"]
+# Use verbose output
+verbose = false
 
 [tools]
-# Node.js - use latest LTS
-node = "lts"
-# Python - use 3.11 as default
-python = "3.11"
-# Rust - latest stable
-rust = "stable"
+# Default versions (install with: mise install)
+# Override per-project with .mise.toml or .tool-versions
 
-# Additional tools can be added here:
-# go = "latest"
-# java = "21"
-# terraform = "latest"
+# Node.js - LTS version
+node = "lts"
+
+# Python - Latest stable
+python = "3.12"
+
+# Go - Latest stable  
+go = "latest"
+
+# Rust - Latest stable (via rustup)
+# rust = "latest"
+
+# Ruby - Latest stable
+# ruby = "latest"
+
+# Deno - Latest stable
+# deno = "latest"
+
+# Bun - Latest stable
+# bun = "latest"
 
 [env]
-# Environment variables to set
-# MISE_NODE_DEFAULT_PACKAGES_FILE = "~/.default-npm-packages"
-
+# Global environment variables for mise-managed tools
+# NODE_OPTIONS = "--max-old-space-size=4096"

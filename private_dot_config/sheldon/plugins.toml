@@ -22,6 +22,9 @@ apply = ["PATH", "source"]
 [plugins.zsh-autosuggestions]
 github = "zsh-users/zsh-autosuggestions"
 
+[plugins.zsh-autopair]
+github = "hlissner/zsh-autopair"
+
 [plugins.zsh-history-substring-search]
 github = "zsh-users/zsh-history-substring-search"
 

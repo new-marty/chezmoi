@@ -37,11 +37,19 @@
 [rebase]
     autoStash = true
 
+[commit]
+    verbose = true         # Show diff in commit message editor
+
 [merge]
     conflictstyle = diff3
+    tool = nvimdiff
 
 [diff]
     colorMoved = default
+    tool = delta
+
+[interactive]
+    diffFilter = delta --color-only
 
 [pager]
     diff = delta
@@ -101,9 +109,14 @@
 [credential]
     helper = osxkeychain
 
+# Include work-specific config for work directories
+[includeIf "gitdir:~/work/"]
+    path = ~/.gitconfig-work
+
 {{ if .is_work_mac -}}
-# Work-specific settings can be added here
-# [includeIf "gitdir:~/work/"]
-#     path = ~/.gitconfig-work
+# Work Mac: Additional work-specific overrides
+# Create ~/.gitconfig-work with:
+# [user]
+#     email = "your.work@company.com"
 {{- end }}
 

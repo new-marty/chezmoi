@@ -11,41 +11,48 @@ Personal development environment configuration managed with [chezmoi](https://ww
 
 ## Quick Start
 
-### New Machine Setup
+### New Machine Setup (3 commands)
 
 ```bash
-# 1. Install chezmoi
+# 1. Install chezmoi and initialize
 brew install chezmoi
-
-# 2. Initialize and apply dotfiles
 chezmoi init --apply git@github.com:new-marty/chezmoi.git
 
-# 3. Install 1Password CLI (for secrets)
-brew install --cask 1password-cli
-
-# 4. Sign in to 1Password
-op signin
-
-# 5. Install Homebrew packages
+# 2. Install all tools
 brew bundle install --file=~/Brewfile
 
-# 6. Restart shell
-exec $SHELL -l
+# 3. Install runtimes and restart
+mise install && exec $SHELL -l
+```
+
+### Full Setup with Task Runner
+
+```bash
+# After chezmoi init, use just for automation:
+just setup          # Full setup (brew + mise + sheldon)
+just doctor         # Check all tools are installed
+just benchmark      # Measure shell startup time
 ```
 
 ### Update Existing Machine
 
 ```bash
-chezmoi update
+just update-all     # Update everything (brew, sheldon, mise, atuin)
+# or individually:
+chezmoi update      # Pull latest dotfiles
+just brew-update    # Update Homebrew packages
+just sheldon-update # Update shell plugins
 ```
 
 ## Features
 
-- **Multi-machine support**: Separate configurations for personal Mac, work Mac
-- **Secret management**: Integration with 1Password CLI
+- **Fast shell startup**: < 200ms with cached completions and shim-based mise
+- **Multi-machine support**: Separate configs for personal/work Mac
+- **Runtime management**: mise handles Node, Python, Go, etc.
+- **Task automation**: justfile for setup, updates, and diagnostics
 - **Smart Brewfile**: Interactive package categorization (common/personal/work)
-- **Custom commands**: `fcat`, `ts2mp4`, `mkcd`, `cdf`, and more
-- **Enhanced shell**: zsh with sheldon plugins, atuin history, zoxide navigation
+- **Modern CLI tools**: delta, lazygit, bat, eza, fzf, ripgrep, and more
+- **Enhanced shell**: zsh with sheldon plugins, atuin history, zoxide, fzf-tab
 
 ## Directory Structure
 
@@ -73,9 +80,11 @@ chezmoi update
 │   └── Application Support/Code/ # VS Code/Cursor settings
 ├── private_dot_config/
 │   ├── ghostty/                  # Ghostty terminal
+│   ├── mise/                     # mise runtime config
 │   ├── navi/                     # Navi cheat sheets
 │   ├── raycast/                  # Raycast scripts
 │   └── sheldon/                  # Sheldon plugin manager
+├── justfile                      # Task automation
 └── docs/                         # Documentation
     └── ja/                       # Japanese translations
 ```

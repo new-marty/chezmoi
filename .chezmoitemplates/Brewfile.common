@@ -36,6 +36,9 @@ brew "zsh"
 
 # Version Control
 brew "git"
+brew "delta"             # Beautiful git diff pager
+brew "lazygit"           # Terminal UI for git
+brew "gitleaks"          # Secret scanning for git repos
 
 # Programming Languages & Runtimes
 # Note: mise manages runtime versions (node, python, ruby, rust, go, java, etc.)
@@ -48,10 +51,11 @@ brew "git"
 # brew "pyenv-virtualenv"  # Replaced by mise
 # brew "rustup"       # Managed by mise
 
-# Build Tools
+# Build Tools & Task Runners
 brew "autoconf"
 brew "gcc"
 brew "pkgconf"
+brew "just"              # Modern command runner (like make but simpler)
 
 # Cloud & DevOps
 brew "awscli"
@@ -79,6 +83,7 @@ brew "nmap"
 brew "nghttp2"
 brew "openconnect"
 brew "openvpn"
+brew "xh"                # Friendly HTTP client (httpie alternative)
 
 # Security
 brew "age"
