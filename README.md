@@ -67,11 +67,13 @@ chezmoi update
 │   ├── steeef.zsh-theme          # Prompt theme
 │   └── suggestions.zsh           # Command suggestions
 ├── dot_vscode/                   # VSCode custom CSS/JS
-└── private_dot_config/
-    ├── ghostty/                  # Ghostty terminal
-    ├── navi/                     # Navi cheat sheets
-    ├── raycast/                  # Raycast scripts
-    └── sheldon/                  # Sheldon plugin manager
+├── private_dot_config/
+│   ├── ghostty/                  # Ghostty terminal
+│   ├── navi/                     # Navi cheat sheets
+│   ├── raycast/                  # Raycast scripts
+│   └── sheldon/                  # Sheldon plugin manager
+└── docs/                         # Documentation
+    └── ja/                       # Japanese translations
 ```
 
 ## Configuration
@@ -220,6 +222,11 @@ chezmoi apply --force
 # Or manually sync
 brew bundle dump --force --file=$(chezmoi source-path)/Brewfile
 ```
+
+## Documentation
+
+- [Commands Reference](docs/COMMANDS.md)
+- [コマンドリファレンス（日本語）](docs/ja/COMMANDS.md)
 
 ## References
 
