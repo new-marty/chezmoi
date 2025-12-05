@@ -4,11 +4,15 @@
 # =============================================================================
 
 [user]
-    # User configuration (set via chezmoi data or local git config)
-    # To override for specific repos, use: git config user.email "work@example.com"
-{{- if .is_work_mac }}
-    # Work Mac - configure in chezmoi.toml: [data] git_work_email = "your.work@company.com"
-    # email = {{ .git_work_email | default "your.work@company.com" | quote }}
+    # Configure in ~/.config/chezmoi/chezmoi.toml:
+    # [data]
+    #   git_name = "Your Name"
+    #   git_email = "your@email.com"
+{{- if .git_name }}
+    name = {{ .git_name | quote }}
+{{- end }}
+{{- if .git_email }}
+    email = {{ .git_email | quote }}
 {{- end }}
 
 [core]

@@ -165,3 +165,4 @@ vscode "zainchen.json"
 # brew "libpng"
 # brew "xz"
 # ... (other dependencies are auto-managed by Homebrew)
+# Note: mise, direnv, glow, doggo, bandwhich, gping are in Brewfile.common

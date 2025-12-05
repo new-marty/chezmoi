@@ -24,39 +24,9 @@ export GOOGLE_CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google
 # (Primary setup is in .zprofile for interactive shells)
 [[ -z "$HOMEBREW_PREFIX" ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# Development languages
-# Note: mise (in .zshrc) is the primary runtime manager for Node.js, Python, etc.
-# NVM below is kept for legacy compatibility and will only load if mise is not managing Node.
-export NVM_DIR="$HOME/.nvm"
-# Lazy load nvm - it will be loaded on first use (if mise doesn't provide node)
-if [[ -s "$NVM_DIR/nvm.sh" ]]; then
-    # Add nvm's default node to PATH immediately (if exists)
-    [[ -d "$NVM_DIR/versions/node" ]] && \
-        export PATH="$NVM_DIR/versions/node/$(ls -1 $NVM_DIR/versions/node 2>/dev/null | tail -1)/bin:$PATH"
-
-    # Define lazy loading functions
-    nvm() {
-        unset -f nvm node npm npx
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-        nvm "$@"
-    }
-    node() {
-        unset -f nvm node npm npx
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-        node "$@"
-    }
-    npm() {
-        unset -f nvm node npm npx
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-        npm "$@"
-    }
-    npx() {
-        unset -f nvm node npm npx
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-        npx "$@"
-    }
-fi
+# Development languages managed by mise (in .zshrc)
+# mise handles: node, python, ruby, rust, go, java, etc.
+# Run 'mise ls' to see installed versions, 'mise use node@20' to set version
 
 # .NET
 export PATH="/opt/homebrew/opt/dotnet@6/bin:$PATH"

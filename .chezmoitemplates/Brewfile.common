@@ -27,7 +27,7 @@ brew "atuin"
 brew "mise"              # Unified runtime manager (node, python, etc.)
 brew "direnv"            # Per-directory environment variables
 brew "glow"              # Render markdown in terminal
-brew "dog"               # Modern DNS lookup (dig replacement)
+brew "doggo"             # Modern DNS lookup (dig replacement)
 brew "bandwhich"         # Bandwidth monitor by process
 brew "gping"             # Ping with graph
 
@@ -38,15 +38,15 @@ brew "zsh"
 brew "git"
 
 # Programming Languages & Runtimes
-brew "go"
-brew "node"
-brew "nvm"
-brew "python@3.11"
-brew "pyenv"
-brew "pyenv-virtualenv"
-# Note: Using rustup for Rust management (rustup manages rust toolchain)
-# brew "rust"  # Uncomment only if you need system Rust separate from rustup
-brew "rustup"
+# Note: mise manages runtime versions (node, python, ruby, rust, go, java, etc.)
+# Install languages via: mise use node@20, mise use python@3.12, etc.
+# brew "go"           # Managed by mise
+# brew "node"         # Managed by mise
+# brew "nvm"          # Replaced by mise
+# brew "python@3.11"  # Managed by mise
+# brew "pyenv"        # Replaced by mise
+# brew "pyenv-virtualenv"  # Replaced by mise
+# brew "rustup"       # Managed by mise
 
 # Build Tools
 brew "autoconf"

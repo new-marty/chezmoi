@@ -17,8 +17,13 @@ alias la="ls -l"
 alias l1="ls -1"
 alias lll="ls -abghHliS --git"
 
-# cat
-alias cat="ccat"
+# cat - use bat for syntax highlighting (fall back to ccat if bat not available)
+if command -v bat &>/dev/null; then
+    alias cat="bat --style=plain --paging=never"
+    alias catp="bat"  # bat with full features (paging, line numbers)
+else
+    alias cat="ccat"
+fi
 
 # diff
 alias diff='colordiff -u'
@@ -148,7 +153,8 @@ function show_dotfiles_help() {
     echo "──────────────────────────"
     echo "  ls         eza (with icons)"
     echo "  ll/la/l1   eza variants"
-    echo "  cat        ccat (colored)"
+    echo "  cat        bat (syntax highlighting, plain mode)"
+    echo "  catp       bat with full features (paging, line numbers)"
     echo "  du         dust (visual disk usage)"
     echo "  df         duf (beautiful disk free)"
     echo "  ps         procs (modern process viewer)"
@@ -167,7 +173,7 @@ function show_dotfiles_help() {
 
     echo "🌐 NETWORK"
     echo "──────────"
-    echo "  dog        Modern DNS lookup (dig replacement)"
+    echo "  doggo      Modern DNS lookup (dig replacement)"
     echo "  bandwhich  Realtime bandwidth by process"
     echo "  gping      Visual ping with graph"
     echo ""

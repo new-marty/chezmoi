@@ -2,8 +2,23 @@
 # Work Mac Packages - Work use only
 # =============================================================================
 
-# Add work-specific packages here
-# Example:
-# cask "microsoft-teams"
-# cask "webex"
-# brew "some-work-tool"
+# Communication & Collaboration
+cask "microsoft-teams"
+cask "webex"
+
+# Enterprise Tools
+cask "okta"                   # SSO/Identity management
+
+# Cloud & Infrastructure (work-specific)
+# brew "azure-cli"            # Uncomment if using Azure
+# cask "aws-vpn-client"       # Uncomment if using AWS VPN
+
+# Productivity
+cask "grammarly-desktop"      # Writing assistance
+
+# Security & Compliance
+# cask "crowdstrike-falcon"   # Endpoint protection (often auto-installed)
+
+# Add your company-specific tools below:
+# cask "your-company-vpn"
+# brew "internal-cli-tool"
