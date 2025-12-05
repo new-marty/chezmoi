@@ -24,6 +24,12 @@ brew "thefuck"
 brew "tree"
 brew "zoxide"
 brew "atuin"
+brew "mise"              # Unified runtime manager (node, python, etc.)
+brew "direnv"            # Per-directory environment variables
+brew "glow"              # Render markdown in terminal
+brew "dog"               # Modern DNS lookup (dig replacement)
+brew "bandwhich"         # Bandwidth monitor by process
+brew "gping"             # Ping with graph
 
 # Shell & Terminal
 brew "zsh"
