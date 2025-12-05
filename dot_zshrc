@@ -5,11 +5,13 @@ setopt auto_pushd auto_cd
 
 # Completion settings (cached for faster startup)
 autoload -U compinit
-if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
-  compinit
-else
+zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
+if [[ -s "$zcompdump" && "$zcompdump" -nt "${ZDOTDIR:-$HOME}/.zshrc" ]]; then
   compinit -C  # Use cached completions
+else
+  compinit       # Rebuild cache if missing or stale
 fi
+unset zcompdump
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*:default' menu select=1
 
@@ -58,9 +60,6 @@ unset cache_dir sheldon_cache sheldon_toml
 # Note: atuin uses --disable-up-arrow so up/down arrows work normally
 bindkey '^R' peco-select-history  # Ctrl+R: peco history search
 bindkey '^H' _atuin_search_widget # Ctrl+H: atuin enhanced history search
-
-# Restore standard key bindings
-bindkey '^U' backward-kill-line # Ctrl+U: kill from cursor to beginning of line
 
 # Ensure suggestion widgets work properly (after all other bindings)
 bindkey '^G' show_command_templates # Ctrl+G for command templates

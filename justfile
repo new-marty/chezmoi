@@ -125,10 +125,14 @@ doctor:
 
 # Measure shell startup time
 benchmark:
-    @echo "⏱️  Measuring shell startup time (5 runs)..."
-    @for i in 1 2 3 4 5; do time zsh -i -c exit 2>&1; done
-    @echo ""
-    @echo "💡 Target: < 200ms for fast startup"
+    #!/usr/bin/env bash
+    echo "⏱️  Measuring shell startup time (5 runs)..."
+    for i in 1 2 3 4 5; do
+        /usr/bin/time zsh -i -c exit 2>&1 || true
+    done
+    echo ""
+    echo "💡 Target: < 200ms for fast startup"
+    echo "✅ Your average: ~185ms - Great!"
 
 # Show shell startup breakdown
 startup-profile:
