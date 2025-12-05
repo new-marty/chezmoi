@@ -25,9 +25,10 @@ export GOOGLE_CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google
 [[ -z "$HOMEBREW_PREFIX" ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Development languages
-# Node.js (lazy loading for faster shell startup)
+# Note: mise (in .zshrc) is the primary runtime manager for Node.js, Python, etc.
+# NVM below is kept for legacy compatibility and will only load if mise is not managing Node.
 export NVM_DIR="$HOME/.nvm"
-# Lazy load nvm - it will be loaded on first use
+# Lazy load nvm - it will be loaded on first use (if mise doesn't provide node)
 if [[ -s "$NVM_DIR/nvm.sh" ]]; then
     # Add nvm's default node to PATH immediately (if exists)
     [[ -d "$NVM_DIR/versions/node" ]] && \
@@ -71,7 +72,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.amplify/bin:$PATH"
 export PNPM_HOME="$HOME/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
-export PATH="~/.console-ninja/.bin:$PATH"
+export PATH="$HOME/.console-ninja/.bin:$PATH"
 
 # Remove duplicate entries from PATH
 typeset -U path

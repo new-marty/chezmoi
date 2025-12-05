@@ -38,7 +38,8 @@ brew "nvm"
 brew "python@3.11"
 brew "pyenv"
 brew "pyenv-virtualenv"
-brew "rust"
+# Note: Using rustup for Rust management (rustup manages rust toolchain)
+# brew "rust"  # Uncomment only if you need system Rust separate from rustup
 brew "rustup"
 
 # Build Tools

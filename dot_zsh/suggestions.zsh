@@ -1,6 +1,16 @@
 # Enhanced command suggestions and shortcuts
 # This file provides intelligent command suggestions similar to Fig
 
+# =============================================================================
+# Autosuggestions Configuration
+# =============================================================================
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_USE_ASYNC=true
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
+# =============================================================================
+# Command Templates
+# =============================================================================
 # Command templates for fuzzy search
 # To add new templates, edit the templates array below
 function show_command_templates() {

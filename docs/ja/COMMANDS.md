@@ -499,6 +499,7 @@ update-dev -n
 ```
 
 **更新対象:**
+
 - Homebrew（update, upgrade, cleanup）
 - Chezmoi（pull & apply）
 - Sheldon プラグイン（lock --update）
@@ -768,9 +769,9 @@ git diff
 git diff --no-pager
 ```
 
-### `glow`（Markdownレンダラー）
+### `glow`（Markdown レンダラー）
 
-ターミナルでMarkdownを美しくレンダリング。
+ターミナルで Markdown を美しくレンダリング。
 
 ```bash
 # ファイルをレンダリング
@@ -788,7 +789,7 @@ glow $(chezmoi source-path)/docs/ja/README.md
 
 ### ネットワークツール
 
-**`dog`** - モダンなDNSルックアップ（dig代替）
+**`dog`** - モダンな DNS ルックアップ（dig 代替）
 
 ```bash
 dog example.com           # Aレコード検索
@@ -803,7 +804,7 @@ dog --json example.com    # JSON出力
 sudo bandwhich    # プロセスごとの帯域を表示
 ```
 
-**`gping`** - ビジュアルping
+**`gping`** - ビジュアル ping
 
 ```bash
 gping google.com          # グラフ付きping
@@ -905,7 +906,7 @@ kill <Tab>            # プロセスリストを表示
 
 ### `mise`
 
-統一ランタイムバージョンマネージャー（nvm/pyenv/rustupを1つに統合）。
+統一ランタイムバージョンマネージャー（nvm/pyenv/rustup を 1 つに統合）。
 
 ```bash
 # インストール済みバージョン一覧
@@ -939,12 +940,14 @@ mise doctor
 ```
 
 **設定ファイル:**
+
 - グローバル: `~/.config/mise/config.toml`
 - プロジェクト: `.mise.toml`（プロジェクトルート）
 
 **メリット:**
+
 - 単一ツールで複数のランタイムを管理
-- shimsベースでPATH汚染が少ない
+- shims ベースで PATH 汚染が少ない
 - `.nvmrc`、`.python-version` などと互換性あり
 
 ---

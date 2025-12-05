@@ -52,6 +52,9 @@ chezmoi update
 ```
 ~/.local/share/chezmoi/
 ├── Brewfile.tmpl                 # Homebrew packages (templated)
+├── dot_editorconfig              # Global EditorConfig for consistent coding style
+├── dot_gitconfig.tmpl            # Git configuration
+├── dot_gitignore_global          # Global gitignore
 ├── .chezmoitemplates/
 │   ├── Brewfile.common           # Packages for all machines
 │   ├── Brewfile.personal_mac     # Personal Mac packages
@@ -66,7 +69,8 @@ chezmoi update
 │   ├── peco.zsh                  # Peco configuration
 │   ├── steeef.zsh-theme          # Prompt theme
 │   └── suggestions.zsh           # Command suggestions
-├── dot_vscode/                   # VSCode custom CSS/JS
+├── private_dot_Library/          # macOS Library settings
+│   └── Application Support/Code/ # VS Code/Cursor settings
 ├── private_dot_config/
 │   ├── ghostty/                  # Ghostty terminal
 │   ├── navi/                     # Navi cheat sheets

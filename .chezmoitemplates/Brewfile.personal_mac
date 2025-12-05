@@ -3,8 +3,8 @@
 # =============================================================================
 
 # Media & Entertainment
-brew "ffmpeg"
-brew "ffmpeg@6"
+brew "ffmpeg"           # Latest version
+# brew "ffmpeg@6"       # Uncomment if you need v6 for compatibility
 brew "gifski"
 brew "imagemagick"
 brew "yt-dlp"

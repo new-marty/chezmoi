@@ -34,14 +34,8 @@ github = "Aloxaf/fzf-tab"
 github = "MichaelAquilina/zsh-you-should-use"
 apply = ["defer"]
 
-# Better autosuggestions configuration
-[plugins.zsh-autosuggestions-config]
-inline = '''
-# More aggressive suggestions
-ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-ZSH_AUTOSUGGEST_USE_ASYNC=true
-ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-'''
+# Note: ZSH_AUTOSUGGEST settings are configured in suggestions.zsh
+# to avoid duplication and ensure they're set after the plugin loads
 
 # fzf-tab configuration
 [plugins.fzf-tab-config]

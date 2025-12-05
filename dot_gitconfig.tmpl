@@ -4,9 +4,12 @@
 # =============================================================================
 
 [user]
-    # Configure your name and email via:
-    # git config --global user.name "Your Name"
-    # git config --global user.email "your.email@example.com"
+    # User configuration (set via chezmoi data or local git config)
+    # To override for specific repos, use: git config user.email "work@example.com"
+{{- if .is_work_mac }}
+    # Work Mac - configure in chezmoi.toml: [data] git_work_email = "your.work@company.com"
+    # email = {{ .git_work_email | default "your.work@company.com" | quote }}
+{{- end }}
 
 [core]
     editor = cursor --wait

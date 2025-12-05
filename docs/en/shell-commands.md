@@ -158,8 +158,7 @@ direnv deny       # Block direnv
 
 ```bash
 dotenv                    # Load .env file
-use nvm 18                # Use specific Node version
-use pyenv 3.11            # Use specific Python version
+use mise                  # Use mise for version management
 PATH_add bin              # Add local bin to PATH
 source_env .env.local     # Source another file
 ```

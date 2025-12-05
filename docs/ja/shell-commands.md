@@ -158,8 +158,7 @@ direnv deny       # direnvをブロック
 
 ```bash
 dotenv                    # .envファイルをロード
-use nvm 18                # 特定のNodeバージョンを使用
-use pyenv 3.11            # 特定のPythonバージョンを使用
+use mise                  # miseでバージョン管理
 PATH_add bin              # ローカルbinをPATHに追加
 source_env .env.local     # 別のファイルをソース
 ```
