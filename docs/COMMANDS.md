@@ -42,6 +42,7 @@ fcat -o output.txt lib/
 ```
 
 Options:
+
 - `-i, --ignore-gitignore` - Respect .gitignore patterns
 - `-o, --output FILE` - Write output to file
 - `-c, --clipboard` - Copy output to clipboard
@@ -64,6 +65,7 @@ ts2mp4 --force
 ```
 
 Options:
+
 - `-o, --output DIR` - Output directory (default: mp4)
 - `-f, --force` - Overwrite existing files
 - `-h, --help` - Display help
@@ -96,52 +98,52 @@ help
 
 ## Keybindings
 
-| Key      | Function                          | Description                              |
-| -------- | --------------------------------- | ---------------------------------------- |
-| `Ctrl+G` | `show_command_templates`          | Show predefined command templates        |
-| `Ctrl+S` | `smart_command_suggest`           | Context-aware suggestions                |
-| `Ctrl+F` | `show_frequent_commands`          | Show frequently used commands            |
-| `Ctrl+N` | `navi_widget`                     | Open navi cheat sheets                   |
-| `Ctrl+R` | `peco-select-history`             | Search history with peco                 |
-| `Ctrl+H` | `_atuin_search_widget`            | Search history with atuin                |
-| `Ctrl+U` | `peco-cdr`                        | Jump to recent directories               |
+| Key      | Function                 | Description                       |
+| -------- | ------------------------ | --------------------------------- |
+| `Ctrl+G` | `show_command_templates` | Show predefined command templates |
+| `Ctrl+S` | `smart_command_suggest`  | Context-aware suggestions         |
+| `Ctrl+F` | `show_frequent_commands` | Show frequently used commands     |
+| `Ctrl+N` | `navi_widget`            | Open navi cheat sheets            |
+| `Ctrl+R` | `peco-select-history`    | Search history with peco          |
+| `Ctrl+H` | `_atuin_search_widget`   | Search history with atuin         |
+| `Ctrl+U` | `peco-cdr`               | Jump to recent directories        |
 
 ## Git Aliases
 
-| Alias | Command                                      |
-| ----- | -------------------------------------------- |
-| `gs`  | `git status`                                 |
-| `gl`  | `git log --graph --pretty=format:...`        |
-| `gls` | `git log --stat --summary`                   |
-| `ga`  | `git add`                                    |
-| `br`  | `git branch --sort=-committerdate ...`       |
-| `gd`  | `git diff`                                   |
-| `gcm` | `git commit -m`                              |
-| `gca` | `git commit --amend`                         |
-| `gp`  | `git push origin head`                       |
-| `sw`  | `git switch`                                 |
+| Alias | Command                                |
+| ----- | -------------------------------------- |
+| `gs`  | `git status`                           |
+| `gl`  | `git log --graph --pretty=format:...`  |
+| `gls` | `git log --stat --summary`             |
+| `ga`  | `git add`                              |
+| `br`  | `git branch --sort=-committerdate ...` |
+| `gd`  | `git diff`                             |
+| `gcm` | `git commit -m`                        |
+| `gca` | `git commit --amend`                   |
+| `gp`  | `git push origin head`                 |
+| `sw`  | `git switch`                           |
 
 ## Other Aliases
 
-| Alias | Command                    |
-| ----- | -------------------------- |
-| `ls`  | `eza --icons`              |
-| `ll`  | `ls -la`                   |
-| `la`  | `ls -l`                    |
-| `l1`  | `ls -1`                    |
-| `lll` | `ls -abghHliS --git`       |
-| `cat` | `ccat`                     |
-| `diff`| `colordiff -u`             |
-| `rs`  | `exec $SHELL -l`           |
-| `sz`  | `source ~/.zshrc`          |
-| `c`   | `cursor`                   |
-| `pp`  | `pnpm`                     |
-| `pi`  | `pnpm install`             |
-| `pr`  | `pnpm run`                 |
-| `pd`  | `pnpm dev`                 |
-| `pu`  | `pnpm update`              |
-| `pb`  | `pnpm build`               |
-| `dcu` | `docker-compose up -d`     |
-| `p`   | `python3`                  |
-| `tf`  | `terraform`                |
+| Alias  | Command                |
+| ------ | ---------------------- |
+| `ls`   | `eza --icons`          |
+| `ll`   | `ls -la`               |
+| `la`   | `ls -l`                |
+| `l1`   | `ls -1`                |
+| `lll`  | `ls -abghHliS --git`   |
+| `cat`  | `ccat`                 |
+| `diff` | `colordiff -u`         |
+| `rs`   | `exec $SHELL -l`       |
+| `sz`   | `source ~/.zshrc`      |
+| `c`    | `cursor`               |
+| `pp`   | `pnpm`                 |
+| `pi`   | `pnpm install`         |
+| `pr`   | `pnpm run`             |
+| `pd`   | `pnpm dev`             |
+| `pu`   | `pnpm update`          |
+| `pb`   | `pnpm build`           |
+| `dcu`  | `docker-compose up -d` |
+| `p`    | `python3`              |
+| `tf`   | `terraform`            |
 

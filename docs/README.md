@@ -16,4 +16,3 @@ Welcome to the dotfiles documentation.
 ## Translations
 
 - [日本語](ja/)
-

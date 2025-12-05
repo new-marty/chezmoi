@@ -42,6 +42,7 @@ fcat -o output.txt lib/
 ```
 
 オプション：
+
 - `-i, --ignore-gitignore` - .gitignore パターンを考慮
 - `-o, --output FILE` - ファイルに出力
 - `-c, --clipboard` - クリップボードにコピー
@@ -64,6 +65,7 @@ ts2mp4 --force
 ```
 
 オプション：
+
 - `-o, --output DIR` - 出力ディレクトリ（デフォルト: mp4）
 - `-f, --force` - 既存ファイルを上書き
 - `-h, --help` - ヘルプを表示
@@ -96,52 +98,52 @@ help
 
 ## キーバインド
 
-| キー     | 関数                        | 説明                               |
-| -------- | --------------------------- | ---------------------------------- |
-| `Ctrl+G` | `show_command_templates`    | 定義済みコマンドテンプレートを表示 |
-| `Ctrl+S` | `smart_command_suggest`     | コンテキストに応じた提案           |
-| `Ctrl+F` | `show_frequent_commands`    | よく使うコマンドを表示             |
-| `Ctrl+N` | `navi_widget`               | navi チートシートを開く            |
-| `Ctrl+R` | `peco-select-history`       | peco で履歴を検索                  |
-| `Ctrl+H` | `_atuin_search_widget`      | atuin で履歴を検索                 |
-| `Ctrl+U` | `peco-cdr`                  | 最近のディレクトリにジャンプ       |
+| キー     | 関数                     | 説明                               |
+| -------- | ------------------------ | ---------------------------------- |
+| `Ctrl+G` | `show_command_templates` | 定義済みコマンドテンプレートを表示 |
+| `Ctrl+S` | `smart_command_suggest`  | コンテキストに応じた提案           |
+| `Ctrl+F` | `show_frequent_commands` | よく使うコマンドを表示             |
+| `Ctrl+N` | `navi_widget`            | navi チートシートを開く            |
+| `Ctrl+R` | `peco-select-history`    | peco で履歴を検索                  |
+| `Ctrl+H` | `_atuin_search_widget`   | atuin で履歴を検索                 |
+| `Ctrl+U` | `peco-cdr`               | 最近のディレクトリにジャンプ       |
 
 ## Git エイリアス
 
-| エイリアス | コマンド                                   |
-| ---------- | ------------------------------------------ |
-| `gs`       | `git status`                               |
-| `gl`       | `git log --graph --pretty=format:...`      |
-| `gls`      | `git log --stat --summary`                 |
-| `ga`       | `git add`                                  |
-| `br`       | `git branch --sort=-committerdate ...`     |
-| `gd`       | `git diff`                                 |
-| `gcm`      | `git commit -m`                            |
-| `gca`      | `git commit --amend`                       |
-| `gp`       | `git push origin head`                     |
-| `sw`       | `git switch`                               |
+| エイリアス | コマンド                               |
+| ---------- | -------------------------------------- |
+| `gs`       | `git status`                           |
+| `gl`       | `git log --graph --pretty=format:...`  |
+| `gls`      | `git log --stat --summary`             |
+| `ga`       | `git add`                              |
+| `br`       | `git branch --sort=-committerdate ...` |
+| `gd`       | `git diff`                             |
+| `gcm`      | `git commit -m`                        |
+| `gca`      | `git commit --amend`                   |
+| `gp`       | `git push origin head`                 |
+| `sw`       | `git switch`                           |
 
 ## その他のエイリアス
 
-| エイリアス | コマンド                 |
-| ---------- | ------------------------ |
-| `ls`       | `eza --icons`            |
-| `ll`       | `ls -la`                 |
-| `la`       | `ls -l`                  |
-| `l1`       | `ls -1`                  |
-| `lll`      | `ls -abghHliS --git`     |
-| `cat`      | `ccat`                   |
-| `diff`     | `colordiff -u`           |
-| `rs`       | `exec $SHELL -l`         |
-| `sz`       | `source ~/.zshrc`        |
-| `c`        | `cursor`                 |
-| `pp`       | `pnpm`                   |
-| `pi`       | `pnpm install`           |
-| `pr`       | `pnpm run`               |
-| `pd`       | `pnpm dev`               |
-| `pu`       | `pnpm update`            |
-| `pb`       | `pnpm build`             |
-| `dcu`      | `docker-compose up -d`   |
-| `p`        | `python3`                |
-| `tf`       | `terraform`              |
+| エイリアス | コマンド               |
+| ---------- | ---------------------- |
+| `ls`       | `eza --icons`          |
+| `ll`       | `ls -la`               |
+| `la`       | `ls -l`                |
+| `l1`       | `ls -1`                |
+| `lll`      | `ls -abghHliS --git`   |
+| `cat`      | `ccat`                 |
+| `diff`     | `colordiff -u`         |
+| `rs`       | `exec $SHELL -l`       |
+| `sz`       | `source ~/.zshrc`      |
+| `c`        | `cursor`               |
+| `pp`       | `pnpm`                 |
+| `pi`       | `pnpm install`         |
+| `pr`       | `pnpm run`             |
+| `pd`       | `pnpm dev`             |
+| `pu`       | `pnpm update`          |
+| `pb`       | `pnpm build`           |
+| `dcu`      | `docker-compose up -d` |
+| `p`        | `python3`              |
+| `tf`       | `terraform`            |
 
