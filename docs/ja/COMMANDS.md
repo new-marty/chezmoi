@@ -485,6 +485,28 @@ brew uninstall ripgrep
 help
 ```
 
+### `update-dev`
+
+開発ツールを一括更新するメンテナンスコマンド。
+
+```bash
+# すべて更新
+update-dev
+
+# 変更をプレビュー（実際には適用しない）
+update-dev --dry-run
+update-dev -n
+```
+
+**更新対象:**
+- Homebrew（update, upgrade, cleanup）
+- Chezmoi（pull & apply）
+- Sheldon プラグイン（lock --update）
+- Atuin 履歴同期
+- Mise ランタイムツール更新
+- NPM グローバルパッケージ
+- TLDR キャッシュ
+
 ---
 
 ## モダン CLI ツール
@@ -746,6 +768,48 @@ git diff
 git diff --no-pager
 ```
 
+### `glow`（Markdownレンダラー）
+
+ターミナルでMarkdownを美しくレンダリング。
+
+```bash
+# ファイルをレンダリング
+glow README.md
+
+# 現在のディレクトリを閲覧
+glow .
+
+# ページャーモード
+glow -p README.md
+
+# ドキュメントをプレビュー
+glow $(chezmoi source-path)/docs/ja/README.md
+```
+
+### ネットワークツール
+
+**`dog`** - モダンなDNSルックアップ（dig代替）
+
+```bash
+dog example.com           # Aレコード検索
+dog example.com MX        # MXレコード検索
+dog example.com @8.8.8.8  # DNSサーバー指定
+dog --json example.com    # JSON出力
+```
+
+**`bandwhich`** - リアルタイム帯域モニター
+
+```bash
+sudo bandwhich    # プロセスごとの帯域を表示
+```
+
+**`gping`** - ビジュアルping
+
+```bash
+gping google.com          # グラフ付きping
+gping 8.8.8.8 1.1.1.1     # 複数ホストを比較
+```
+
 ---
 
 ## Git ツール
@@ -817,11 +881,8 @@ direnv deny
 # .envファイルをロード
 dotenv
 
-# 特定のNodeバージョンを使用（nvmで）
-use nvm 18
-
-# 特定のPythonバージョンを使用（pyenvで）
-use pyenv 3.11
+# miseでバージョンを指定
+use mise
 
 # ローカルbinをPATHに追加
 PATH_add bin
@@ -842,50 +903,49 @@ git checkout <Tab>    # ブランチリストを表示
 kill <Tab>            # プロセスリストを表示
 ```
 
-### `nvm`
+### `mise`
 
-Node.js バージョンマネージャー（シェル起動高速化のため遅延ロード）。
+統一ランタイムバージョンマネージャー（nvm/pyenv/rustupを1つに統合）。
 
 ```bash
 # インストール済みバージョン一覧
-nvm ls
+mise ls
 
-# 利用可能なバージョン一覧
-nvm ls-remote
+# 現在のバージョンを確認
+mise current
 
-# バージョンをインストール
-nvm install 20
-
-# バージョンを使用
-nvm use 18
-
-# デフォルトバージョンを設定
-nvm alias default 20
-
-# .nvmrcのバージョンを使用
-nvm use
-```
-
-### `pyenv`
-
-Python バージョンマネージャー。
-
-```bash
-# 利用可能なバージョン一覧
-pyenv install --list
-
-# バージョンをインストール
-pyenv install 3.12
+# ツールをインストール
+mise install node@20
+mise install python@3.12
+mise install rust@stable
 
 # グローバルバージョンを設定
-pyenv global 3.12
+mise use --global node@20
 
-# ローカルバージョンを設定（.python-versionを作成）
-pyenv local 3.11
+# プロジェクトローカルバージョンを設定（.mise.tomlを作成）
+mise use node@18
 
-# インストール済みバージョン一覧
-pyenv versions
+# 全ツールを更新
+mise upgrade
+
+# 利用可能なバージョン一覧
+mise ls-remote node
+
+# mise自体を更新
+mise self-update
+
+# 診断
+mise doctor
 ```
+
+**設定ファイル:**
+- グローバル: `~/.config/mise/config.toml`
+- プロジェクト: `.mise.toml`（プロジェクトルート）
+
+**メリット:**
+- 単一ツールで複数のランタイムを管理
+- shimsベースでPATH汚染が少ない
+- `.nvmrc`、`.python-version` などと互換性あり
 
 ---
 

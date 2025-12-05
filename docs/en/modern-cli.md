@@ -197,3 +197,122 @@ git diff              # Delta is auto-configured
 git diff --no-pager   # Temporarily disable delta
 ```
 
+---
+
+## glow
+
+Render Markdown beautifully in the terminal.
+
+```bash
+glow README.md           # Render a file
+glow .                   # Browse markdown files in current directory
+glow -p README.md        # Pager mode
+glow -s dark README.md   # Use dark style
+glow -w 80 README.md     # Set width
+```
+
+**Common usage:**
+```bash
+# Quick docs preview
+glow $(chezmoi source-path)/docs/en/README.md
+
+# Browse all docs
+glow $(chezmoi source-path)/docs/
+```
+
+---
+
+## Network Tools
+
+### dog
+
+Modern DNS lookup tool (dig replacement) with colorful output.
+
+```bash
+dog example.com           # Default A record lookup
+dog example.com MX        # MX record lookup
+dog example.com @8.8.8.8  # Use specific DNS server
+dog example.com A AAAA MX # Multiple record types
+dog --short example.com   # Compact output
+dog --json example.com    # JSON output
+```
+
+### bandwhich
+
+Real-time bandwidth monitor by process/connection.
+
+```bash
+bandwhich         # Start monitoring (requires sudo)
+sudo bandwhich    # Full access to process info
+```
+
+**Views:**
+- Per-process bandwidth
+- Per-connection bandwidth
+- Remote addresses and ports
+
+### gping
+
+Ping multiple hosts with visual graph.
+
+```bash
+gping google.com          # Ping with graph
+gping 8.8.8.8 1.1.1.1     # Multiple hosts
+gping -c 10 google.com    # Limit ping count
+gping -b 30 google.com    # Buffer size (history)
+```
+
+---
+
+## glow
+
+Render markdown beautifully in the terminal.
+
+```bash
+glow README.md           # View markdown file
+glow                     # Browse markdown files in current dir
+glow -p README.md        # Pager mode (scrollable)
+glow -w 80 README.md     # Set width
+```
+
+---
+
+## Network Tools
+
+### dog
+
+Modern DNS lookup tool (dig replacement).
+
+```bash
+dog example.com              # Basic lookup
+dog example.com A            # Query A record
+dog example.com MX           # Query MX record
+dog example.com @8.8.8.8     # Use specific DNS server
+dog example.com --json       # JSON output
+```
+
+### bandwhich
+
+Real-time network bandwidth utilization by process.
+
+```bash
+sudo bandwhich              # Show bandwidth by process
+# Requires sudo for network monitoring
+```
+
+**Interface:**
+- Shows bandwidth per process
+- Shows bandwidth per connection
+- Shows bandwidth per remote IP
+
+### gping
+
+Ping with a visual graph.
+
+```bash
+gping google.com                    # Ping with graph
+gping google.com cloudflare.com     # Ping multiple hosts
+gping -4 google.com                 # IPv4 only
+gping -6 google.com                 # IPv6 only
+```
+

@@ -196,20 +196,10 @@ function show_frequent_commands() {
     fi
 }
 
-# Bind widgets to keys
+# Register widgets (keybindings are set in .zshrc after all plugins are loaded)
 zle -N show_command_templates
 zle -N smart_command_suggest
 zle -N show_frequent_commands
-
-# Key bindings
-bindkey '^g' show_command_templates # Ctrl+G for command templates
-bindkey '^s' smart_command_suggest  # Ctrl+S for smart suggestions
-bindkey '^f' show_frequent_commands # Ctrl+F for frequent commands
-
-# Enhanced autosuggestions config
-ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-ZSH_AUTOSUGGEST_USE_ASYNC=true
-ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
 # Navi integration (install with: brew install navi)
 function navi_widget() {
@@ -220,4 +210,3 @@ function navi_widget() {
     fi
 }
 zle -N navi_widget
-bindkey '^n' navi_widget # Ctrl+N for navi cheat sheets

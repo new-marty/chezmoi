@@ -303,6 +303,65 @@ direnv edit
 # Reload direnv
 direnv reload
 
+% mise
+
+# Install a runtime
+mise install <runtime>@<version>
+
+# Use a runtime in current directory
+mise use <runtime>@<version>
+
+# Set global default
+mise use --global <runtime>@<version>
+
+# List installed versions
+mise ls
+
+# List available versions for a runtime
+mise ls-remote <runtime>
+
+# Show current versions
+mise current
+
+# Upgrade all runtimes
+mise upgrade
+
+# Remove unused versions
+mise prune
+
+% network
+
+# DNS lookup with dog
+dog <domain>
+
+# DNS lookup specific record type
+dog <domain> <record_type>
+
+# Ping with graph
+gping <host>
+
+# Show bandwidth by process (requires sudo)
+sudo bandwhich
+
+% maintenance
+
+# Update all dev tools
+update-dev
+
+# Preview updates without applying
+update-dev --dry-run
+
+% glow
+
+# Render markdown file
+glow <file.md>
+
+# Browse markdown files in directory
+glow
+
+# Render with pager (scrollable)
+glow -p <file.md>
+
 % kubernetes
 
 # Get pods

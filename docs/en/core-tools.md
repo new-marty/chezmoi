@@ -228,3 +228,42 @@ op item get "Item Name"     # Get item
 op item get "Item" --fields password  # Get specific field
 ```
 
+---
+
+## mise
+
+Unified runtime version manager (replaces nvm, pyenv, rbenv, etc.).
+
+```bash
+mise install node@20        # Install Node.js 20
+mise install python@3.12    # Install Python 3.12
+mise use node@20            # Use Node.js 20 in current directory
+mise use --global node@20   # Set global default
+mise ls                     # List installed versions
+mise ls-remote node         # List available versions
+mise current                # Show current versions
+mise prune                  # Remove unused versions
+```
+
+**Configuration:** `~/.config/mise/config.toml` or `.mise.toml` per project
+
+**Supported tools:** node, python, ruby, go, rust, java, and many more.
+
+---
+
+## update-dev
+
+Update all development tools at once.
+
+```bash
+update-dev                  # Update everything
+update-dev --dry-run        # Preview what would be updated
+```
+
+**Updates:**
+- Homebrew (brew update && brew upgrade)
+- Chezmoi (chezmoi update)
+- Sheldon plugins (sheldon lock --update)
+- Atuin (atuin sync)
+- Mise runtimes (mise upgrade)
+

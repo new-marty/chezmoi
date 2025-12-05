@@ -2,6 +2,26 @@
 
 カスタムシェルコマンドと関数。
 
+## update-dev
+
+開発ツールを一括更新するメンテナンスコマンド。
+
+```bash
+update-dev           # すべて更新（brew, chezmoi, sheldon, atuin, mise）
+update-dev --dry-run # 変更をプレビュー（実際には適用しない）
+```
+
+**更新対象:**
+- Homebrew（update, upgrade, cleanup）
+- Chezmoi（pull & apply）
+- Sheldon プラグイン（lock --update）
+- Atuin 履歴同期
+- Mise ランタイムツール更新
+- NPM グローバルパッケージ
+- TLDR キャッシュ
+
+---
+
 ## mkcd
 
 ディレクトリを作成して移動。

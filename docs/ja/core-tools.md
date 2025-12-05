@@ -228,3 +228,42 @@ op item get "Item Name"     # アイテムを取得
 op item get "Item" --fields password  # 特定のフィールドを取得
 ```
 
+---
+
+## mise
+
+統合ランタイムバージョンマネージャー（nvm、pyenv、rbenvなどの代替）。
+
+```bash
+mise install node@20        # Node.js 20をインストール
+mise install python@3.12    # Python 3.12をインストール
+mise use node@20            # 現在のディレクトリでNode.js 20を使用
+mise use --global node@20   # グローバルのデフォルトを設定
+mise ls                     # インストール済みバージョン一覧
+mise ls-remote node         # 利用可能なバージョン一覧
+mise current                # 現在のバージョンを表示
+mise prune                  # 未使用のバージョンを削除
+```
+
+**設定ファイル:** `~/.config/mise/config.toml` またはプロジェクト毎の `.mise.toml`
+
+**対応ツール:** node、python、ruby、go、rust、javaなど多数
+
+---
+
+## update-dev
+
+すべての開発ツールを一括更新。
+
+```bash
+update-dev                  # すべてを更新
+update-dev --dry-run        # 更新内容をプレビュー
+```
+
+**更新対象:**
+- Homebrew（brew update && brew upgrade）
+- Chezmoi（chezmoi update）
+- Sheldonプラグイン（sheldon lock --update）
+- Atuin（atuin sync）
+- Miseランタイム（mise upgrade）
+

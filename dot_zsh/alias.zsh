@@ -162,14 +162,22 @@ function show_dotfiles_help() {
     echo "  fd         fast find alternative"
     echo "  fzf        fuzzy finder"
     echo "  tldr       simplified man pages"
+    echo "  glow       Render markdown in terminal"
+    echo ""
+
+    echo "🌐 NETWORK"
+    echo "──────────"
+    echo "  dog        Modern DNS lookup (dig replacement)"
+    echo "  bandwhich  Realtime bandwidth by process"
+    echo "  gping      Visual ping with graph"
     echo ""
 
     echo "📦 PACKAGE MANAGEMENT"
     echo "────────────────────"
     echo "  pp/pi/pr   pnpm / install / run"
     echo "  pd/pu/pb   pnpm dev / update / build"
-    echo "  nvm        Node.js version manager"
-    echo "  pyenv      Python version manager"
+    echo "  mise       Unified runtime manager (node/python/rust)"
+    echo "             mise install, mise use, mise ls"
     echo ""
 
     echo "🔧 UTILITIES"
@@ -182,6 +190,12 @@ function show_dotfiles_help() {
     echo "  dcu        docker-compose up -d"
     echo "  gh         GitHub CLI"
     echo "  op         1Password CLI"
+    echo ""
+    
+    echo "🔄 MAINTENANCE"
+    echo "──────────────"
+    echo "  update-dev Update all dev tools (brew, chezmoi, sheldon, atuin, mise)"
+    echo "             --dry-run: Preview changes without applying"
     echo ""
 
     echo "⚙️  CHEZMOI (Dotfile Management)"

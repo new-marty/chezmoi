@@ -2,6 +2,26 @@
 
 Custom shell commands and functions.
 
+## update-dev
+
+One-command daily maintenance for all development tools.
+
+```bash
+update-dev           # Update everything (brew, chezmoi, sheldon, atuin, mise)
+update-dev --dry-run # Preview changes without applying
+```
+
+**What it updates:**
+- Homebrew (update, upgrade, cleanup)
+- Chezmoi (pull & apply)
+- Sheldon plugins (lock --update)
+- Atuin history sync
+- Mise runtime tools upgrade
+- NPM global packages
+- TLDR cache
+
+---
+
 ## mkcd
 
 Create a directory and cd into it.

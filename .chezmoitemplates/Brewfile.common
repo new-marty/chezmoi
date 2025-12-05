@@ -9,7 +9,6 @@ tap "stripe/stripe-cli"
 # Core CLI Tools
 brew "chezmoi"
 brew "bat"
-brew "git-delta"
 brew "ccat"
 brew "curl"
 brew "eza"
@@ -25,14 +24,6 @@ brew "thefuck"
 brew "tree"
 brew "zoxide"
 brew "atuin"
-brew "tldr"              # Simplified man pages
-brew "dust"              # Better du (disk usage)
-brew "duf"               # Better df (disk free)
-brew "procs"             # Better ps (process viewer)
-brew "bottom"            # Better top/htop
-brew "lazygit"           # TUI for git
-brew "httpie"            # Better curl for APIs
-brew "direnv"            # Per-directory environment variables
 
 # Shell & Terminal
 brew "zsh"
@@ -41,11 +32,14 @@ brew "zsh"
 brew "git"
 
 # Programming Languages & Runtimes
-# Using mise (formerly rtx) for unified version management
-# Replaces: nvm, pyenv, pyenv-virtualenv, rustup
-brew "mise"
 brew "go"
-# Note: node, python, rust are managed by mise - see ~/.config/mise/config.toml
+brew "node"
+brew "nvm"
+brew "python@3.11"
+brew "pyenv"
+brew "pyenv-virtualenv"
+brew "rust"
+brew "rustup"
 
 # Build Tools
 brew "autoconf"
@@ -78,9 +72,6 @@ brew "nmap"
 brew "nghttp2"
 brew "openconnect"
 brew "openvpn"
-brew "dog"               # Modern DNS lookup (dig replacement)
-brew "bandwhich"         # Realtime bandwidth monitor by process
-brew "gping"             # Visual ping with graph
 
 # Security
 brew "age"
@@ -90,7 +81,6 @@ brew "gnupg"
 # Text Processing
 brew "pandoc"
 brew "prettier"
-brew "glow"              # Markdown renderer for terminal
 
 # Common Casks
 cask "1password"
@@ -119,8 +109,3 @@ vscode "ms-python.vscode-pylance"
 vscode "hashicorp.terraform"
 vscode "redhat.vscode-yaml"
 vscode "ms-azuretools.vscode-docker"
-vscode "PKief.material-icon-theme"
-vscode "mikestead.dotenv"
-vscode "wayou.vscode-todo-highlight"
-vscode "naumovs.color-highlight"
-vscode "oderwat.indent-rainbow"

@@ -139,9 +139,7 @@ $(exit_status)$ '
 RPROMPT='%F{8}%D{%H:%M:%S}%f'
 
 # Additional useful settings for better terminal experience
-# History settings (if not already set elsewhere)
-export HISTSIZE=50000
-export SAVEHIST=50000
+# Note: HISTSIZE/SAVEHIST are set in .zshrc (100000)
 
 # Better completion behavior
 zstyle ':completion:*' use-cache on

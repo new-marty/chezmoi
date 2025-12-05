@@ -93,3 +93,11 @@ Complete alias reference for this dotfiles setup.
 | `keys`| `show_keybindings` | Show keybindings |
 | `docs`| `open_dotfiles_docs` | Open docs in editor |
 
+---
+
+## Maintenance Aliases
+
+| Alias | Command | Description |
+| ----- | ------- | ----------- |
+| `update-dev` | (function) | Update all dev tools |
+

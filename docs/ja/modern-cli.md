@@ -196,3 +196,122 @@ git diff              # deltaは自動設定済み
 git diff --no-pager   # deltaを一時的に無効化
 ```
 
+---
+
+## glow
+
+ターミナルでMarkdownを美しく表示。
+
+```bash
+glow README.md           # Markdownファイルを表示
+glow                     # 現在のディレクトリのMarkdownをブラウズ
+glow -p README.md        # ページャーモード（スクロール可能）
+glow -w 80 README.md     # 幅を設定
+```
+
+---
+
+## ネットワークツール
+
+### dog
+
+モダンなDNS検索ツール（digの代替）。
+
+```bash
+dog example.com              # 基本的な検索
+dog example.com A            # Aレコードを検索
+dog example.com MX           # MXレコードを検索
+dog example.com @8.8.8.8     # 特定のDNSサーバーを使用
+dog example.com --json       # JSON出力
+```
+
+### bandwhich
+
+プロセス毎のリアルタイムネットワーク帯域幅表示。
+
+```bash
+sudo bandwhich              # プロセス毎の帯域幅を表示
+# ネットワーク監視のためsudoが必要
+```
+
+**インターフェース:**
+- プロセス毎の帯域幅
+- 接続毎の帯域幅
+- リモートIP毎の帯域幅
+
+### gping
+
+グラフ付きping。
+
+```bash
+gping google.com                    # グラフ付きping
+gping google.com cloudflare.com     # 複数ホストにping
+gping -4 google.com                 # IPv4のみ
+gping -6 google.com                 # IPv6のみ
+```
+
+---
+
+## glow
+
+ターミナルでMarkdownを美しくレンダリング。
+
+```bash
+glow README.md           # ファイルをレンダリング
+glow .                   # 現在のディレクトリのMarkdownを閲覧
+glow -p README.md        # ページャーモード
+glow -s dark README.md   # ダークスタイルを使用
+glow -w 80 README.md     # 幅を設定
+```
+
+**よくある使い方:**
+```bash
+# ドキュメントをすばやくプレビュー
+glow $(chezmoi source-path)/docs/ja/README.md
+
+# 全ドキュメントを閲覧
+glow $(chezmoi source-path)/docs/
+```
+
+---
+
+## ネットワークツール
+
+### dog
+
+カラフル出力のモダンなDNSルックアップツール（dig代替）。
+
+```bash
+dog example.com           # デフォルトAレコード検索
+dog example.com MX        # MXレコード検索
+dog example.com @8.8.8.8  # 特定のDNSサーバーを使用
+dog example.com A AAAA MX # 複数のレコードタイプ
+dog --short example.com   # コンパクト出力
+dog --json example.com    # JSON出力
+```
+
+### bandwhich
+
+プロセス/接続ごとのリアルタイム帯域モニター。
+
+```bash
+bandwhich         # モニタリング開始（sudoが必要な場合あり）
+sudo bandwhich    # プロセス情報へのフルアクセス
+```
+
+**ビュー:**
+- プロセスごとの帯域
+- 接続ごとの帯域
+- リモートアドレスとポート
+
+### gping
+
+複数ホストへのビジュアルグラフ付きping。
+
+```bash
+gping google.com          # グラフ付きping
+gping 8.8.8.8 1.1.1.1     # 複数ホスト
+gping -c 10 google.com    # ping回数を制限
+gping -b 30 google.com    # バッファサイズ（履歴）
+```
+
