@@ -2,6 +2,13 @@
 
 Personal development environment configuration managed with [chezmoi](https://www.chezmoi.io/).
 
+## Prerequisites
+
+- macOS (Apple Silicon or Intel)
+- [Homebrew](https://brew.sh/)
+- Git
+- 1Password account (for secrets management)
+
 ## Quick Start
 
 ### New Machine Setup
@@ -20,7 +27,10 @@ brew install --cask 1password-cli
 op signin
 
 # 5. Install Homebrew packages
-brew bundle install --file=$(chezmoi source-path)/Brewfile
+brew bundle install --file=~/Brewfile
+
+# 6. Restart shell
+exec $SHELL -l
 ```
 
 ### Update Existing Machine
@@ -134,6 +144,13 @@ Same for `brew uninstall` - you can choose which Brewfile to update.
 Secrets are managed via [1Password CLI](https://developer.1password.com/docs/cli/):
 
 ```bash
+# Create secrets (first time setup)
+op item create \
+  --category "Secure Note" \
+  --title "Dotfiles Secrets" \
+  --vault "Personal" \
+  'OPENAI_API_KEY[password]=your-api-key-here'
+
 # View secrets
 op item get "Dotfiles Secrets" --vault Personal
 
@@ -168,8 +185,14 @@ chezmoi edit ~/.zshrc
 ### 1Password not working
 
 ```bash
+# Re-authenticate
 op signin
+
+# Check connection
 op vault list
+
+# Test template
+chezmoi execute-template '{{ (onepasswordItemFields "Dotfiles Secrets" "Personal").OPENAI_API_KEY.value }}'
 ```
 
 ### Shell not loading properly
@@ -190,9 +213,19 @@ chezmoi apply --dry-run --verbose
 chezmoi diff
 ```
 
+### Brewfile conflicts
+
+```bash
+# Regenerate Brewfile
+chezmoi apply --force
+
+# Or manually sync
+brew bundle dump --force --file=$(chezmoi source-path)/Brewfile
+```
+
 ## Documentation
 
-- [English Documentation](docs/)
+- [Commands Reference](docs/COMMANDS.md)
 - [日本語ドキュメント](docs/ja/)
 
 ## References
