@@ -1,0 +1,40 @@
+# =============================================================================
+# mise (formerly rtx) - Unified Runtime Version Manager
+# =============================================================================
+# Documentation: https://mise.jdx.dev/
+#
+# This replaces nvm, pyenv, pyenv-virtualenv, and rustup with a single tool.
+#
+# Usage:
+#   mise install        # Install all defined versions
+#   mise use node@20    # Set global node version
+#   mise ls             # List installed versions
+#   mise current        # Show current versions
+#   mise doctor         # Check for issues
+#
+# Per-project config: Create .mise.toml in project root
+# =============================================================================
+
+[settings]
+# Automatically install missing tools when entering a directory
+auto_install = true
+# Trust all config files (disable prompts)
+trusted_config_paths = ["~"]
+
+[tools]
+# Node.js - use latest LTS
+node = "lts"
+# Python - use 3.11 as default
+python = "3.11"
+# Rust - latest stable
+rust = "stable"
+
+# Additional tools can be added here:
+# go = "latest"
+# java = "21"
+# terraform = "latest"
+
+[env]
+# Environment variables to set
+# MISE_NODE_DEFAULT_PACKAGES_FILE = "~/.default-npm-packages"
+

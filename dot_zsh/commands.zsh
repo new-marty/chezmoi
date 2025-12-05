@@ -14,6 +14,124 @@ mkcd() {
     mkdir "$1" && cd "$1"
 }
 
+# =============================================================================
+# update-dev - One-command daily maintenance
+# =============================================================================
+# Updates all development tools and syncs configurations
+# Usage: update-dev [--dry-run]
+update-dev() {
+    local dry_run=false
+    local failed=0
+    local skipped=0
+    
+    # Parse arguments
+    if [[ "$1" == "--dry-run" || "$1" == "-n" ]]; then
+        dry_run=true
+        echo "🔍 Dry run mode - no changes will be made"
+        echo ""
+    fi
+    
+    echo "🔄 Starting development environment update..."
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    
+    # Helper function to run or simulate command
+    _run_update() {
+        local name="$1"
+        shift
+        local cmd="$@"
+        
+        echo "📦 $name"
+        if $dry_run; then
+            echo "   Would run: $cmd"
+        else
+            if eval "$cmd"; then
+                echo "   ✅ Done"
+            else
+                echo "   ❌ Failed"
+                ((failed++))
+            fi
+        fi
+        echo ""
+    }
+    
+    # Homebrew
+    if command -v brew &>/dev/null; then
+        _run_update "Homebrew: Update" "brew update"
+        _run_update "Homebrew: Upgrade" "brew upgrade"
+        _run_update "Homebrew: Cleanup" "brew cleanup"
+    else
+        echo "⏭️  Skipping Homebrew (not installed)"
+        ((skipped++))
+    fi
+    
+    # Chezmoi
+    if command -v chezmoi &>/dev/null; then
+        _run_update "Chezmoi: Pull & Apply" "chezmoi update --apply"
+    else
+        echo "⏭️  Skipping Chezmoi (not installed)"
+        ((skipped++))
+    fi
+    
+    # Sheldon
+    if command -v sheldon &>/dev/null; then
+        _run_update "Sheldon: Update plugins" "sheldon lock --update"
+        # Regenerate cache
+        local cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}
+        if [[ -f "$cache_dir/sheldon.zsh" ]]; then
+            rm -f "$cache_dir/sheldon.zsh"
+            echo "   🔄 Cleared sheldon cache (will regenerate on next shell)"
+        fi
+    else
+        echo "⏭️  Skipping Sheldon (not installed)"
+        ((skipped++))
+    fi
+    
+    # Atuin
+    if command -v atuin &>/dev/null; then
+        _run_update "Atuin: Sync history" "atuin sync"
+    else
+        echo "⏭️  Skipping Atuin (not installed)"
+        ((skipped++))
+    fi
+    
+    # mise (runtime versions)
+    if command -v mise &>/dev/null; then
+        _run_update "Mise: Self update" "mise self-update --yes 2>/dev/null || true"
+        _run_update "Mise: Upgrade tools" "mise upgrade"
+    else
+        echo "⏭️  Skipping Mise (not installed)"
+        ((skipped++))
+    fi
+    
+    # npm global packages (if node available)
+    if command -v npm &>/dev/null; then
+        _run_update "NPM: Update global packages" "npm update -g"
+    fi
+    
+    # tldr
+    if command -v tldr &>/dev/null; then
+        _run_update "TLDR: Update cache" "tldr --update"
+    fi
+    
+    # Summary
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    if $dry_run; then
+        echo "🔍 Dry run complete - no changes were made"
+    else
+        if [[ $failed -eq 0 ]]; then
+            echo "✅ Update complete!"
+        else
+            echo "⚠️  Update completed with $failed failures"
+        fi
+        [[ $skipped -gt 0 ]] && echo "   ($skipped tools skipped - not installed)"
+    fi
+    echo ""
+    echo "💡 Tip: Restart your shell (rs) to apply all changes"
+    
+    return $failed
+}
+
 # *** cdf ***
 # Fuzzy find and cd to directory
 function cdf() {
@@ -121,6 +239,13 @@ _brew_select_category() {
 brew() {
     local cmd="$1"
     local exit_code=0
+
+    # Special case: 'brew install' with no arguments installs from Brewfile
+    if [[ "$cmd" == "install" && $# -eq 1 ]]; then
+        echo "📦 Installing from ~/Brewfile..."
+        command brew bundle install --file="$HOME/Brewfile"
+        return $?
+    fi
     
     # Run the original brew command
     command brew "$@"

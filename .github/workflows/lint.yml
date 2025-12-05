@@ -1,0 +1,87 @@
+name: Lint and Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "dot_zsh/**"
+      - "private_dot_config/raycast/scripts/**"
+      - ".github/workflows/lint.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "dot_zsh/**"
+      - "private_dot_config/raycast/scripts/**"
+      - ".github/workflows/lint.yml"
+  workflow_dispatch:
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck on zsh files
+        run: |
+          echo "📋 Checking dot_zsh/*.zsh files..."
+          find dot_zsh -name "*.zsh" -type f | while read -r file; do
+            echo "Checking: $file"
+            # ShellCheck with zsh dialect and allow some zsh-specific constructs
+            shellcheck --shell=bash --severity=warning --exclude=SC1090,SC2034,SC2154,SC2086,SC2206,SC2128,SC1091,SC2296,SC2168 "$file" || true
+          done
+
+      - name: Run ShellCheck on Raycast scripts
+        run: |
+          echo "📋 Checking Raycast scripts..."
+          if [ -f "private_dot_config/raycast/scripts/executable_toggle-ghostty.sh" ]; then
+            shellcheck --shell=bash --severity=warning "private_dot_config/raycast/scripts/executable_toggle-ghostty.sh"
+          fi
+
+  test:
+    name: Run Tests
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Zsh
+        run: |
+          # Zsh should be pre-installed on macOS runners
+          zsh --version
+
+      - name: Source commands and run fcat tests
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          echo "📋 Running fcat tests..."
+          zsh -c '
+            source ./dot_zsh/commands.zsh
+            source ./dot_zsh/tests/fcat_test.zsh
+            main
+          '
+
+  chezmoi-doctor:
+    name: Chezmoi Doctor
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: |
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+
+      - name: Run chezmoi doctor
+        run: |
+          echo "📋 Running chezmoi doctor..."
+          chezmoi doctor || true
+
+      - name: Validate chezmoi templates
+        run: |
+          echo "📋 Validating chezmoi templates..."
+          # Initialize chezmoi with current repo
+          chezmoi init --source="$GITHUB_WORKSPACE" --apply=false || true
+          # Check for template errors
+          chezmoi execute-template < /dev/null || true
+

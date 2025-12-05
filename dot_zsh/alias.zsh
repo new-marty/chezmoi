@@ -126,6 +126,7 @@ function show_dotfiles_help() {
     echo "             -i (gitignore), -o (output), -c (clipboard), -n (pattern)"
     echo "  ts2mp4     Convert TS to MP4 (-o dir, -f force)"
     echo "  brew       Enhanced brew with auto Brewfile updates"
+    echo "  brew install  (no args) Install all from ~/Brewfile"
     echo "  fuck       Correct previous command (thefuck)"
     echo ""
 

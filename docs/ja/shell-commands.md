@@ -73,7 +73,11 @@ ts2mp4 --force       # 既存ファイルを上書き
 インタラクティブなBrewfile管理機能付きの拡張brewコマンド。
 
 ```bash
-# パッケージをインストール
+# Brewfileから全パッケージをインストール（引数なし）
+brew install
+# → 実行: brew bundle install --file=~/Brewfile
+
+# 特定のパッケージをインストール
 brew install ripgrep
 # プロンプト: どのBrewfileに追加しますか？
 #   > 全マシン共通 (common)

@@ -53,3 +53,18 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 zstyle ':fzf-tab:complete:ls:*' fzf-preview 'eza -1 --color=always $realpath'
 zstyle ':fzf-tab:complete:*:*' fzf-preview 'bat --color=always --style=numbers --line-range=:100 $realpath 2>/dev/null || eza -1 --color=always $realpath 2>/dev/null || echo $realpath'
 '''
+
+# zsh-abbr - Fish-like abbreviations for zsh
+# Abbreviations expand inline as you type (different from aliases)
+# Usage: abbr add gco='git checkout'
+[plugins.zsh-abbr]
+github = "olets/zsh-abbr"
+apply = ["defer"]
+
+# Common abbreviations configuration
+[plugins.zsh-abbr-config]
+inline = '''
+# Configure zsh-abbr
+export ABBR_QUIET=1
+export ABBR_AUTOLOAD=1
+'''

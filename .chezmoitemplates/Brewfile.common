@@ -41,14 +41,11 @@ brew "zsh"
 brew "git"
 
 # Programming Languages & Runtimes
+# Using mise (formerly rtx) for unified version management
+# Replaces: nvm, pyenv, pyenv-virtualenv, rustup
+brew "mise"
 brew "go"
-brew "node"
-brew "nvm"
-brew "python@3.11"
-brew "pyenv"
-brew "pyenv-virtualenv"
-brew "rust"
-brew "rustup"
+# Note: node, python, rust are managed by mise - see ~/.config/mise/config.toml
 
 # Build Tools
 brew "autoconf"
@@ -81,6 +78,9 @@ brew "nmap"
 brew "nghttp2"
 brew "openconnect"
 brew "openvpn"
+brew "dog"               # Modern DNS lookup (dig replacement)
+brew "bandwhich"         # Realtime bandwidth monitor by process
+brew "gping"             # Visual ping with graph
 
 # Security
 brew "age"
@@ -90,6 +90,7 @@ brew "gnupg"
 # Text Processing
 brew "pandoc"
 brew "prettier"
+brew "glow"              # Markdown renderer for terminal
 
 # Common Casks
 cask "1password"

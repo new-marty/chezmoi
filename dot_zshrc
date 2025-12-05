@@ -19,6 +19,10 @@ setopt share_history hist_ignore_dups hist_ignore_all_dups hist_ignore_space his
 autoload -U +X bashcompinit && bashcompinit
 eval "$(thefuck --alias)"
 
+# mise - unified runtime version manager (replaces nvm/pyenv/rustup)
+# Only shims are added to PATH, no heavy initialization
+eval "$(mise activate zsh)"
+
 # atuin - enhanced history with suggestions
 eval "$(atuin init zsh)"
 

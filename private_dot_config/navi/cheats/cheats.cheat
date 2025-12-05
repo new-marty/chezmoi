@@ -156,7 +156,10 @@ ssh <user>@<host>
 
 % brew
 
-# Install package
+# Install ALL packages from Brewfile
+brew install
+
+# Install specific package
 brew install <package_name>
 
 # Uninstall package

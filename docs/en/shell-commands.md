@@ -73,7 +73,11 @@ ts2mp4 --force       # Force overwrite existing files
 Enhanced brew command with interactive Brewfile management.
 
 ```bash
-# Install a package
+# Install ALL packages from Brewfile (no arguments)
+brew install
+# → Runs: brew bundle install --file=~/Brewfile
+
+# Install a specific package
 brew install ripgrep
 # Prompts: Add to which Brewfile?
 #   > All machines (common)
