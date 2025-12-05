@@ -1,3 +1,4 @@
-# Homebrew first
-export PATH="/opt/homebrew/bin:$PATH"
+# Homebrew - set up shell environment
+# Note: This is the primary location for Homebrew setup
+# It runs early in the shell initialization process
 eval "$(/opt/homebrew/bin/brew shellenv)"

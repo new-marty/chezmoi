@@ -225,8 +225,23 @@ brew bundle dump --force --file=$(chezmoi source-path)/Brewfile
 
 ## Documentation
 
-- [Commands Reference](docs/COMMANDS.md)
-- [コマンドリファレンス（日本語）](docs/ja/COMMANDS.md)
+### English
+- [Overview](docs/en/README.md)
+- [Core Tools](docs/en/core-tools.md) - chezmoi, sheldon, atuin, zoxide, navi, fzf...
+- [Modern CLI](docs/en/modern-cli.md) - lazygit, dust, duf, procs, btm, httpie...
+- [Shell Commands](docs/en/shell-commands.md) - fcat, ts2mp4, mkcd, cdf...
+- [Git](docs/en/git.md) - Git aliases, lazygit, delta
+- [Keybindings](docs/en/keybindings.md)
+- [Aliases](docs/en/aliases.md)
+
+### 日本語
+- [概要](docs/ja/README.md)
+- [コアツール](docs/ja/core-tools.md)
+- [モダンCLI](docs/ja/modern-cli.md)
+- [シェルコマンド](docs/ja/shell-commands.md)
+- [Git](docs/ja/git.md)
+- [キーバインド](docs/ja/keybindings.md)
+- [エイリアス](docs/ja/aliases.md)
 
 ## References
 

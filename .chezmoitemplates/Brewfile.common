@@ -9,6 +9,7 @@ tap "stripe/stripe-cli"
 # Core CLI Tools
 brew "chezmoi"
 brew "bat"
+brew "git-delta"
 brew "ccat"
 brew "curl"
 brew "eza"
@@ -24,6 +25,14 @@ brew "thefuck"
 brew "tree"
 brew "zoxide"
 brew "atuin"
+brew "tldr"              # Simplified man pages
+brew "dust"              # Better du (disk usage)
+brew "duf"               # Better df (disk free)
+brew "procs"             # Better ps (process viewer)
+brew "bottom"            # Better top/htop
+brew "lazygit"           # TUI for git
+brew "httpie"            # Better curl for APIs
+brew "direnv"            # Per-directory environment variables
 
 # Shell & Terminal
 brew "zsh"
@@ -109,5 +118,8 @@ vscode "ms-python.vscode-pylance"
 vscode "hashicorp.terraform"
 vscode "redhat.vscode-yaml"
 vscode "ms-azuretools.vscode-docker"
-
-
+vscode "PKief.material-icon-theme"
+vscode "mikestead.dotenv"
+vscode "wayou.vscode-todo-highlight"
+vscode "naumovs.color-highlight"
+vscode "oderwat.indent-rainbow"

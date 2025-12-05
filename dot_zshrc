@@ -25,19 +25,21 @@ eval "$(atuin init zsh)"
 # zoxide - smarter cd command
 eval "$(zoxide init zsh)"
 
+# direnv - per-directory environment variables
+eval "$(direnv hook zsh)"
+
 # navi - cheat sheets
 eval "$(navi widget zsh)"
 
-# Load Sheldon (plugins are managed via ~/.config/sheldon/sheldon.toml)
-eval "$(sheldon source)"
-
+# Load Sheldon with caching for faster startup
+# (plugins are managed via ~/.config/sheldon/plugins.toml)
 cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}
 sheldon_cache="$cache_dir/sheldon.zsh"
 sheldon_toml="$HOME/.config/sheldon/plugins.toml"
 
 if [[ ! -r "$sheldon_cache" || "$sheldon_toml" -nt "$sheldon_cache" ]]; then
   mkdir -p "$cache_dir"
-  sheldon source >"$sheldon_cache"
+  sheldon source > "$sheldon_cache"
 fi
 source "$sheldon_cache"
 unset cache_dir sheldon_cache sheldon_toml

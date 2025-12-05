@@ -25,6 +25,10 @@ github = "zsh-users/zsh-autosuggestions"
 [plugins.zsh-history-substring-search]
 github = "zsh-users/zsh-history-substring-search"
 
+# fzf-tab - Use fzf for tab completion
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
+
 # Enhanced command suggestion and navigation
 [plugins.zsh-you-should-use]
 github = "MichaelAquilina/zsh-you-should-use"
@@ -37,4 +41,15 @@ inline = '''
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_USE_ASYNC=true
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+'''
+
+# fzf-tab configuration
+[plugins.fzf-tab-config]
+inline = '''
+# Set fzf-tab options
+zstyle ':fzf-tab:*' fzf-command fzf
+zstyle ':fzf-tab:*' fzf-flags --height=50% --layout=reverse --border
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+zstyle ':fzf-tab:complete:ls:*' fzf-preview 'eza -1 --color=always $realpath'
+zstyle ':fzf-tab:complete:*:*' fzf-preview 'bat --color=always --style=numbers --line-range=:100 $realpath 2>/dev/null || eza -1 --color=always $realpath 2>/dev/null || echo $realpath'
 '''

@@ -110,6 +110,14 @@ function show_command_templates() {
         "aws ec2 describe-instances"
         "gcloud compute instances list"
         "gcloud config set project"
+        "help"
+        "keys"
+        "docs"
+        "tldr"
+        "navi"
+        "chezmoi cd"
+        "chezmoi apply"
+        "chezmoi diff"
     )
 
     local selected=$(printf '%s\n' "${templates[@]}" | fzf --height 50% --layout=reverse --border --prompt="Command Template: ")
@@ -213,6 +221,3 @@ function navi_widget() {
 }
 zle -N navi_widget
 bindkey '^n' navi_widget # Ctrl+N for navi cheat sheets
-
-# Zoxide integration (install with: brew install zoxide)
-# eval "$(zoxide init zsh)" # uncomment after installing zoxide

@@ -14,30 +14,30 @@
 
 osascript <<EOD
 tell application "System Events"
-    -- ghostty が起動中かどうか
+    -- Check if ghostty is running
     set ghosttyIsRunning to (exists process "ghostty")
 end tell
 
 if ghosttyIsRunning then
     tell application "System Events"
-        -- 現在最前面のプロセス名を取得
+        -- Get the name of the frontmost process
         set frontProcessName to name of first process whose frontmost is true
         
-        -- ghostty プロセスが「現在可視かどうか」も取得
+        -- Check if ghostty process is currently visible
         set ghosttyVisible to the visible of process "ghostty"
     end tell
     
     if frontProcessName is "ghostty" and ghosttyVisible is true then
-        -- ghostty が最前面 かつ 可視 → 非表示
+        -- ghostty is frontmost and visible -> hide it
         tell application "System Events" to set visible of process "ghostty" to false
     else
-        -- それ以外 (起動はしているが非表示 or 後ろに隠れている) → 再度アクティブ化
+        -- Otherwise (running but hidden or in background) -> activate it
         tell application "Ghostty" to activate
-        -- 場合によっては reopen のほうが効くアプリもある:
+        -- For some apps, reopen may work better:
         -- tell application "Ghostty" to reopen
     end if
 else
-    -- ghostty が起動していない場合は起動
+    -- ghostty is not running -> launch it
     tell application "Ghostty" to activate
 end if
 EOD

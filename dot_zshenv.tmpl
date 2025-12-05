@@ -20,15 +20,42 @@ export LESSOPEN='| /opt/homebrew/bin/src-hilite-lesspipe.sh %s'
 # Application configurations
 export GOOGLE_CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 
-# Homebrew
-export PATH="/opt/homebrew/bin:$PATH"
-eval $(/opt/homebrew/bin/brew shellenv)
+# Homebrew - ensure commands are available in non-interactive shells
+# (Primary setup is in .zprofile for interactive shells)
+[[ -z "$HOMEBREW_PREFIX" ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Development languages
-# Node.js
+# Node.js (lazy loading for faster shell startup)
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+# Lazy load nvm - it will be loaded on first use
+if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+    # Add nvm's default node to PATH immediately (if exists)
+    [[ -d "$NVM_DIR/versions/node" ]] && \
+        export PATH="$NVM_DIR/versions/node/$(ls -1 $NVM_DIR/versions/node 2>/dev/null | tail -1)/bin:$PATH"
+
+    # Define lazy loading functions
+    nvm() {
+        unset -f nvm node npm npx
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+        nvm "$@"
+    }
+    node() {
+        unset -f nvm node npm npx
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        node "$@"
+    }
+    npm() {
+        unset -f nvm node npm npx
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        npm "$@"
+    }
+    npx() {
+        unset -f nvm node npm npx
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        npx "$@"
+    }
+fi
 
 # .NET
 export PATH="/opt/homebrew/opt/dotnet@6/bin:$PATH"

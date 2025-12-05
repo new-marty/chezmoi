@@ -200,6 +200,23 @@ terraform show
 # Format configuration
 terraform fmt
 
+% help
+
+# Show all custom commands and aliases
+help
+
+# Show keybindings quick reference
+keys
+
+# Open documentation in editor
+docs
+
+# Show tldr for a command
+tldr <command>
+
+# Open navi interactive cheat sheets
+navi
+
 % custom
 
 # Edit command templates
@@ -214,17 +231,74 @@ cursor ~/.zshrc
 # Edit terminal theme
 cursor ~/.zsh/steeef.zsh-theme
 
+# Edit sheldon plugins
+cursor ~/.config/sheldon/plugins.toml
+
+# Edit chezmoi source
+chezmoi cd && cursor .
+
 # Show current key bindings
 bindkey | grep -E "(\\^R|\\^H|\\^G|\\^S|\\^F|\\^N)"
 
 # Reload shell configuration
 source ~/.zshrc
 
+# Restart shell completely
+exec $SHELL -l
+
 # Check git status
 git status
 
-# Show dotfiles help
-help
+# Apply chezmoi changes
+chezmoi apply
+
+% lazygit
+
+# Open lazygit
+lazygit
+
+# Open lazygit in specific repo
+lazygit -p <path>
+
+% modern-cli
+
+# Show disk usage (dust)
+dust
+
+# Show disk usage for specific directory
+dust <directory>
+
+# Show disk free (duf)
+duf
+
+# Show processes (procs)
+procs
+
+# Search process by name
+procs --tree <process_name>
+
+# Interactive system monitor (bottom)
+btm
+
+# Get TLDR for command
+tldr <command>
+
+# HTTP request with httpie
+http GET <url>
+
+# HTTP POST with JSON
+http POST <url> key=value
+
+% direnv
+
+# Allow direnv in current directory
+direnv allow
+
+# Edit .envrc file
+direnv edit
+
+# Reload direnv
+direnv reload
 
 % kubernetes
 

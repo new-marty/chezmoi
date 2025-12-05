@@ -41,6 +41,13 @@ alias pb="pnpm build"
 # docker
 alias dcu='docker-compose up -d'
 
+# Modern CLI replacements
+alias du='dust'
+alias df='duf'
+alias ps='procs'
+alias top='btm'
+alias lg='lazygit'
+
 # python
 alias p='python3'
 
@@ -57,6 +64,35 @@ alias cmcd='chezmoi cd'
 
 # help - Show custom commands and keybindings
 alias help='show_dotfiles_help'
+alias keys='show_keybindings'
+alias docs='open_dotfiles_docs'
+
+# Show keybindings quick reference
+function show_keybindings() {
+    echo "⌨️  Keybindings Quick Reference"
+    echo "═══════════════════════════════"
+    echo ""
+    echo "  Ctrl+G    Command templates"
+    echo "  Ctrl+S    Smart suggestions (context-aware)"
+    echo "  Ctrl+F    Frequently used commands"
+    echo "  Ctrl+N    Navi cheat sheets"
+    echo "  Ctrl+R    Peco history search"
+    echo "  Ctrl+H    Atuin enhanced history"
+    echo "  Ctrl+U    Recent directories"
+    echo "  Tab       fzf-tab completion"
+    echo ""
+    echo "💡 Type 'help' for full command reference"
+}
+
+# Open documentation in editor
+function open_dotfiles_docs() {
+    local docs_dir="$(chezmoi source-path)/docs"
+    if [[ -d "$docs_dir" ]]; then
+        cursor "$docs_dir"
+    else
+        echo "Documentation not found at: $docs_dir"
+    fi
+}
 
 # Help function for custom commands and features
 function show_dotfiles_help() {
@@ -64,81 +100,91 @@ function show_dotfiles_help() {
     echo "======================="
     echo ""
 
-    echo "📋 KEYBINDINGS (Command Suggestions)"
-    echo "────────────────────────────────────"
-    echo "  Ctrl+G    Show command templates (100+ pre-configured commands)"
-    echo "  Ctrl+S    Smart suggestions based on current directory context"
-    echo "  Ctrl+F    Show most frequently used commands from history"
-    echo "  Ctrl+N    Interactive cheat sheets for git, docker, npm, etc."
-    echo "  Ctrl+R    Enhanced history search with atuin"
-    echo "  Ctrl+U    Jump to recently visited directories (peco)"
+    echo "📋 KEYBINDINGS"
+    echo "──────────────"
+    echo "  Ctrl+G    Command templates (100+ pre-configured)"
+    echo "  Ctrl+S    Smart suggestions (context-aware)"
+    echo "  Ctrl+F    Frequently used commands"
+    echo "  Ctrl+N    Navi cheat sheets"
+    echo "  Ctrl+R    Peco history search"
+    echo "  Ctrl+H    Atuin enhanced history"
+    echo "  Ctrl+U    Recent directories (peco)"
+    echo "  Tab       fzf-tab completion with preview"
     echo ""
 
     echo "🏃 NAVIGATION"
     echo "─────────────"
-    echo "  z <dir>    Jump to frequently used directories (zoxide)"
-    echo "  cdf        Find and cd to directory using fuzzy search"
+    echo "  z <dir>    Jump to directory (zoxide, learns from usage)"
+    echo "  zi         Interactive directory selection"
+    echo "  cdf        Fuzzy find and cd to directory"
     echo "  mkcd       Create directory and cd into it"
-    echo "  br         Show git branches with dates"
     echo ""
 
     echo "🛠️  CUSTOM COMMANDS"
     echo "──────────────────"
-    echo "  fcat       Display files with headers (supports .gitignore, patterns)"
-    echo "             Usage: fcat [options] <directory/file>"
-    echo "             Options: -i (ignore gitignore), -o (output file),"
-    echo "                     -c (clipboard), -n (name pattern)"
-    echo "  ts2mp4     Convert TS files to MP4 format"
-    echo "             Usage: ts2mp4 [-o output_dir] [-f force]"
+    echo "  fcat       Display files with headers"
+    echo "             -i (gitignore), -o (output), -c (clipboard), -n (pattern)"
+    echo "  ts2mp4     Convert TS to MP4 (-o dir, -f force)"
     echo "  brew       Enhanced brew with auto Brewfile updates"
+    echo "  fuck       Correct previous command (thefuck)"
     echo ""
 
-    echo "📁 GIT ALIASES"
-    echo "──────────────"
+    echo "📁 GIT"
+    echo "──────"
+    echo "  lg         lazygit TUI (Space=stage, c=commit, p=push)"
     echo "  gs         git status"
     echo "  gl         git log with graph"
-    echo "  gls        git log with stats"
     echo "  ga         git add"
-    echo "  gd         git diff"
+    echo "  gd         git diff (with delta syntax highlighting)"
     echo "  gcm        git commit -m"
     echo "  gca        git commit --amend"
     echo "  gp         git push origin head"
     echo "  sw         git switch"
+    echo "  br         git branch with dates"
+    echo ""
+
+    echo "🆕 MODERN CLI REPLACEMENTS"
+    echo "──────────────────────────"
+    echo "  ls         eza (with icons)"
+    echo "  ll/la/l1   eza variants"
+    echo "  cat        ccat (colored)"
+    echo "  du         dust (visual disk usage)"
+    echo "  df         duf (beautiful disk free)"
+    echo "  ps         procs (modern process viewer)"
+    echo "  top        btm/bottom (graphical monitor)"
+    echo "  http       httpie (user-friendly curl)"
+    echo ""
+
+    echo "🔍 SEARCH & FIND"
+    echo "────────────────"
+    echo "  rg         ripgrep (fast grep, respects .gitignore)"
+    echo "  fd         fast find alternative"
+    echo "  fzf        fuzzy finder"
+    echo "  tldr       simplified man pages"
     echo ""
 
     echo "📦 PACKAGE MANAGEMENT"
     echo "────────────────────"
-    echo "  pp         pnpm"
-    echo "  pi         pnpm install"
-    echo "  pr         pnpm run"
-    echo "  pd         pnpm dev"
-    echo "  pu         pnpm update"
-    echo "  pb         pnpm build"
-    echo ""
-
-    echo "🗂️  FILE OPERATIONS"
-    echo "──────────────────"
-    echo "  ls         eza --icons"
-    echo "  ll         ls -la"
-    echo "  la         ls -l"
-    echo "  l1         ls -1"
-    echo "  lll        ls -abghHliS --git"
-    echo "  cat        ccat (colored cat)"
-    echo "  diff       colordiff -u"
+    echo "  pp/pi/pr   pnpm / install / run"
+    echo "  pd/pu/pb   pnpm dev / update / build"
+    echo "  nvm        Node.js version manager"
+    echo "  pyenv      Python version manager"
     echo ""
 
     echo "🔧 UTILITIES"
     echo "────────────"
-    echo "  rs         Restart shell (exec \$SHELL -l)"
+    echo "  rs         Restart shell"
     echo "  sz         Source ~/.zshrc"
-    echo "  c          cursor (VS Code cursor)"
+    echo "  c          cursor editor"
     echo "  p          python3"
     echo "  tf         terraform"
     echo "  dcu        docker-compose up -d"
+    echo "  gh         GitHub CLI"
+    echo "  op         1Password CLI"
     echo ""
 
-    echo "⚙️  CHEZMOI"
-    echo "──────────"
+    echo "⚙️  CHEZMOI (Dotfile Management)"
+    echo "────────────────────────────────"
     echo "  cm         chezmoi"
     echo "  cma        chezmoi apply"
     echo "  cmd        chezmoi diff"
@@ -147,28 +193,34 @@ function show_dotfiles_help() {
     echo "  cmcd       chezmoi cd"
     echo ""
 
-    echo "📖 HELP RESOURCES"
-    echo "─────────────────"
-    echo "  help       Show this help message"
-    echo "  navi       Interactive cheat sheets"
-    echo "  atuin -h   Enhanced history search help"
-    echo "  fcat -h    File display tool help"
-    echo "  ts2mp4 -h  TS to MP4 converter help"
+    echo "🌍 ENVIRONMENT"
+    echo "──────────────"
+    echo "  direnv     Per-directory env vars (auto-loads .envrc)"
+    echo "             direnv allow / direnv edit"
     echo ""
 
-    echo "💡 TIPS"
-    echo "───────"
-    echo "  • Use Tab completion for most commands"
-    echo "  • Commands learn from your usage patterns"
-    echo "  • Smart suggestions adapt to your project type"
-    echo "  • History is enhanced with atuin (Ctrl+R)"
-    echo "  • Use 'navi' for interactive cheat sheets"
-    echo "  • Directory jumping gets smarter with usage (z command)"
-    echo ""
-
-    echo "🔗 MORE INFO"
+    echo "📖 MORE HELP"
     echo "────────────"
-    echo "  GitHub: https://github.com/new-marty/chezmoi"
-    echo "  Config: chezmoi cd  # to open chezmoi source directory"
+    echo "  navi              Interactive cheat sheets"
+    echo "  tldr <cmd>        Quick command examples"
+    echo "  <cmd> --help      Command help"
+    echo "  fcat -h           fcat help"
+    echo "  ts2mp4 -h         ts2mp4 help"
+    echo ""
+
+    echo "📚 DOCUMENTATION"
+    echo "────────────────"
+    echo "  English:   \$(chezmoi source-path)/docs/en/"
+    echo "  日本語:    \$(chezmoi source-path)/docs/ja/"
+    echo "  Open docs: docs (or cursor \"\$(chezmoi source-path)/docs\")"
+    echo ""
+
+    echo "💡 QUICK TIPS"
+    echo "─────────────"
+    echo "  • Tab = fzf completion with preview"
+    echo "  • z learns from your cd usage"
+    echo "  • Ctrl+S adapts to project type (package.json, Dockerfile...)"
+    echo "  • lg (lazygit) for visual git operations"
+    echo "  • tldr <cmd> for quick examples"
     echo ""
 }
