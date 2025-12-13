@@ -1,0 +1,19 @@
+#!/bin/sh
+# =============================================================================
+# Create SSH sockets directory for ControlMaster
+# This script runs once before applying SSH configuration
+# =============================================================================
+
+set -eu
+
+SOCKETS_DIR="$HOME/.ssh/sockets"
+
+# Create sockets directory if it doesn't exist
+if [ ! -d "$SOCKETS_DIR" ]; then
+    echo "Creating SSH sockets directory: $SOCKETS_DIR"
+    mkdir -p "$SOCKETS_DIR"
+    chmod 700 "$SOCKETS_DIR"
+    echo "✓ SSH sockets directory created"
+else
+    echo "✓ SSH sockets directory already exists"
+fi

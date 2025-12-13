@@ -1,0 +1,2 @@
+# This file ensures the sockets directory is tracked by chezmoi
+# The directory is used by SSH ControlMaster for connection multiplexing
