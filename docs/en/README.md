@@ -36,3 +36,6 @@ navi          # Interactive cheat sheets
 | `Ctrl+U` | Recent directories       |
 | `Tab`    | fzf-tab completion       |
 
+
+
+
