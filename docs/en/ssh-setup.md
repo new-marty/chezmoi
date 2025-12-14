@@ -13,6 +13,7 @@ This repository uses 1Password SSH Agent for secure SSH key management across mu
 ### 1. Determine Machine Type
 
 Choose a machine type identifier:
+
 - `macbook` - Personal MacBook
 - `work` - Work MacBook
 - `ubuntu` - Ubuntu machine
@@ -30,11 +31,11 @@ Edit `~/.config/chezmoi/chezmoi.toml`:
     is_work_mac = false     # or false
     is_windows = false
     is_linux = false
-    
+
     # Git configuration
     git_name = "Your Name"
     git_email = "your@email.com"
-    
+
     # SSH Configuration (will be updated after key generation)
     ssh_public_keys = []
     ssh_signing_key = ""
@@ -54,6 +55,7 @@ chezmoi apply
 ```
 
 This creates:
+
 - `~/.ssh/config` - SSH configuration with 1Password Agent
 - `~/.ssh/sockets/` - ControlMaster socket directory
 - `~/.ssh/allowed_signers` - Git commit signature verification
@@ -96,7 +98,7 @@ gh ssh-key add ~/.ssh/id_ed25519_${MACHINE}.pub \
 
 **Option B: Using 1Password CLI**
 
-*Note: SSH Key type cannot be created via CLI. Create as Secure Note instead, then manually convert in GUI.*
+_Note: SSH Key type cannot be created via CLI. Create as Secure Note instead, then manually convert in GUI._
 
 ### 7. Update chezmoi Configuration with Public Key
 
@@ -111,7 +113,7 @@ Edit `~/.config/chezmoi/chezmoi.toml` and add:
 ```toml
 [data]
     # ... existing config ...
-    
+
     ssh_public_keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... macbook",
         # Add more keys as you set up additional machines
@@ -179,14 +181,17 @@ chezmoi update
 ## Machine-Specific Configuration
 
 ### Personal Mac
+
 - Includes: OrbStack integration, personal servers (debian, unraid)
 - GitHub: Direct `github.com` access
 
 ### Work Mac
+
 - GitHub: Separate hosts (`github.com-personal`, `github.com-work`)
 - No OrbStack or personal server configs
 
 ### Ubuntu/Windows/Unraid
+
 - Basic SSH Agent configuration only
 - Add custom server configs as needed
 
