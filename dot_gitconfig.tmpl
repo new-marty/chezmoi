@@ -8,11 +8,15 @@
     # [data]
     #   git_name = "Your Name"
     #   git_email = "your@email.com"
+    #   ssh_signing_key = "ssh-ed25519 AAAAC3..."
 {{- if .git_name }}
     name = {{ .git_name | quote }}
 {{- end }}
 {{- if .git_email }}
     email = {{ .git_email | quote }}
+{{- end }}
+{{- if .ssh_signing_key }}
+    signingkey = {{ .ssh_signing_key }}
 {{- end }}
 
 [core]
@@ -130,17 +134,3 @@
 
 [commit]
     gpgsign = true
-
-{{- if .ssh_signing_key }}
-
-[user]
-    signingkey = {{ .ssh_signing_key }}
-{{- else }}
-
-# [user]
-#     signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA...
-# 
-# Configure ssh_signing_key in ~/.config/chezmoi/chezmoi.toml:
-# [data]
-#     ssh_signing_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... macbook"
-{{- end }}

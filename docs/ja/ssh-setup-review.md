@@ -3,7 +3,7 @@
 ## 📋 変更の概要
 
 SSH 設定と Git コミット署名を 1Password SSH Agent と chezmoi で管理する仕組みを実装しました。
-複数のマシン（個人Mac、会社Mac、Ubuntu等）で安全かつ再現可能に SSH 環境を構築できるようになります。
+複数のマシン（個人 Mac、会社 Mac、Ubuntu 等）で安全かつ再現可能に SSH 環境を構築できるようになります。
 
 ## 🎯 目的
 
@@ -15,16 +15,19 @@ SSH 設定と Git コミット署名を 1Password SSH Agent と chezmoi で管�
 ### 1. 新規追加ファイル
 
 #### `private_dot_ssh/config.tmpl`
+
 SSH 設定のテンプレート。マシンタイプに応じて動的に生成されます。
 
 **主な機能:**
+
 - 1Password SSH Agent の統合（すべてのマシン共通）
 - マシンタイプによる条件分岐:
-  - 個人Mac: OrbStack、個人サーバー（debian/unraid）設定を含む
-  - 会社Mac: GitHub を personal/work で分離
+  - 個人 Mac: OrbStack、個人サーバー（debian/unraid）設定を含む
+  - 会社 Mac: GitHub を personal/work で分離
 - ControlMaster によるパフォーマンス最適化
 
 **テンプレート例:**
+
 ```ssh-config
 {{- if .is_personal_mac }}
 Host github.com
@@ -43,24 +46,30 @@ Host github.com-work
 ```
 
 #### `private_dot_ssh/allowed_signers.tmpl`
+
 Git コミット署名の検証用ファイル。
 
 **特徴:**
+
 - `chezmoi.toml` の `ssh_public_keys` 配列から自動生成
 - 複数マシンの公開鍵を一元管理
 - 各マシンでのセットアップ手順をコメントで記載
 
 #### `run_once_before_create-ssh-sockets.sh.tmpl`
+
 ControlMaster 用の sockets ディレクトリを自動作成するスクリプト。
 
 #### `private_dot_ssh/sockets/.keep`
+
 sockets ディレクトリを Git で追跡するためのファイル。
 
 #### `docs/en/ssh-setup.md`
-詳細なセットアップガイド（240行）。
+
+詳細なセットアップガイド（240 行）。
 
 **内容:**
-- 初回セットアップ手順（ステップ1-9）
+
+- 初回セットアップ手順（ステップ 1-9）
 - 複数マシン追加の手順
 - マシンタイプ別の設定説明
 - トラブルシューティング
@@ -69,9 +78,11 @@ sockets ディレクトリを Git で追跡するためのファイル。
 ### 2. 更新ファイル
 
 #### `dot_gitconfig.tmpl`
+
 Git コミット署名の設定を追加。
 
 **追加内容:**
+
 ```gitconfig
 [gpg]
     format = ssh
@@ -87,6 +98,7 @@ Git コミット署名の設定を追加。
 ### 3. 設定ファイル
 
 #### `~/.config/chezmoi/chezmoi.toml`
+
 新しいデータフィールドを追加：
 
 ```toml
@@ -96,7 +108,7 @@ Git コミット署名の設定を追加。
     is_work_mac = false
     git_name = "new-marty"
     git_email = "yumabuchi1998@gmail.com"
-    
+
     # 新規追加
     ssh_public_keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... macbook",
@@ -121,14 +133,14 @@ Git コミット署名の設定を追加。
 
 ## 🚀 動作確認
 
-### このマシン（個人Mac）での検証
+### このマシン（個人 Mac）での検証
 
 ```bash
 # SSH 接続テスト
 $ ssh -T git@github.com
 Hi new-marty! You've successfully authenticated...
 
-# コミット署名テスト  
+# コミット署名テスト
 $ git log --show-signature -1
 Good "git" signature for yumabuchi1998@gmail.com with ED25519 key SHA256:zkm...
 
@@ -138,7 +150,7 @@ To github.com:new-marty/chezmoi.git
    e003a9b..c87eeaa  main -> main
 ```
 
-### 会社Mac でのシミュレーション
+### 会社 Mac でのシミュレーション
 
 ```bash
 # テンプレートのドライラン
@@ -179,25 +191,27 @@ $ chezmoi execute-template --config /tmp/work_mac_config.toml < private_dot_ssh/
 ### 変更されるファイル
 
 **新規生成:**
+
 - `~/.ssh/config`
 - `~/.ssh/sockets/` (ディレクトリ)
 - `~/.ssh/allowed_signers`
 - `~/.gitconfig` (コミット署名設定が追加)
 
 **既存ファイルへの影響:**
-- `~/.ssh/config`: 既存設定（OrbStack等）は保持されるが、テンプレート化により上書き
+
+- `~/.ssh/config`: 既存設定（OrbStack 等）は保持されるが、テンプレート化により上書き
 - `~/.gitconfig`: SSH 署名設定が追記される
 
 ### 後方互換性
 
 - 既存の SSH 鍵（`id_rsa`）は影響を受けない
-- 既存サーバー設定（debian, unraid）は個人Mac でのみ保持
+- 既存サーバー設定（debian, unraid）は個人 Mac でのみ保持
 
 ## 🎯 次のステップ
 
-このPR マージ後：
+この PR マージ後：
 
-1. 会社Mac でも同様にセットアップ
+1. 会社 Mac でも同様にセットアップ
 2. Ubuntu/Windows マシンへの展開
 3. 必要に応じて他のチームメンバーへの展開
 
