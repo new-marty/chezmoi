@@ -131,5 +131,16 @@
 [commit]
     gpgsign = true
 
+{{- if .ssh_signing_key }}
+
 [user]
-    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPuxMQ4cfi4woqUlm0izdYBW5ObMxVvX5dfxaMIMRrig
+    signingkey = {{ .ssh_signing_key }}
+{{- else }}
+
+# [user]
+#     signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA...
+# 
+# Configure ssh_signing_key in ~/.config/chezmoi/chezmoi.toml:
+# [data]
+#     ssh_signing_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... macbook"
+{{- end }}
