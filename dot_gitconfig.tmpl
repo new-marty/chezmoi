@@ -16,7 +16,7 @@
     email = {{ .git_email | quote }}
 {{- end }}
 {{- if .ssh_signing_key }}
-    signingkey = {{ .ssh_signing_key }}
+    signingkey = {{ .ssh_signing_key | quote }}
 {{- end }}
 
 [core]
@@ -43,6 +43,7 @@
 
 [commit]
     verbose = true         # Show diff in commit message editor
+    gpgsign = true         # Sign commits with SSH key via 1Password
 
 [merge]
     conflictstyle = diff3
@@ -114,7 +115,7 @@
     helper = osxkeychain
 
 # Include work-specific config for work directories
-[includeIf "gitdir:~/work/"]
+[includeIf "gitdir:{{ .chezmoi.homeDir }}/work/"]
     path = ~/.gitconfig-work
 
 {{ if .is_work_mac -}}
@@ -131,6 +132,3 @@
 [gpg "ssh"]
     program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
     allowedSignersFile = ~/.ssh/allowed_signers
-
-[commit]
-    gpgsign = true

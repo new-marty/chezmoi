@@ -18,6 +18,10 @@
 #         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5BBBB... work",
 #     ]
 #
+# IMPORTANT: Each entry must be the complete output from ssh-keygen starting
+# with the key type (e.g., "ssh-ed25519"), including the public key and optional comment.
+# Do NOT modify the format - paste the entire line from your .pub file.
+#
 {{- if .git_email }}
 {{- if .ssh_public_keys }}
 {{- range .ssh_public_keys }}
