@@ -65,7 +65,3 @@ htmlcov/
 # Local configuration
 .envrc
 .tool-versions
-
-
-
-

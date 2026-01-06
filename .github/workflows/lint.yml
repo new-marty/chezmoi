@@ -84,7 +84,3 @@ jobs:
           chezmoi init --source="$GITHUB_WORKSPACE" --apply=false || true
           # Check for template errors
           chezmoi execute-template < /dev/null || true
-
-
-
-

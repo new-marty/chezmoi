@@ -123,7 +123,3 @@ gh pr view --web            # ブラウザで開く
 gh pr checks                # CIステータスを確認
 gh gist create file.txt     # gistを作成
 ```
-
-
-
-

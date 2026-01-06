@@ -21,6 +21,7 @@ navi          # Interactive cheat sheets
 | [Shell Commands](shell-commands.md) | fcat, ts2mp4, mkcd, cdf, brew wrapper |
 | [Git](git.md) | Git aliases, lazygit usage, delta |
 | [Keybindings](keybindings.md) | All keyboard shortcuts |
+| [SSH Setup](ssh-setup.md) | SSH config, keys, agent, sockets |
 | [Aliases](aliases.md) | Complete alias reference |
 
 ## Keybindings Quick Reference
@@ -35,7 +36,3 @@ navi          # Interactive cheat sheets
 | `Ctrl+H` | Atuin history search     |
 | `Ctrl+U` | Recent directories       |
 | `Tab`    | fzf-tab completion       |
-
-
-
-

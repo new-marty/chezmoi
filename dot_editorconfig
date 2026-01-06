@@ -94,7 +94,3 @@ indent_size = 4
 # Git
 [.git*]
 indent_size = 4
-
-
-
-

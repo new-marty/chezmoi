@@ -123,7 +123,3 @@ Type `keys` in terminal to see keybindings:
 ```bash
 keys
 ```
-
-
-
-

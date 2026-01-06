@@ -15,6 +15,7 @@ Host *
     # 1Password SSH Agent socket (macOS-specific path)
     # Note: For Linux/Windows support, this path would need to be OS-conditional
     IdentityAgent ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+    IdentitiesOnly yes
 
     # Connection stability
     ServerAliveInterval 60
@@ -54,13 +55,11 @@ Host github.com-work
 # Note: Currently using legacy RSA keys. Consider migrating to Ed25519 in the future:
 # ssh-keygen -t ed25519 -C "server-2025" -f ~/.ssh/id_ed25519_server
 Host debian
-    HostName 192.0.2.10
+    HostName 192.0.2.11
     User server
-    IdentityFile ~/.ssh/id_rsa
 
 Host unraid
-    HostName unraid.example.com
+    HostName 192.0.2.10
     Port 22
     User root
-    IdentityFile ~/.ssh/id_rsa
 {{- end }}
