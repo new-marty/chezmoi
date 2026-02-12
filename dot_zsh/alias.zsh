@@ -44,7 +44,9 @@ alias pu="pnpm update"
 alias pb="pnpm build"
 
 # docker
-alias dcu='docker-compose up -d'
+alias dcud='docker compose up -d'
+alias dcu='docker compose up'
+alias dcd='docker compose down'
 
 # Modern CLI replacements
 alias du='dust'
@@ -66,6 +68,12 @@ alias cmd='chezmoi diff'
 alias cme='chezmoi edit'
 alias cmu='chezmoi update'
 alias cmcd='chezmoi cd'
+
+# claude code
+alias yolo='claude --dangerously-skip-permissions'
+
+# zellij
+alias zj='zellij'
 
 # help - Show custom commands and keybindings
 alias help='show_dotfiles_help'
@@ -193,9 +201,12 @@ function show_dotfiles_help() {
     echo "  c          cursor editor"
     echo "  p          python3"
     echo "  tf         terraform"
-    echo "  dcu        docker-compose up -d"
+    echo "  dcud       docker compose up -d"
+    echo "  dcu        docker compose up"
+    echo "  dcd        docker compose down"
     echo "  gh         GitHub CLI"
     echo "  op         1Password CLI"
+    echo "  yolo       Claude Code (skip permissions)"
     echo ""
     
     echo "🔄 MAINTENANCE"

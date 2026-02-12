@@ -166,3 +166,7 @@ vscode "zainchen.json"
 # brew "xz"
 # ... (other dependencies are auto-managed by Homebrew)
 # Note: mise, direnv, glow, doggo, bandwhich, gping are in Brewfile.common
+cask "steipete/tap/codexbar"
+cask "clawdbot"
+brew "handbrake"
+brew "sqlc"

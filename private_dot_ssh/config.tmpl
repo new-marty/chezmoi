@@ -26,16 +26,15 @@ Host *
     ControlPath ~/.ssh/sockets/%C
     ControlPersist 10m
 
-    # 1Password Agent handles key management
-    # AddKeysToAgent no
-    # UseKeychain no
-
 # --- GitHub Configuration ---
 {{- if .is_personal_mac }}
 # Personal Mac: Direct github.com access
 Host github.com
     HostName github.com
     User git
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519_macbook
+    IdentityAgent none
 {{- end }}
 
 {{- if .is_work_mac }}
@@ -51,14 +50,16 @@ Host github.com-work
 
 {{- if .is_personal_mac }}
 # --- Personal Server Configurations ---
-# Note: Currently using legacy RSA keys. Consider migrating to Ed25519 in the future:
-# ssh-keygen -t ed25519 -C "server-2025" -f ~/.ssh/id_ed25519_server
+# Keys managed by 1Password SSH Agent (Ed25519)
 Host debian
     HostName 192.0.2.11
     User server
 
 Host unraid
-    HostName 192.0.2.10
-    Port 22
+    HostName 100.64.0.10
     User root
+
+Host mac-mini
+    HostName 100.64.0.11
+    User mac-mini
 {{- end }}

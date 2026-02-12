@@ -1,0 +1,178 @@
+// Cursor Keybindings - All bindings including Cursor-specific commands
+[
+  // Bookmarks
+  {
+    "key": "ctrl+shift+k",
+    "command": "bookmarks.toggle",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "alt+cmd+k",
+    "command": "-bookmarks.toggle",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+shift+j",
+    "command": "bookmarks.jumpToPrevious",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "alt+cmd+j",
+    "command": "-bookmarks.jumpToPrevious",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+shift+l",
+    "command": "bookmarks.jumpToNext",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "alt+cmd+l",
+    "command": "-bookmarks.jumpToNext",
+    "when": "editorTextFocus"
+  },
+
+  // Cursor AI - Inline Diffs
+  {
+    "key": "shift+alt+cmd+backspace",
+    "command": "editor.action.inlineDiffs.rejectAll",
+    "when": "editorTextFocus && (arbitrary function)"
+  },
+  {
+    "key": "cmd+backspace",
+    "command": "-editor.action.inlineDiffs.rejectAll",
+    "when": "editorTextFocus && (arbitrary function)"
+  },
+  {
+    "key": "shift+cmd+backspace",
+    "command": "editor.action.inlineDiffs.rejectAll"
+  },
+  {
+    "key": "shift+cmd+backspace",
+    "command": "cursorai.action.rejectGenerateInTerminal",
+    "when": "terminalFocus && terminalHasBeenCreated || terminalProcessSupported && (arbitrary function)"
+  },
+  {
+    "key": "cmd+backspace",
+    "command": "-cursorai.action.rejectGenerateInTerminal",
+    "when": "terminalFocus && terminalHasBeenCreated || terminalProcessSupported && (arbitrary function)"
+  },
+
+  // Chat Editor
+  {
+    "key": "shift+cmd+backspace",
+    "command": "chatEditor.action.reject",
+    "when": "chat.hasEditorModifications && editorFocus && hasUndecidedChatEditingResource && !chat.ctxHasRequestInProgress || chat.hasNotebookEditorModifications && editorFocus && hasUndecidedChatEditingResource && !chat.ctxHasRequestInProgress"
+  },
+  {
+    "key": "cmd+backspace",
+    "command": "-chatEditor.action.reject",
+    "when": "chat.hasEditorModifications && editorFocus && hasUndecidedChatEditingResource && !chat.ctxHasRequestInProgress || chat.hasNotebookEditorModifications && editorFocus && hasUndecidedChatEditingResource && !chat.ctxHasRequestInProgress"
+  },
+
+  // Inline Diffs - Cancel
+  {
+    "key": "shift+cmd+backspace",
+    "command": "editor.action.inlineDiffs.cancelEdits",
+    "when": "editorTextFocus && hasActivelyGeneratingDiff"
+  },
+  {
+    "key": "cmd+backspace",
+    "command": "-editor.action.inlineDiffs.cancelEdits",
+    "when": "editorTextFocus && hasActivelyGeneratingDiff"
+  },
+  {
+    "key": "shift+cmd+backspace",
+    "command": "editor.action.cancelGPT4WithCmdDelete",
+    "when": "hadGPT4InlineCompletionRunning"
+  },
+  {
+    "key": "cmd+backspace",
+    "command": "-editor.action.cancelGPT4WithCmdDelete",
+    "when": "hadGPT4InlineCompletionRunning"
+  },
+  {
+    "key": "shift+cmd+backspace",
+    "command": "editor.action.inlineDiffs.cancelPromptBar",
+    "when": "editorTextFocus && hasActivelyGeneratingPromptBarDiff"
+  },
+  {
+    "key": "cmd+backspace",
+    "command": "-editor.action.inlineDiffs.cancelPromptBar",
+    "when": "editorTextFocus && hasActivelyGeneratingPromptBarDiff"
+  },
+
+  // Composer
+  {
+    "key": "shift+cmd+backspace",
+    "command": "composer.cancelComposerStep",
+    "when": "composerFocused"
+  },
+  {
+    "key": "cmd+backspace",
+    "command": "-composer.cancelComposerStep",
+    "when": "composerFocused"
+  },
+  {
+    "key": "cmd+i",
+    "command": "composerMode.agent"
+  },
+
+  // Terminal AI
+  {
+    "key": "shift+cmd+backspace",
+    "command": "cursorai.action.cancelGenerateInTerminal",
+    "when": "terminalFocus && terminalHasBeenCreated || terminalProcessSupported && (arbitrary function)"
+  },
+  {
+    "key": "cmd+backspace",
+    "command": "-cursorai.action.cancelGenerateInTerminal",
+    "when": "terminalFocus && terminalHasBeenCreated || terminalProcessSupported && (arbitrary function)"
+  },
+
+  // Chat Editing
+  {
+    "key": "shift+cmd+backspace",
+    "command": "chatEditing.discardAllFiles",
+    "when": "hasUndecidedChatEditingResource && inChatInput && !chatInputHasText && !chatSessionRequestInProgress && chatLocation == 'editing-session'"
+  },
+  {
+    "key": "cmd+backspace",
+    "command": "-chatEditing.discardAllFiles",
+    "when": "hasUndecidedChatEditingResource && inChatInput && !chatInputHasText && !chatSessionRequestInProgress && chatLocation == 'editing-session'"
+  },
+  {
+    "key": "shift+cmd+backspace",
+    "command": "workbench.action.chat.remove",
+    "when": "inChat && !inChatInput && chatLocation != 'editing-session'"
+  },
+  {
+    "key": "cmd+backspace",
+    "command": "-workbench.action.chat.remove",
+    "when": "inChat && !inChatInput && chatLocation != 'editing-session'"
+  },
+  {
+    "key": "shift+cmd+backspace",
+    "command": "workbench.action.chat.undoEdits",
+    "when": "inChat && !inChatInput && chatLocation == 'editing-session'"
+  },
+  {
+    "key": "cmd+backspace",
+    "command": "-workbench.action.chat.undoEdits",
+    "when": "inChat && !inChatInput && chatLocation == 'editing-session'"
+  },
+
+  // Window Management
+  {
+    "key": "cmd+n",
+    "command": "-workbench.action.files.newUntitledFile"
+  },
+  {
+    "key": "shift+cmd+n",
+    "command": "-workbench.action.newWindow"
+  },
+  {
+    "key": "shift+cmd+n",
+    "command": "workbench.action.duplicateWorkspaceInNewWindow"
+  }
+]
