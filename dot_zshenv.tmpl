@@ -28,21 +28,15 @@ export GOOGLE_CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google
 # mise handles: node, python, ruby, rust, go, java, etc.
 # Run 'mise ls' to see installed versions, 'mise use node@20' to set version
 
-# .NET
-export PATH="/opt/homebrew/opt/dotnet@6/bin:$PATH"
-
-# Additional language tools
-export PATH="/opt/homebrew/lib/python3.12/site-packages/pip:$PATH"
+{{ if .is_personal_mac -}}
+# TeX Live (personal Mac only)
 export PATH="/usr/local/texlive/2022/bin/universal-darwin:$PATH"
-export PATH="/opt/homebrew/opt/mongodb-community@4.2/bin:$PATH"
-export PATH="/usr/local/opt/php/bin:$PATH"
+{{ end -}}
 
 # Development tools and utilities
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.amplify/bin:$PATH"
 export PNPM_HOME="$HOME/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
-export PATH="$HOME/.console-ninja/.bin:$PATH"
 
 # Remove duplicate entries from PATH
 typeset -U path
