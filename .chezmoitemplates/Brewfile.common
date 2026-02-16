@@ -2,14 +2,9 @@
 # Common Packages - Shared across all machines
 # =============================================================================
 
-# Taps
-tap "mongodb/brew"
-tap "stripe/stripe-cli"
-
 # Core CLI Tools
 brew "chezmoi"
 brew "bat"
-brew "ccat"
 brew "curl"
 brew "eza"
 brew "fd"
@@ -63,14 +58,9 @@ brew "aws-sso-cli"
 brew "terraform"
 brew "flyctl"
 
-# Containers
-brew "docker", link: false
-brew "docker-compose"
-
 # Databases
 brew "mysql"
 brew "postgresql@14"
-brew "mongosh"
 
 # Package Managers
 brew "composer"
@@ -98,9 +88,9 @@ brew "prettier"
 cask "1password"
 cask "1password-cli"
 cask "cursor"
-cask "docker-desktop"
 cask "ghostty"
 cask "google-chrome"
+cask "orbstack"
 cask "raycast"
 cask "rectangle"
 cask "slack"
