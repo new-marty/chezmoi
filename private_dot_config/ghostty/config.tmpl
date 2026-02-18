@@ -1,3 +1,7 @@
+{{ if eq .chezmoi.os "linux" -}}
+# Linux: Ghostty doesn't always read login shell from /etc/passwd
+command = /usr/bin/zsh
+{{ end -}}
 shell-integration = zsh
 
 font-family = "Hack Nerd Font Mono Regular"

@@ -29,7 +29,7 @@ fi
 alias diff='colordiff -u'
 
 # alias
-alias rs='exec $SHELL -l'
+alias rs='exec zsh -l'
 alias sz='source ~/.zshrc'
 
 # code
