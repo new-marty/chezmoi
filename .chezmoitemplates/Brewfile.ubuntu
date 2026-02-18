@@ -5,4 +5,5 @@
 # This file is for any Ubuntu-specific brew formulas.
 
 # Linux-specific CLI tools (if any)
-# brew "xclip"  # Clipboard support for Linux (install via apt instead)
+# Note: xclip must be installed via apt (not brew) for proper X11/Wayland
+# clipboard integration: sudo apt install xclip
