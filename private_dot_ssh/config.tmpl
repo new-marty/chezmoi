@@ -10,11 +10,12 @@ Include ~/.orbstack/ssh/config
 
 {{- end }}
 
-# --- 1Password SSH Agent (All Hosts) ---
+# --- SSH Agent Configuration (All Hosts) ---
 Host *
-    # 1Password SSH Agent socket (macOS-specific path)
-    # Note: For Linux/Windows support, this path would need to be OS-conditional
+{{- if eq .chezmoi.os "darwin" }}
+    # 1Password SSH Agent socket (macOS)
     IdentityAgent ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+{{- end }}
 
     # Connection stability
     ServerAliveInterval 60

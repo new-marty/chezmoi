@@ -8,21 +8,35 @@ export LANG='en_US.UTF-8'
 export EDITOR='nano'
 export VISUAL='nano'
 export PAGER='less'
-[[ "$OSTYPE" == darwin* ]] && export BROWSER='open'
+{{ if eq .chezmoi.os "darwin" -}}
+export BROWSER='open'
+{{ else if eq .chezmoi.os "linux" -}}
+export BROWSER='xdg-open'
+{{ end -}}
 
 # Load secrets if the file exists
 [[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
 
 # Less configuration
 export LESS='-R'
+{{ if eq .chezmoi.os "darwin" -}}
 export LESSOPEN='| /opt/homebrew/bin/src-hilite-lesspipe.sh %s'
+{{ else if eq .chezmoi.os "linux" -}}
+export LESSOPEN='| /home/linuxbrew/.linuxbrew/bin/src-hilite-lesspipe.sh %s'
+{{ end -}}
 
 # Application configurations
+{{ if eq .chezmoi.os "darwin" -}}
 export GOOGLE_CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+{{ end -}}
 
 # Homebrew - ensure commands are available in non-interactive shells
 # (Primary setup is in .zprofile for interactive shells)
+{{ if eq .chezmoi.os "darwin" -}}
 [[ -z "$HOMEBREW_PREFIX" ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+{{ else if eq .chezmoi.os "linux" -}}
+[[ -z "$HOMEBREW_PREFIX" ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+{{ end -}}
 
 # Development languages managed by mise (in .zshrc)
 # mise handles: node, python, ruby, rust, go, java, etc.
@@ -35,7 +49,11 @@ export PATH="/usr/local/texlive/2022/bin/universal-darwin:$PATH"
 
 # Development tools and utilities
 export PATH="$HOME/.local/bin:$PATH"
+{{ if eq .chezmoi.os "darwin" -}}
 export PNPM_HOME="$HOME/Library/pnpm"
+{{ else -}}
+export PNPM_HOME="$HOME/.local/share/pnpm"
+{{ end -}}
 export PATH="$PNPM_HOME:$PATH"
 
 # Remove duplicate entries from PATH

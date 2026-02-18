@@ -15,12 +15,15 @@ cursor-style-blink = false
 scrollback-limit = 104857600
 
 # Window and display settings
+{{ if eq .chezmoi.os "darwin" -}}
 macos-titlebar-style = tabs
 macos-non-native-fullscreen = visible-menu
+{{ end -}}
 window-height = 9999999
 window-width = 9999999
 
-# Quick terminal settings
+{{ if eq .chezmoi.os "darwin" -}}
+# Quick terminal settings (macOS)
 quick-terminal-position = center
 quick-terminal-screen = main
 quick-terminal-animation-duration = 0
@@ -28,6 +31,7 @@ quick-terminal-autohide = false
 
 # Key bindings
 keybind = "global:f2=toggle_quick_terminal"
+{{ end -}}
 keybind = shift+enter=text:\n
 
 # Enhanced terminal features for development

@@ -87,7 +87,8 @@ brew "gnupg"
 brew "pandoc"
 brew "prettier"
 
-# Common Casks
+{{ if eq .chezmoi.os "darwin" -}}
+# Common Casks (macOS only)
 cask "1password"
 cask "1password-cli"
 cask "caffeine"
@@ -191,3 +192,4 @@ vscode "yoshinorin.current-file-path"
 vscode "yzane.markdown-pdf"
 vscode "yzhang.markdown-all-in-one"
 vscode "zainchen.json"
+{{ end -}}

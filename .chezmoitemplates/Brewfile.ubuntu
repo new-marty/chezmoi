@@ -1,0 +1,8 @@
+# =============================================================================
+# Ubuntu-specific Packages
+# =============================================================================
+# Note: GUI apps on Ubuntu are installed via apt/snap/deb, not brew casks.
+# This file is for any Ubuntu-specific brew formulas.
+
+# Linux-specific CLI tools (if any)
+# brew "xclip"  # Clipboard support for Linux (install via apt instead)

@@ -202,7 +202,11 @@ _brew_remove_from_file() {
     esac
     
     if grep -q "$pattern" "$brewfile" 2>/dev/null; then
-        sed -i '' "/$pattern/d" "$brewfile"
+        if [[ "$OSTYPE" == darwin* ]]; then
+            sed -i '' "/$pattern/d" "$brewfile"
+        else
+            sed -i "/$pattern/d" "$brewfile"
+        fi
         echo "🗑️  Removed $package from $file"
         return 0
     fi
@@ -216,6 +220,7 @@ _brew_select_category() {
         "common:All machines (common)"
         "personal_mac:Personal Mac only"
         "work_mac:Work Mac only"
+        "ubuntu:Ubuntu only"
         "skip:Skip (don't update Brewfile)"
     )
     
@@ -281,7 +286,7 @@ brew() {
                 if [[ "$cmd" == "install" ]]; then
                     local category=$(_brew_select_category "add")
                     case "$category" in
-                        common|personal_mac|work_mac)
+                        common|personal_mac|work_mac|ubuntu)
                             _brew_add_to_file "$pkg" "Brewfile.$category" "$type"
                             ;;
                         skip|"")
@@ -291,7 +296,7 @@ brew() {
                 else  # uninstall
                     local category=$(_brew_select_category "remove")
                     case "$category" in
-                        common|personal_mac|work_mac)
+                        common|personal_mac|work_mac|ubuntu)
                             _brew_remove_from_file "$pkg" "Brewfile.$category" "$type"
                             ;;
                         skip|"")

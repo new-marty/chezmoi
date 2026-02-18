@@ -1,0 +1,10 @@
+{{ if ne .chezmoi.os "darwin" }}
+# macOS-only: Library/Application Support paths (VS Code/Cursor settings)
+Library
+
+# macOS-only: Raycast script
+.config/raycast
+
+# macOS-only: Custom Cursor theme installer (uses SSH git clone)
+install-custom-theme.sh
+{{ end }}

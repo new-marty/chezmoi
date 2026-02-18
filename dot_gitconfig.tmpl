@@ -43,7 +43,11 @@
 
 [commit]
     verbose = true         # Show diff in commit message editor
+{{- if eq .chezmoi.os "darwin" }}
     gpgsign = true         # Sign commits with SSH key via 1Password
+{{- else }}
+    gpgsign = false        # Disabled on Linux (no 1Password SSH signing configured)
+{{- end }}
 
 [merge]
     conflictstyle = diff3
@@ -111,9 +115,13 @@
     # Clean merged branches
     cleanup = "!git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d"
 
+{{ if eq .chezmoi.os "darwin" }}
 [credential]
     helper = osxkeychain
-
+{{ else if eq .chezmoi.os "linux" }}
+[credential]
+    helper = store
+{{ end }}
 # Include work-specific config for work directories
 [includeIf "gitdir:{{ .chezmoi.homeDir }}/work/"]
     path = ~/.gitconfig-work
@@ -125,6 +133,7 @@
 #     email = "your.work@company.com"
 {{- end }}
 
+{{ if eq .chezmoi.os "darwin" }}
 # SSH commit signing with 1Password
 [gpg]
     format = ssh
@@ -132,3 +141,12 @@
 [gpg "ssh"]
     program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
     allowedSignersFile = ~/.ssh/allowed_signers
+{{ else }}
+# SSH commit signing (disabled on Linux - configure manually if needed)
+# To enable: install 1Password and set gpg.ssh.program to the op-ssh-sign path
+# [gpg]
+#     format = ssh
+# [gpg "ssh"]
+#     program = "/opt/1Password/op-ssh-sign"
+#     allowedSignersFile = ~/.ssh/allowed_signers
+{{ end }}
