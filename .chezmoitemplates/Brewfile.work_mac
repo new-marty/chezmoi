@@ -21,3 +21,5 @@ brew "mosquitto"
 # Add your company-specific tools below:
 # cask "your-company-vpn"
 # brew "internal-cli-tool"
+brew "cloudflared"
+brew "p7zip"

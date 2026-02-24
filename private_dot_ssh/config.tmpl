@@ -42,14 +42,12 @@ Host github.com
 {{- end }}
 
 {{- if .is_work_mac }}
-# Work Mac: Separate hosts for personal and work GitHub
-Host github.com-personal
+# Slalom Mac: Pin the Slalom SSH key for GitHub
+Host github.com
     HostName github.com
     User git
-
-Host github.com-work
-    HostName github.com
-    User git
+    IdentityFile ~/.ssh/slalom_macbook.pub
+    IdentitiesOnly yes
 {{- end }}
 
 {{- if .is_ubuntu }}
