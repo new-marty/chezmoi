@@ -48,6 +48,7 @@ export PATH="/usr/local/texlive/2022/bin/universal-darwin:$PATH"
 {{ end -}}
 
 # Development tools and utilities
+export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 {{ if eq .chezmoi.os "darwin" -}}
 export PNPM_HOME="$HOME/Library/pnpm"
