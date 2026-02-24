@@ -1,0 +1,17 @@
+#!/bin/sh
+# =============================================================================
+# Install tmux plugin manager (tpm)
+# This script runs once before applying tmux configuration
+# =============================================================================
+
+set -eu
+
+TPM_DIR="$HOME/.tmux/plugins/tpm"
+
+if [ ! -d "$TPM_DIR" ]; then
+    echo "Installing tmux plugin manager (tpm)..."
+    git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+    echo "✓ tpm installed. Run prefix+I inside tmux to install plugins."
+else
+    echo "✓ tpm already installed"
+fi

@@ -72,8 +72,11 @@ alias cmcd='chezmoi cd'
 # claude code
 alias yolo='claude --dangerously-skip-permissions'
 
-# zellij
-alias zj='zellij'
+# tmux
+alias tx='tmux'
+alias ta='tmux attach -t'
+alias tl='tmux list-sessions'
+alias tn='tmux new-session -s'
 
 # help - Show custom commands and keybindings
 alias help='show_dotfiles_help'

@@ -28,7 +28,9 @@ brew "gping"             # Ping with graph
 
 # Shell & Terminal
 brew "zsh"
-brew "zellij"
+brew "tmux"
+brew "sesh"               # Smart tmux session manager (integrates with zoxide/fzf)
+brew "yq"                 # Required by tmux-nerd-font-window-name
 
 # Version Control
 brew "git"
