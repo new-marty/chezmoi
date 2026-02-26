@@ -73,10 +73,24 @@ alias cmcd='chezmoi cd'
 alias yolo='claude --dangerously-skip-permissions'
 
 # tmux
-alias tx='tmux'
+alias t='tmux'
 alias ta='tmux attach -t'
 alias tl='tmux list-sessions'
 alias tn='tmux new-session -s'
+
+# OpenClaw
+alias oc='openclaw'
+alias ocg='openclaw gateway'
+alias ocgr='openclaw gateway run'
+alias ocgs='openclaw gateway status'
+alias ocgd='openclaw gateway discover'
+alias ocd='openclaw doctor'
+alias ocl='openclaw logs'
+alias oct='openclaw tui'
+alias occ='openclaw configure'
+alias ocm='openclaw message send'
+alias oca='openclaw agent'
+alias ocup='openclaw update'
 
 # help - Show custom commands and keybindings
 alias help='show_dotfiles_help'
@@ -158,6 +172,14 @@ function show_dotfiles_help() {
     echo "  gp         git push origin head"
     echo "  sw         git switch"
     echo "  br         git branch with dates"
+    echo ""
+
+    echo "🖥️  TMUX"
+    echo "───────"
+    echo "  t          tmux"
+    echo "  ta         tmux attach -t"
+    echo "  tl         tmux list-sessions"
+    echo "  tn         tmux new-session -s"
     echo ""
 
     echo "🆕 MODERN CLI REPLACEMENTS"

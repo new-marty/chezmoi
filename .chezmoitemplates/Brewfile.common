@@ -30,7 +30,6 @@ brew "gping"             # Ping with graph
 brew "zsh"
 brew "tmux"
 brew "sesh"               # Smart tmux session manager (integrates with zoxide/fzf)
-brew "yq"                 # Required by tmux-nerd-font-window-name
 
 # Version Control
 brew "git"

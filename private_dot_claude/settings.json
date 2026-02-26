@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)"
+    ]
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "effortLevel": "medium",
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.permission_mode // empty' | head -1 > /tmp/claude-mode"
+          }
+        ]
+      }
+    ]
+  }
+}
