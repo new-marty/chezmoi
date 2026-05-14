@@ -51,7 +51,7 @@ Templates use variables from `~/.config/chezmoi/chezmoi.toml`:
 
 **Sheldon caching**: Shell plugins via sheldon are cached to `~/.cache/sheldon.zsh` for fast startup. The cache auto-regenerates when `plugins.toml` changes.
 
-**Editor settings**: `.chezmoitemplates/editor-settings.tmpl` is a shared template for VS Code/Cursor settings under `private_dot_Library/`.
+**Editor settings**: `.chezmoitemplates/editor-settings.tmpl` is a shared template for VS Code settings under `private_dot_Library/`.
 
 ## CI
 

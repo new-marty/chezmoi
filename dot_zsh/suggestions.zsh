@@ -63,7 +63,6 @@ function show_command_templates() {
         "yarn install"
         "yarn add"
         "code ."
-        "cursor ."
         "open ."
         "mkdir -p"
         "rm -rf"

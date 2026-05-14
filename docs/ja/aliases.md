@@ -65,7 +65,7 @@
 | ---------- | ---------------------- | --------------------- |
 | `rs`       | `exec $SHELL -l`       | シェルを再起動        |
 | `sz`       | `source ~/.zshrc`      | zshrc をリロード      |
-| `c`        | `cursor`               | Cursor エディタを開く |
+| `c`        | `code`                 | VS Code エディタを開く |
 | `p`        | `python3`              | Python 3              |
 | `tf`       | `terraform`            | Terraform             |
 | `dcu`      | `docker-compose up -d` | Docker compose 起動   |

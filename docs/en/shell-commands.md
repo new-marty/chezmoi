@@ -134,7 +134,7 @@ keys
 
 ## docs
 
-Open documentation in Cursor editor.
+Open documentation in VS Code editor.
 
 ```bash
 docs

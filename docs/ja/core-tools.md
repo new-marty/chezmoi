@@ -104,7 +104,7 @@ navi --query git      # 特定のトピックを検索
 
 ```bash
 fzf                              # 基本的なあいまい検索
-cursor $(fzf)                    # ファイルを見つけてエディタで開く
+code $(fzf)                      # ファイルを見つけてエディタで開く
 fzf --preview 'bat --color=always {}'  # プレビュー付き
 fzf -m                           # 複数選択（Tab）
 find ~/Documents -type f | fzf   # 特定のディレクトリで検索

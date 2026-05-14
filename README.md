@@ -77,7 +77,7 @@ just sheldon-update # Update shell plugins
 │   ├── steeef.zsh-theme          # Prompt theme
 │   └── suggestions.zsh           # Command suggestions
 ├── private_dot_Library/          # macOS Library settings
-│   └── Application Support/Code/ # VS Code/Cursor settings
+│   └── Application Support/Code/ # VS Code settings
 ├── private_dot_config/
 │   ├── ghostty/                  # Ghostty terminal
 │   ├── mise/                     # mise runtime config

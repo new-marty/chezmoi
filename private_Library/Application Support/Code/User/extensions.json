@@ -1,6 +1,5 @@
 {
   // VS Code Extension Recommendations
-  // These extensions are synced from Cursor and recommended for VS Code
   // Install all with: code --install-extension <id> for each extension
   "recommendations": [
     // Comments and Documentation
@@ -87,10 +86,6 @@
     // PDF
     "tomoki1207.pdf"
   ],
-
-  // Extensions that should NOT be installed (Cursor-specific)
-  // - anysphere.cursorpyright (Cursor's Python - use ms-python.python instead)
-  // - anthropic.claude-code (Cursor's Claude integration)
 
   "unwantedRecommendations": []
 }

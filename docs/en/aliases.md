@@ -65,7 +65,7 @@ Complete alias reference for this dotfiles setup.
 | ----- | ------- | ----------- |
 | `rs`  | `exec $SHELL -l` | Restart shell |
 | `sz`  | `source ~/.zshrc` | Reload zshrc |
-| `c`   | `cursor` | Open Cursor editor |
+| `c`   | `code` | Open VS Code editor |
 | `p`   | `python3` | Python 3 |
 | `tf`  | `terraform` | Terraform |
 | `dcu` | `docker-compose up -d` | Docker compose up |

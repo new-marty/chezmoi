@@ -223,22 +223,22 @@ navi
 % custom
 
 # Edit command templates
-cursor ~/.zsh/suggestions.zsh
+code ~/.zsh/suggestions.zsh
 
 # Edit navi cheat sheets
-cursor ~/.config/navi/cheats/cheats.cheat
+code ~/.config/navi/cheats/cheats.cheat
 
 # Edit zsh configuration
-cursor ~/.zshrc
+code ~/.zshrc
 
 # Edit terminal theme
-cursor ~/.zsh/steeef.zsh-theme
+code ~/.zsh/steeef.zsh-theme
 
 # Edit sheldon plugins
-cursor ~/.config/sheldon/plugins.toml
+code ~/.config/sheldon/plugins.toml
 
 # Edit chezmoi source
-chezmoi cd && cursor .
+chezmoi cd && code .
 
 # Show current key bindings
 bindkey | grep -E "(\\^R|\\^H|\\^G|\\^S|\\^F|\\^N)"

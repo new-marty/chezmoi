@@ -104,7 +104,7 @@ Command-line fuzzy finder.
 
 ```bash
 fzf                              # Basic fuzzy find
-cursor $(fzf)                    # Find files and open in editor
+code $(fzf)                      # Find files and open in editor
 fzf --preview 'bat --color=always {}'  # Preview files
 fzf -m                           # Multi-select (Tab)
 find ~/Documents -type f | fzf   # Find in specific directory

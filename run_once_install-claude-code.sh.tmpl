@@ -1,0 +1,18 @@
+#!/bin/bash
+# =============================================================================
+# Install Claude Code via the official native binary installer
+# (replaces the Homebrew cask install)
+# =============================================================================
+
+set -e
+
+{{ if eq .chezmoi.os "darwin" -}}
+if command -v claude >/dev/null 2>&1 && claude --version >/dev/null 2>&1; then
+    echo "✅ Claude Code already installed: $(claude --version)"
+    exit 0
+fi
+
+echo "📦 Installing Claude Code (native binary)..."
+curl -fsSL https://claude.ai/install.sh | bash -s stable
+echo "✅ Claude Code installed to ~/.local/bin/claude"
+{{ end -}}

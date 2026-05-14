@@ -134,7 +134,7 @@ keys
 
 ## docs
 
-ドキュメントをCursorエディタで開く。
+ドキュメントをVS Codeエディタで開く。
 
 ```bash
 docs

@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# Install custom VSCode/Cursor theme
+# Install custom VSCode theme
 # This script runs once when setting up a new machine
 # =============================================================================
 
@@ -10,7 +10,7 @@ REPO_URL="git@github.com:new-marty/vscode-themes.git"
 REPO_DIR="$HOME/dev/vscode-themes"
 THEME_NAME="dark-plus-poimandres-theme"
 THEME_SRC="$REPO_DIR/$THEME_NAME"
-CURSOR_EXT="$HOME/.cursor/extensions/$THEME_NAME"
+VSCODE_EXT="$HOME/.vscode/extensions/$THEME_NAME"
 
 echo "🎨 Setting up custom VSCode theme..."
 
@@ -28,19 +28,19 @@ else
     echo "✅ Repository updated"
 fi
 
-# Create symlink for Cursor
+# Create symlink for VS Code
 if [ -d "$THEME_SRC" ]; then
     # Create extensions directory if it doesn't exist
-    mkdir -p "$HOME/.cursor/extensions"
+    mkdir -p "$HOME/.vscode/extensions"
 
     # Remove existing symlink or directory if it exists
-    if [ -L "$CURSOR_EXT" ] || [ -d "$CURSOR_EXT" ]; then
-        rm -rf "$CURSOR_EXT"
+    if [ -L "$VSCODE_EXT" ] || [ -d "$VSCODE_EXT" ]; then
+        rm -rf "$VSCODE_EXT"
     fi
 
     # Create symlink
-    ln -sf "$THEME_SRC" "$CURSOR_EXT"
-    echo "✅ Symlink created: $CURSOR_EXT -> $THEME_SRC"
+    ln -sf "$THEME_SRC" "$VSCODE_EXT"
+    echo "✅ Symlink created: $VSCODE_EXT -> $THEME_SRC"
 else
     echo "⚠️  Theme directory not found: $THEME_SRC"
     echo "   Available themes in repository:"

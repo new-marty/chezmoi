@@ -33,7 +33,7 @@ alias rs='exec zsh -l'
 alias sz='source ~/.zshrc'
 
 # code
-alias c='cursor'
+alias c='code'
 
 # pnpm
 alias pp="pnpm"
@@ -92,6 +92,9 @@ alias ocm='openclaw message send'
 alias oca='openclaw agent'
 alias ocup='openclaw update'
 
+# remote
+alias gary='open vnc://100.64.0.11'
+
 # help - Show custom commands and keybindings
 alias help='show_dotfiles_help'
 alias keys='show_keybindings'
@@ -118,7 +121,7 @@ function show_keybindings() {
 function open_dotfiles_docs() {
     local docs_dir="$(chezmoi source-path)/docs"
     if [[ -d "$docs_dir" ]]; then
-        cursor "$docs_dir"
+        code "$docs_dir"
     else
         echo "Documentation not found at: $docs_dir"
     fi
@@ -223,7 +226,7 @@ function show_dotfiles_help() {
     echo "────────────"
     echo "  rs         Restart shell"
     echo "  sz         Source ~/.zshrc"
-    echo "  c          cursor editor"
+    echo "  c          VS Code editor"
     echo "  p          python3"
     echo "  tf         terraform"
     echo "  dcud       docker compose up -d"
@@ -269,7 +272,7 @@ function show_dotfiles_help() {
     echo "────────────────"
     echo "  English:   \$(chezmoi source-path)/docs/en/"
     echo "  日本語:    \$(chezmoi source-path)/docs/ja/"
-    echo "  Open docs: docs (or cursor \"\$(chezmoi source-path)/docs\")"
+    echo "  Open docs: docs (or code \"\$(chezmoi source-path)/docs\")"
     echo ""
 
     echo "💡 QUICK TIPS"
