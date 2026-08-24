@@ -23,6 +23,7 @@ navi          # Interactive cheat sheets
 | [Keybindings](keybindings.md) | All keyboard shortcuts |
 | [SSH Setup](ssh-setup.md) | SSH config, keys, agent, sockets |
 | [Aliases](aliases.md) | Complete alias reference |
+| [Claude Code Config](claude-config.md) | How `~/.claude` is managed and bootstrapped |
 
 ## Keybindings Quick Reference
 

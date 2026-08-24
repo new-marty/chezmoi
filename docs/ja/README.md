@@ -22,6 +22,7 @@ navi          # インタラクティブチートシート
 | [Git](git.md) | Git エイリアス、lazygit の使い方、delta |
 | [キーバインド](keybindings.md) | すべてのキーボードショートカット |
 | [エイリアス](aliases.md) | エイリアス一覧 |
+| [Claude Code 設定](claude-config.md) | `~/.claude` の管理方針と新マシンでの初期化 |
 
 ## キーバインド早見表
 
