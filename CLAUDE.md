@@ -43,6 +43,21 @@ Templates use variables from `~/.config/chezmoi/chezmoi.toml`:
 - `.chezmoi.os`, `.chezmoi.hostname`, `.chezmoi.homeDir` — built-in chezmoi variables
 - Secrets come from 1Password CLI via `onepasswordItemFields "Dotfiles Secrets" "Personal"`
 
+## Password Manager Policy
+
+Currently on 1Password, but only adopt features that are portable across password
+managers (i.e. also available in open-source alternatives like Vaultwarden/Bitwarden):
+
+- **OK to use**: passwords, passkeys, TOTP, secure notes, SSH agent (keys stored in
+  the vault), SSH-based commit signing via the agent
+- **Avoid (1Password-specific lock-in)**: `op inject` / `op run` / `op plugin`,
+  service accounts, 1Password Connect, embedding `onepassword*` template functions
+  in dotfiles. If dotfiles ever need secrets, go through chezmoi's generic
+  `[secret] command` abstraction so the backend stays swappable.
+
+Provider-specific paths (agent socket, signing program) should be isolated behind
+chezmoi template variables/branches so migrating means flipping one variable.
+
 ## Architecture
 
 **Brewfile system**: `Brewfile.tmpl` composes from `.chezmoitemplates/Brewfile.common`, `Brewfile.personal_mac`, and `Brewfile.work_mac` based on machine type flags.
