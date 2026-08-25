@@ -17,6 +17,25 @@ export BROWSER='xdg-open'
 # Load secrets if the file exists
 [[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
 
+# Claude Code account switching: personal (Keychain login) is the default
+# everywhere; under ~/starup the starup account is used instead.
+# CLAUDE_SECURESTORAGE_CONFIG_DIR (undocumented; may change) points secure
+# storage at its own directory, so Claude Code stores and reads the starup
+# credential there and never sees the personal Keychain entry. Authenticate
+# that directory once by running /login in a session started under ~/starup.
+#
+# CLAUDE_CODE_OAUTH_TOKEN is intentionally not set: a `claude setup-token`
+# credential makes Claude Code keep the Chrome extension integration off
+# (`/chrome` reports Disabled even with --chrome), because the extension
+# cannot authenticate with it. An interactive /login credential can.
+#
+# Set here (not via direnv) because some launchers (e.g. cmux) run a login
+# shell straight into a command without an interactive precmd cycle, so
+# direnv's chpwd/precmd hook never fires before the command starts.
+if [[ "$PWD" == "$HOME/starup"* ]]; then
+  export CLAUDE_SECURESTORAGE_CONFIG_DIR="$HOME/.claude-starup"
+fi
+
 # Less configuration
 export LESS='-R'
 {{ if eq .chezmoi.os "darwin" -}}
