@@ -7,9 +7,6 @@ CLAUDE.md
 # macOS-only: Library/Application Support paths (VS Code settings)
 Library
 
-# macOS-only: Raycast script
-.config/raycast
-
 # macOS-only: Custom VS Code theme installer (uses SSH git clone)
 install-custom-theme.sh
 {{ end }}
