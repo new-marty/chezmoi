@@ -122,17 +122,6 @@
 [credential]
     helper = store
 {{ end }}
-# Include work-specific config for work directories
-[includeIf "gitdir:{{ .chezmoi.homeDir }}/work/"]
-    path = ~/.gitconfig-work
-
-{{ if .is_work_mac -}}
-# Work Mac: Additional work-specific overrides
-# Create ~/.gitconfig-work with:
-# [user]
-#     email = "your.work@company.com"
-{{- end }}
-
 {{ if .ssh_signing_key }}
 # SSH commit signing with 1Password
 [gpg]
