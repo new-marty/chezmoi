@@ -93,7 +93,15 @@ alias oca='openclaw agent'
 alias ocup='openclaw update'
 
 # remote
-alias gary='open vnc://100.64.0.11'
+# gary (mac-mini): Tailscale 経由を優先し、届かなければ LAN (mDNS) にフォールバック
+function gary() {
+    if nc -z -G 2 100.64.0.11 5900 2>/dev/null; then
+        open vnc://100.64.0.11
+    else
+        echo "Tailscale 経由で届かないため mac-mini.local に接続します" >&2
+        open vnc://mac-mini.local
+    fi
+}
 
 # help - Show custom commands and keybindings
 alias help='show_dotfiles_help'
