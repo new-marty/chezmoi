@@ -3,6 +3,17 @@
 # instructions for every directory under the home directory.
 CLAUDE.md
 
+# backlog.md tracks unfinished work in this repository. Like CLAUDE.md it
+# documents the repository rather than configuring the home directory.
+backlog.md
+
+# These document the repository rather than configuring the home directory.
+# The `docs` alias opens $(chezmoi source-path)/docs, so the copy under ~ was
+# never read; scripts/ had no references at all.
+README.md
+docs
+scripts
+
 {{ if ne .chezmoi.os "darwin" }}
 # macOS-only: Library/Application Support paths (VS Code settings)
 Library

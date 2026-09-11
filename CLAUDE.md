@@ -38,7 +38,7 @@ Files use chezmoi naming prefixes that map to target paths:
 ## Template Data
 
 Templates use variables from `~/.config/chezmoi/chezmoi.toml`:
-- `.is_personal_mac`, `.is_work_mac`, `.is_windows`, `.is_linux` — machine type flags
+- `.is_personal_mac`, `.is_work_mac` — machine type flags
 - `.git_name`, `.git_email`, `.ssh_signing_key` — user identity
 - `.chezmoi.os`, `.chezmoi.hostname`, `.chezmoi.homeDir` — built-in chezmoi variables
 - Secrets come from 1Password CLI via `onepasswordItemFields "Dotfiles Secrets" "Personal"`
@@ -58,9 +58,18 @@ managers (i.e. also available in open-source alternatives like Vaultwarden/Bitwa
 Provider-specific paths (agent socket, signing program) should be isolated behind
 chezmoi template variables/branches so migrating means flipping one variable.
 
+## Tracking Unfinished Work
+
+Unfinished work lives in `backlog.md` at the repository root, not in GitHub Issues.
+GitHub Issues are disabled for this repository. Add an entry when work is left
+half-done, and delete the entry when it is finished -- git history keeps the record.
+Write each entry so it stands on its own: what is left, and why it was stopped where
+it was. `.chezmoiignore` excludes `backlog.md` so chezmoi does not apply it to
+the home directory.
+
 ## Architecture
 
-**Brewfile system**: `Brewfile.tmpl` composes from `.chezmoitemplates/Brewfile.common`, `Brewfile.personal_mac`, and `Brewfile.work_mac` based on machine type flags.
+**Brewfile system**: each machine has its own list — `Brewfile.tmpl` includes exactly one of `.chezmoitemplates/Brewfile.personal_mac` or `Brewfile.work_mac`, chosen by the machine type flag. There is no shared "common" list: a package installed on one machine is declared only there, and `just brew-pick <machine>` copies entries from another machine's list when setting up a new one. Each list opens with an Essentials block — the packages the dotfiles themselves need at shell startup.
 
 **Shell loading order**: `dot_zprofile` (login) → `dot_zshenv.tmpl` (all shells, sets PATH/env) → `dot_zshrc` (interactive, loads tools/plugins/keybindings).
 

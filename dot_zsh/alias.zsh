@@ -26,7 +26,9 @@ else
 fi
 
 # diff
-alias diff='colordiff -u'
+# colordiff is not declared in the Brewfile, so fall back to plain diff when it
+# is missing. Without the guard, `diff` fails with "command not found".
+command -v colordiff >/dev/null 2>&1 && alias diff='colordiff -u' || alias diff='diff -u'
 
 # alias
 alias rs='exec zsh -l'

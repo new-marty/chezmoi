@@ -1,25 +1,8 @@
 # =============================================================================
-# Work Mac Packages - Work use only
+# Work Mac Packages
+#
+# Starts empty on purpose. Set it up when the machine exists and its needs are
+# known, rather than guessing months ahead. To copy entries from another
+# machine's list, run `just brew-pick personal_mac` and select what you need;
+# start with the Essentials block at the top of that file.
 # =============================================================================
-
-# Communication & Collaboration
-cask "microsoft-teams"
-
-# Cloud & Infrastructure (work-specific)
-# brew "azure-cli"            # Uncomment if using Azure
-# cask "aws-vpn-client"       # Uncomment if using AWS VPN
-
-# Productivity
-cask "grammarly-desktop"      # Writing assistance
-
-# Security & Compliance
-# cask "crowdstrike-falcon"   # Endpoint protection (often auto-installed)
-
-# IoT / MQTT
-brew "mosquitto"
-
-# Add your company-specific tools below:
-# cask "your-company-vpn"
-# brew "internal-cli-tool"
-brew "cloudflared"
-brew "p7zip"

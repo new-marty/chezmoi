@@ -146,11 +146,11 @@ function cdf() {
     fi
 }
 
+
 # =============================================================================
-# Brew wrapper with interactive Brewfile management
+# Brew wrapper: mirror install/uninstall into this machine's Brewfile
 # =============================================================================
 
-# Get chezmoi source path
 _get_chezmoi_source() {
     if command -v chezmoi >/dev/null 2>&1; then
         chezmoi source-path
@@ -159,160 +159,174 @@ _get_chezmoi_source() {
     fi
 }
 
-# Add package to specific Brewfile template
-_brew_add_to_file() {
-    local package="$1"
-    local file="$2"
-    local type="$3"  # brew, cask, or vscode
-    local source_dir="$(_get_chezmoi_source)"
-    local brewfile="$source_dir/.chezmoitemplates/$file"
-    
-    # Determine the line to add
-    local line
-    case "$type" in
-        cask)   line="cask \"$package\"" ;;
-        vscode) line="vscode \"$package\"" ;;
-        *)      line="brew \"$package\"" ;;
-    esac
-    
-    # Check if already exists
-    if grep -q "^${line}$" "$brewfile" 2>/dev/null; then
-        echo "📦 $package already in $file"
-        return 0
-    fi
-    
-    # Add to file
-    echo "$line" >> "$brewfile"
-    echo "✅ Added $package to $file"
-}
+# Brewfile templates hold one package list per machine; there is no shared list.
+# These helpers keep the list in step with what `brew install`/`uninstall` did.
+# They never prompt, so they are safe to call from scripts and non-interactive
+# shells.
 
-# Remove package from specific Brewfile template
-_brew_remove_from_file() {
-    local package="$1"
-    local file="$2"
-    local type="$3"
-    local source_dir="$(_get_chezmoi_source)"
-    local brewfile="$source_dir/.chezmoitemplates/$file"
-    
-    local pattern
-    case "$type" in
-        cask)   pattern="^cask \"$package\"" ;;
-        vscode) pattern="^vscode \"$package\"" ;;
-        *)      pattern="^brew \"$package\"" ;;
-    esac
-    
-    if grep -q "$pattern" "$brewfile" 2>/dev/null; then
-        if [[ "$OSTYPE" == darwin* ]]; then
-            sed -i '' "/$pattern/d" "$brewfile"
-        else
-            sed -i "/$pattern/d" "$brewfile"
+# Name of this machine's Brewfile template, from the chezmoi machine-type flag.
+# Returns the first flag that is true, matching `just brew-pick`.
+_brew_machine_file() {
+    local flag
+    for flag in personal_mac work_mac; do
+        if [[ "$(chezmoi execute-template "{{ .is_${flag} }}" 2>/dev/null)" == "true" ]]; then
+            echo "Brewfile.${flag}"
+            return 0
         fi
-        echo "🗑️  Removed $package from $file"
-        return 0
-    fi
+    done
     return 1
 }
 
-# Interactive selection for Brewfile category
-_brew_select_category() {
-    local action="$1"  # add or remove
-    local options=(
-        "common:All machines (common)"
-        "personal_mac:Personal Mac only"
-        "work_mac:Work Mac only"
-        "ubuntu:Ubuntu only"
-        "skip:Skip (don't update Brewfile)"
-    )
-    
-    local prompt
-    if [[ "$action" == "add" ]]; then
-        prompt="Add to which Brewfile?"
-    else
-        prompt="Remove from which Brewfile?"
-    fi
-    
-    local selected=$(printf '%s\n' "${options[@]}" | \
-        fzf --height 40% --layout=reverse --border \
-            --prompt="$prompt " \
-            --header="Use arrow keys to select, Enter to confirm" \
-            --delimiter=":" --with-nth=2)
-    
-    echo "${selected%%:*}"
+# Every Brewfile template in the source directory, one per line.
+# Uses find rather than a glob: zsh's (N) qualifier is disabled under
+# NO_BARE_GLOB_QUAL, which some non-interactive shells set, and the bare glob
+# then aborts the function with "no matches found".
+_brew_all_files() {
+    local src
+    src="$(_get_chezmoi_source)"
+    find "$src/.chezmoitemplates" -maxdepth 1 -type f -name 'Brewfile.*' \
+        -exec basename {} \; 2>/dev/null
 }
 
-# Main brew wrapper function
+# Regex for one declaration. Entries may carry a trailing comment, as in
+#   brew "glow"              # Render markdown in terminal
+# so anchor on the closing quote and allow anything after it. Search and delete
+# must use the same pattern, or a match reports success while the line survives.
+_brew_pattern() {
+    printf '^%s "%s"[[:space:]]*(#.*)?$' "$1" "$2"
+}
+
+# Which list declares this package, and as which kind. Prints "file<TAB>kind"
+# per hit. Both kinds are searched because Homebrew resolves cask tokens without
+# requiring --cask, so the caller cannot always tell them apart.
+_brew_find_declaration() {
+    local pkg="$1" src f kind
+    src="$(_get_chezmoi_source)"
+    for f in $(_brew_all_files); do
+        for kind in brew cask; do
+            if grep -qE "$(_brew_pattern "$kind" "$pkg")" "$src/.chezmoitemplates/$f" 2>/dev/null; then
+                printf '%s\t%s\n' "$f" "$kind"
+            fi
+        done
+    done
+}
+
+# Which kind Homebrew actually installed, by looking at where it landed.
+# Falls back to the caller's guess when the package is already gone.
+_brew_kind_of() {
+    local pkg="${1##*/}" prefix
+    prefix="$(command brew --prefix 2>/dev/null)" || return 1
+    [[ -d "$prefix/Caskroom/$pkg" ]] && { echo cask; return 0; }
+    [[ -d "$prefix/Cellar/$pkg" ]] && { echo brew; return 0; }
+    return 1
+}
+
+# Insert after the last entry of the same kind, so brews stay with brews and
+# casks with casks. Appending to the end of the file would drop the line outside
+# whatever template conditional the file ends with.
+# NOTE: never name a local "path" in zsh -- it is tied to $PATH and shadowing it
+# breaks command lookup inside the function.
+_brew_insert() {
+    local line="$1" file="$2" kind="$3"
+    local bf last
+    bf="$(_get_chezmoi_source)/.chezmoitemplates/$file"
+    local tmp
+    # Write outside .chezmoitemplates: a leftover Brewfile.*.tmp in there would
+    # be picked up by _brew_all_files as if it were another machine's list.
+    tmp="$(mktemp "${TMPDIR:-/tmp}/brewfile.XXXXXX")" || return 1
+    last=$(grep -n "^${kind} \"" "$bf" 2>/dev/null | tail -1 | cut -d: -f1)
+    if [[ -n "$last" ]]; then
+        awk -v n="$last" -v l="$line" 'NR==n{print; print l; next} {print}' "$bf" > "$tmp" \
+            && mv "$tmp" "$bf" || rm -f "$tmp"
+    else
+        rm -f "$tmp"
+        printf '\n%s\n' "$line" >> "$bf"
+    fi
+}
+
+_brew_delete() {
+    local kind="$1" pkg="$2" file="$3"
+    local bf tmp
+    bf="$(_get_chezmoi_source)/.chezmoitemplates/$file"
+    tmp="$(mktemp "${TMPDIR:-/tmp}/brewfile.XXXXXX")" || return 1
+    # grep -v exits 1 when it filters every line away, so guard the mv.
+    grep -vE "$(_brew_pattern "$kind" "$pkg")" "$bf" > "$tmp"
+    if [[ -s "$tmp" ]]; then mv "$tmp" "$bf"; else rm -f "$tmp"; fi
+}
+
 brew() {
     local cmd="$1"
-    local exit_code=0
 
-    # Special case: 'brew install' with no arguments installs from Brewfile
+    # `brew install` with no arguments means "install everything declared".
     if [[ "$cmd" == "install" && $# -eq 1 ]]; then
         echo "📦 Installing from ~/Brewfile..."
         command brew bundle install --file="$HOME/Brewfile"
         return $?
     fi
-    
-    # Run the original brew command
+
     command brew "$@"
-    exit_code=$?
-    
-    # If command failed, don't update Brewfile
-    [[ $exit_code -ne 0 ]] && return $exit_code
-    
-    # Handle install/uninstall commands
-    case "$cmd" in
-        install|uninstall)
-            shift  # Remove command from args
-            local packages=()
-            local type="brew"
-            local is_cask=false
-            
-            # Parse arguments
-            for arg in "$@"; do
-                case "$arg" in
-                    --cask) is_cask=true; type="cask" ;;
-                    -*) ;; # Skip other flags
-                    *) packages+=("$arg") ;;
-                esac
+    local exit_code=$?
+    (( exit_code != 0 )) && return $exit_code
+    [[ "$cmd" == "install" || "$cmd" == "uninstall" ]] || return $exit_code
+
+    shift
+    local guessed_kind="brew" pkgs=() a
+    for a in "$@"; do
+        case "$a" in
+            --cask) guessed_kind="cask" ;;
+            -*) ;;
+            *) pkgs+=("$a") ;;
+        esac
+    done
+    (( ${#pkgs[@]} == 0 )) && return $exit_code
+
+    local file
+    if ! file="$(_brew_machine_file)"; then
+        echo "⚠️  No machine type flag set in chezmoi.toml; Brewfile not updated"
+        return $exit_code
+    fi
+
+    local pkg kind hits hit hit_file hit_kind mine
+    for pkg in "${pkgs[@]}"; do
+        # Search with the name exactly as written: a tap-qualified token is
+        # declared in full, so stripping the tap here would never match it.
+        hits=(${(f)"$(_brew_find_declaration "$pkg")"})
+        hits=(${hits:#})
+        if [[ "$cmd" == "install" ]]; then
+            # Trust where Homebrew put it over the presence of a --cask flag.
+            kind="$(_brew_kind_of "$pkg")" || kind="$guessed_kind"
+            # Only this machine's list matters: another machine declaring the
+            # same package must not stop it being recorded here.
+            mine=""
+            for hit in "${hits[@]}"; do
+                [[ "${hit%%$'\t'*}" == "$file" ]] && mine="${hit##*$'\t'}"
             done
-            
-            # Process each package
-            for pkg in "${packages[@]}"; do
-                echo ""
-                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-                echo "📦 Package: $pkg ($type)"
-                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-                
-                if [[ "$cmd" == "install" ]]; then
-                    local category=$(_brew_select_category "add")
-                    case "$category" in
-                        common|personal_mac|work_mac|ubuntu)
-                            _brew_add_to_file "$pkg" "Brewfile.$category" "$type"
-                            ;;
-                        skip|"")
-                            echo "⏭️  Skipped updating Brewfile"
-                            ;;
-                    esac
-                else  # uninstall
-                    local category=$(_brew_select_category "remove")
-                    case "$category" in
-                        common|personal_mac|work_mac|ubuntu)
-                            _brew_remove_from_file "$pkg" "Brewfile.$category" "$type"
-                            ;;
-                        skip|"")
-                            echo "⏭️  Skipped updating Brewfile"
-                            ;;
-                    esac
-                fi
+            if [[ -n "$mine" ]]; then
+                echo "📦 ${pkg} already declared in ${file}"
+            else
+                _brew_insert "${kind} \"${pkg}\"" "$file" "$kind"
+                echo "✅ Added ${pkg} to ${file} as ${kind}"
+            fi
+        else
+            # Only this machine's list, matching the install branch. Uninstalling
+            # here must not strip the package from another machine's list.
+            mine=""
+            for hit in "${hits[@]}"; do
+                [[ "${hit%%$'\t'*}" == "$file" ]] && mine="${hit##*$'\t'}"
             done
-            
-            echo ""
-            echo "💡 Run 'chezmoi apply' to regenerate Brewfile"
-            ;;
-    esac
-    
+            if [[ -n "$mine" ]]; then
+                _brew_delete "$mine" "$pkg" "$file"
+                echo "🗑️  Removed ${pkg} from ${file}"
+            else
+                echo "📦 ${pkg} was not declared in ${file}"
+            fi
+        fi
+    done
+    echo "💡 Run 'chezmoi apply' to regenerate ~/Brewfile"
     return $exit_code
 }
+
+
 
 # *** fcat ***
 # NAME

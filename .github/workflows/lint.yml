@@ -5,11 +5,17 @@ on:
     branches: [main]
     paths:
       - "dot_zsh/**"
+      - "Brewfile.tmpl"
+      - ".chezmoitemplates/**"
+      - "justfile"
       - ".github/workflows/lint.yml"
   pull_request:
     branches: [main]
     paths:
       - "dot_zsh/**"
+      - "Brewfile.tmpl"
+      - ".chezmoitemplates/**"
+      - "justfile"
       - ".github/workflows/lint.yml"
   workflow_dispatch:
 
@@ -75,3 +81,60 @@ jobs:
           chezmoi init --source="$GITHUB_WORKSPACE" --apply=false || true
           # Check for template errors
           chezmoi execute-template < /dev/null || true
+
+  brewfile:
+    name: Validate Brewfile
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+
+      - name: Render every machine's Brewfile
+        run: |
+          # Each machine type renders a different list. Render all of them so a
+          # mistake in one cannot hide behind the flags of the machine that
+          # happens to run CI.
+          #
+          # The flags have to arrive as template data. `--promptBool` only
+          # answers promptBool calls inside a config template, and this repo has
+          # no .chezmoi.toml.tmpl, so a throwaway config file is written instead.
+          set -euo pipefail
+          for machine in personal_mac work_mac; do
+            echo "== $machine =="
+            mkdir -p "$HOME/.config/chezmoi"
+            cat > "$HOME/.config/chezmoi/chezmoi.toml" <<EOF
+          [data]
+              is_personal_mac = $([ "$machine" = personal_mac ] && echo true || echo false)
+              is_work_mac = $([ "$machine" = work_mac ] && echo true || echo false)
+          EOF
+            chezmoi execute-template --source="$GITHUB_WORKSPACE" \
+              < "$GITHUB_WORKSPACE/Brewfile.tmpl" > "/tmp/Brewfile.${machine}"
+            echo "declarations: $(grep -cE '^(brew|cask|vscode) "' "/tmp/Brewfile.${machine}" || true)"
+          done
+
+      - name: Check each declaration resolves to the right kind
+        run: |
+          # A cask written as `brew "name"` (or the reverse) makes
+          # `brew bundle install` fail forever, and nothing else catches it.
+          set -uo pipefail
+          fail=0
+          for f in /tmp/Brewfile.*; do
+            while read -r kind name; do
+              case "$name" in */*) continue ;; esac  # tap entries: skipped
+              formula=$(curl -s -o /dev/null -w '%{http_code}' \
+                "https://formulae.brew.sh/api/formula/${name}.json")
+              cask=$(curl -s -o /dev/null -w '%{http_code}' \
+                "https://formulae.brew.sh/api/cask/${name}.json")
+              if [ "$kind" = "brew" ] && [ "$formula" != "200" ]; then
+                echo "::error file=$f::brew \"$name\" is not a formula (cask=$cask)"
+                fail=1
+              fi
+              if [ "$kind" = "cask" ] && [ "$cask" != "200" ]; then
+                echo "::error file=$f::cask \"$name\" is not a cask (formula=$formula)"
+                fail=1
+              fi
+            done < <(grep -E '^(brew|cask) "' "$f" | sed -E 's/^([a-z]+) "([^"]+)".*/\1 \2/')
+          done
+          exit $fail

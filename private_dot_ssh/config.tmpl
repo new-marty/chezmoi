@@ -50,12 +50,6 @@ Host github.com
     IdentitiesOnly yes
 {{- end }}
 
-{{- if .is_ubuntu }}
-# Ubuntu: GitHub via 1Password SSH Agent
-Host github.com
-    HostName github.com
-    User git
-{{- end }}
 
 {{- if .is_personal_mac }}
 # --- Personal Server Configurations ---

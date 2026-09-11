@@ -29,8 +29,6 @@ Edit `~/.config/chezmoi/chezmoi.toml`:
     # Set machine type flags
     is_personal_mac = true  # or false
     is_work_mac = false     # or false
-    is_windows = false
-    is_linux = false
 
     # Git configuration
     git_name = "Your Name"

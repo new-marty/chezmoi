@@ -50,7 +50,7 @@ just sheldon-update # Update shell plugins
 - **Multi-machine support**: Separate configs for personal/work Mac
 - **Runtime management**: mise handles Node, Python, Go, etc.
 - **Task automation**: justfile for setup, updates, and diagnostics
-- **Smart Brewfile**: Interactive package categorization (common/personal/work)
+- **Per-machine Brewfile**: one package list per machine, no shared list to keep in sync
 - **Modern CLI tools**: delta, lazygit, bat, eza, fzf, ripgrep, and more
 - **Enhanced shell**: zsh with sheldon plugins, atuin history, zoxide, fzf-tab
 
@@ -63,9 +63,8 @@ just sheldon-update # Update shell plugins
 ├── dot_gitconfig.tmpl            # Git configuration
 ├── dot_gitignore_global          # Global gitignore
 ├── .chezmoitemplates/
-│   ├── Brewfile.common           # Packages for all machines
-│   ├── Brewfile.personal_mac     # Personal Mac packages
-│   └── Brewfile.work_mac         # Work Mac packages
+│   ├── Brewfile.personal_mac     # Personal Mac packages (one list per machine)
+│   └── Brewfile.work_mac         # Work Mac packages (one list per machine)
 ├── dot_secrets.tmpl              # Secrets (1Password integration)
 ├── dot_zprofile                  # zsh profile
 ├── dot_zshenv.tmpl               # Environment variables
@@ -97,8 +96,6 @@ just sheldon-update # Update shell plugins
 [data]
     is_personal_mac = true   # Personal Mac
     is_work_mac = false      # Work Mac
-    is_windows = false       # Windows
-    is_linux = false         # Linux
 
 [onepassword]
     command = "op"
@@ -106,30 +103,40 @@ just sheldon-update # Update shell plugins
 
 ### Multi-Machine Settings
 
-| Machine      | is_personal_mac | is_work_mac | is_windows | is_linux |
-| ------------ | --------------- | ----------- | ---------- | -------- |
-| Personal Mac | true            | false       | false      | false    |
-| Work Mac     | false           | true        | false      | false    |
-| Windows      | false           | false       | true       | false    |
-| Linux        | false           | false       | false      | true     |
+| Machine      | is_personal_mac | is_work_mac |
+| ------------ | --------------- | ----------- |
+| Personal Mac | true            | false       |
+| Work Mac     | false           | true        |
+
+Each machine has its own package list; there is no shared "common" list. A new
+machine starts from the Essentials block at the top of another machine's list —
+see `just brew-pick`.
 
 ## Brew Package Management
 
-The `brew` command is wrapped to provide interactive Brewfile management:
+Each machine has its own package list under `.chezmoitemplates/`. There is no
+shared "common" list, so installing a package records it for this machine only.
+The `brew` command is wrapped to keep the list in step; it never prompts.
 
 ```bash
-# When you install a package
-brew install ripgrep
-
-# You'll be prompted:
-# ? Add to which Brewfile?
-#   > All machines (common)
-#     Personal Mac only
-#     Work Mac only
-#     Skip (don't update Brewfile)
+brew install ripgrep      # installs, then records brew "ripgrep" in this machine's list
+brew uninstall ripgrep    # uninstalls, then removes the declaration wherever it is
 ```
 
-Same for `brew uninstall` - you can choose which Brewfile to update.
+The wrapper reads where Homebrew actually put the package, so `--cask` is
+optional: `brew install google-chrome` records it as a cask.
+
+Three recipes manage the lists themselves:
+
+| Command                          | What it does                                                      |
+| -------------------------------- | ----------------------------------------------------------------- |
+| `just brew-pick <machine>`       | Browse another machine's list, install what you select, record it   |
+| `just brew-move <package> <to>`  | Move one declaration between machine lists                          |
+| `just brew-status`               | Show the size of each list and what is outdated here                |
+
+Setting up a new machine means running `just brew-pick` against an existing
+list and starting with its Essentials block: the packages the shell startup
+files and gitconfig depend on.
 
 ## Custom Commands
 

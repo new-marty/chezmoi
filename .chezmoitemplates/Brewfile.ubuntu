@@ -1,9 +1,0 @@
-# =============================================================================
-# Ubuntu-specific Packages
-# =============================================================================
-# Note: GUI apps on Ubuntu are installed via apt/snap/deb, not brew casks.
-# This file is for any Ubuntu-specific brew formulas.
-
-# Linux-specific CLI tools (if any)
-# Note: xclip must be installed via apt (not brew) for proper X11/Wayland
-# clipboard integration: sudo apt install xclip

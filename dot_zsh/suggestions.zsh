@@ -115,8 +115,6 @@ function show_command_templates() {
         "heroku run"
         "heroku ps"
         "heroku config"
-        "aws s3 ls"
-        "aws ec2 describe-instances"
         "gcloud compute instances list"
         "gcloud config set project"
         "help"
