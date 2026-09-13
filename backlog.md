@@ -66,6 +66,60 @@ plist と実行スクリプトは生成された後に失敗するので、設�
 の `PATH` は生成時のシェル環境を焼き込む。初回生成時にセッション固有の一時ディレクトリを
 拾っていたため手で最小構成に書き換えてある。打ち直す場合は素のターミナルから実行すること。
 
+---
+
+## Orca で仕事用の Claude アカウントに切り替える手間を減らすか決める
+
+Orca（複数のコーディングエージェントを worktree ごとに並列で動かすデスクトップアプリ）に
+Claude アカウントを2つ登録してある。個人の `yumabuchi1998@gmail.com`（Claude Max 20x）と、
+仕事の `work@example.com`（Starup Dev Team）。ホスト既定は個人にしてあり、仕事の
+リポジトリ `~/starup/archaive-pj` で作業するときだけ切り替えて使う。
+
+切り替えはステータスバーの Claude チップから手で行う。これを自動化するかどうかが未決。
+
+### 先に確かめること
+
+切り替えが **worktree ごとに1回で済むのか、エージェントを起動するたびに必要なのか**。
+公式ドキュメントは「選んだ後に起動したセッションがそのアカウントを使う。起動済みの
+セッションは再起動するまで元のアカウントのまま」と書いていて、Orca は
+`~/Library/Application Support/Orca/codex-pane-accounts.json` にペイン単位で
+`accountId` を記録している。1回で済むなら手動で十分。
+
+確かめ方: 仕事リポジトリで worktree を1つ作り、仕事アカウントに切り替えてエージェントを
+起動する。別の worktree に移動してから戻り、アカウントが保たれているかを見る。
+
+### 自動化する場合の手段と代償
+
+Orca の CLI には切り替えコマンドが無い。`orca agent-context --json` が返す全234コマンドを
+調べたが、アカウント関連は `account add` と `account list` だけで setter が存在しない。
+
+使えるのは Claude Code 側の `CLAUDE_CONFIG_DIR`。この環境変数は設定と認証をまとめて
+分離する（空ディレクトリを指して起動すると、既存のログインに触れずに "Not logged in" を
+返すことを確認済み）。仕事用の設定ディレクトリを用意すれば、起動コマンドで固定できる。
+
+```bash
+orca terminal create --worktree <archaive-pj の worktree> \
+  --command 'CLAUDE_CONFIG_DIR=$HOME/.claude-work claude'
+```
+
+代償が2つある。
+
+1. **Orca のアカウント管理が働かなくなる。** この経路で起動した Claude は Orca の管理下
+   (`~/Library/Application Support/Orca/claude-accounts/<id>/auth`) を見ないので、
+   ステータスバーの使用量とレート制限の残量はホスト側（個人）を映したままになる。
+   アカウントを登録した目的が切り替え UI と使用量表示なので、それを捨てることになる。
+2. **共有設定が二重になる。** `~/.claude` は new-marty/dotclaude で管理していて、
+   `CLAUDE.md`、`settings.json`、`skills/`、`output-styles/`、`scripts/` が入っている。
+   別の設定ディレクトリにはこれらが無いため、仕事セッションだけ指示もスキルも効かなくなる。
+   symlink で繋げば解決するが、維持する対象が増える。
+
+### 上流に要望を出す選択肢
+
+`orca account use <id>` にあたる setter が1つあれば、代償なしに自動化できる。
+リポジトリは https://github.com/stablyai/orca （MIT、活発に更新されている）。
+
+---
+
 ## 1Password から Vaultwarden への移行
 
 `docs/ja/migration-1password-to-vaultwarden-infisical.md` に8フェーズの移行計画がある
