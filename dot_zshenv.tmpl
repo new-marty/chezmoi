@@ -18,7 +18,9 @@ export BROWSER='xdg-open'
 [[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
 
 # Claude Code account switching: personal (Keychain login) is the default
-# everywhere; under ~/starup the starup account is used instead.
+# everywhere; under ~/starup, or inside any directory named archaive-pj
+# (e.g. Orca worktrees in ~/orca/workspaces/archaive-pj), the starup account
+# is used instead.
 # CLAUDE_SECURESTORAGE_CONFIG_DIR (undocumented; may change) points secure
 # storage at its own directory, so Claude Code stores and reads the starup
 # credential there and never sees the personal Keychain entry. Authenticate
@@ -32,7 +34,7 @@ export BROWSER='xdg-open'
 # Set here (not via direnv) because some launchers (e.g. cmux) run a login
 # shell straight into a command without an interactive precmd cycle, so
 # direnv's chpwd/precmd hook never fires before the command starts.
-if [[ "$PWD" == "$HOME/starup"* ]]; then
+if [[ "$PWD" == "$HOME/starup"* || "$PWD" == */archaive-pj || "$PWD" == */archaive-pj/* ]]; then
   export CLAUDE_SECURESTORAGE_CONFIG_DIR="$HOME/.claude-starup"
 fi
 
