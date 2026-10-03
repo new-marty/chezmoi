@@ -106,6 +106,8 @@ brew "go-task"
 brew "playwright-cli"
 brew "openclaw-cli"
 brew "handbrake"
+brew "git-filter-repo"
+brew "backlog-md"
 
 # --- Casks ------------------------------------------------------------------
 # Common Casks (macOS only)
