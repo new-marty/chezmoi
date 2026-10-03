@@ -190,6 +190,7 @@ cask "openclaw"
 cask "cmux"
 cask "meetily"
 cask "stablyai/orca/orca"          # Third-party tap; needs `brew trust --cask` for both orca and orca@rc
+cask "antigravity-cli"
 
 # makemkv is managed manually, not by Homebrew. The vendor ships an
 # ad-hoc-signed, un-notarized app, so it fails Gatekeeper; Homebrew disabled the

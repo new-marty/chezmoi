@@ -1,0 +1,86 @@
+{{ if .is_personal_mac -}}
+# shellcheck shell=bash
+# shellcheck disable=SC2154
+# =============================================================================
+# Antigravity CLI (agy) Smart Wrapper - Personal Mac Only
+# Automatically switches between personal and work (Starup) profiles
+# =============================================================================
+
+agy() {
+    local target_profile=""
+    local pass_args=()
+
+    # 1. 引数の判定 (--work, --personal, -w, -p, switch)
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --work|-w)
+                target_profile="work"
+                shift
+                ;;
+            --personal|-p)
+                target_profile="personal"
+                shift
+                ;;
+            switch)
+                echo "Antigravity アカウント選択:"
+                echo "  1) work (Starup用)"
+                echo "  2) personal (個人用)"
+                local choice=""
+                read -r "choice?選択 [1/2]: "
+                case "$choice" in
+                    1) target_profile="work" ;;
+                    2) target_profile="personal" ;;
+                    *) echo "キャンセルしました"; return 1 ;;
+                esac
+                shift
+                ;;
+            *)
+                pass_args+=("$1")
+                shift
+                ;;
+        esac
+    done
+
+    # 2. 引数がない場合: ディレクトリおよび Git の設定から「完全自動判別」
+    if [[ -z "$target_profile" ]]; then
+        local git_email
+        git_email=$(git config user.email 2>/dev/null || echo "")
+
+        # Starup (副業) ディレクトリまたは Starup の git メールアドレスの場合は work
+        if [[ "$PWD" == "$HOME/starup"* || "$PWD" == */archaive-pj || "$PWD" == */archaive-pj/* || "$git_email" == *"starup"* ]]; then
+            target_profile="work"
+        else
+            # それ以外は個人アカウント (personal)
+            target_profile="personal"
+        fi
+    fi
+
+    # 3. 切り替えが必要な場合のみスワップを実行
+    if [[ -n "$target_profile" ]]; then
+        local current
+        current=$(cat "$HOME/.gemini/profiles/.current" 2>/dev/null || echo "")
+        if [[ "$current" != "$target_profile" ]]; then
+            if [[ -x "$HOME/.gemini/switch-profile.sh" ]]; then
+                "$HOME/.gemini/switch-profile.sh" "$target_profile"
+            else
+                echo "⚠️  $HOME/.gemini/switch-profile.sh が見つからないか実行権限がありません" >&2
+            fi
+        fi
+    fi
+
+    # 4. デフォルトで --dangerously-skip-permissions を付与
+    local has_skip_perms=false
+    for arg in "${pass_args[@]}"; do
+        if [[ "$arg" == "--dangerously-skip-permissions" ]]; then
+            has_skip_perms=true
+            break
+        fi
+    done
+    if [[ "$has_skip_perms" == false ]]; then
+        pass_args=("--dangerously-skip-permissions" "${pass_args[@]}")
+    fi
+
+    # 5. 通常の agy を実行（残りの引数をそのまま渡す）
+    command agy "${pass_args[@]}"
+}
+{{- end }}

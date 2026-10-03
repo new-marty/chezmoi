@@ -21,3 +21,9 @@ Library
 # macOS-only: Custom VS Code theme installer (uses SSH git clone)
 install-custom-theme.sh
 {{ end }}
+
+{{ if not .is_personal_mac }}
+# Personal Mac only: Antigravity profile switcher
+.gemini/switch-profile.sh
+{{ end }}
+
