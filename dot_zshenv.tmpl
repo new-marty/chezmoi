@@ -17,6 +17,7 @@ export BROWSER='xdg-open'
 # Load secrets if the file exists
 [[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
 
+{{ if .is_personal_mac -}}
 # Claude Code account switching: personal (Keychain login) is the default
 # everywhere; under ~/starup, or inside any directory named archaive-pj
 # (e.g. Orca worktrees in ~/orca/workspaces/archaive-pj), the starup account
@@ -37,6 +38,7 @@ export BROWSER='xdg-open'
 if [[ "$PWD" == "$HOME/starup"* || "$PWD" == */archaive-pj || "$PWD" == */archaive-pj/* ]]; then
   export CLAUDE_SECURESTORAGE_CONFIG_DIR="$HOME/.claude-starup"
 fi
+{{- end }}
 
 # Less configuration
 export LESS='-R'
