@@ -43,6 +43,29 @@ Templates use variables from `~/.config/chezmoi/chezmoi.toml`:
 - `.chezmoi.os`, `.chezmoi.hostname`, `.chezmoi.homeDir` — built-in chezmoi variables
 - Secrets come from 1Password CLI via `onepasswordItemFields "Dotfiles Secrets" "Personal"`
 
+## Contexts and Machines
+
+The owner works in four contexts, and accounts, credentials, and settings must stay
+separate between them:
+
+- Main job: the employer. "Work" in this repository (`.is_work_mac`, `Brewfile.work_mac`)
+  means this context only.
+- Side job: Starup. Its repositories live under `~/starup`, and Orca (a desktop app that
+  runs coding agents in parallel worktrees) puts its worktrees under
+  `~/orca/workspaces/archaive-pj`.
+- Sole proprietorship: new-marty.
+- Personal.
+
+There are only two kinds of Mac, personal and work, so machine type does not identify the
+context. The side job, the sole proprietorship, and personal use all share the personal
+Mac, so anything that must differ between them is switched by working directory. The one
+such switch today is in `dot_zshenv.tmpl`, which selects the Starup Claude
+Code account inside Starup directories and leaves the personal account as the default
+everywhere else.
+
+Before changing an account, credential, or identity setting, establish which of the four
+contexts it belongs to. Do not reduce the choice to personal versus work.
+
 ## Password Manager Policy
 
 Currently on 1Password, but only adopt features that are portable across password
@@ -58,14 +81,16 @@ managers (i.e. also available in open-source alternatives like Vaultwarden/Bitwa
 Provider-specific paths (agent socket, signing program) should be isolated behind
 chezmoi template variables/branches so migrating means flipping one variable.
 
-## Tracking Unfinished Work
+## Task Management & Tracking Work
 
-Unfinished work lives in `backlog.md` at the repository root, not in GitHub Issues.
-GitHub Issues are disabled for this repository. Add an entry when work is left
-half-done, and delete the entry when it is finished -- git history keeps the record.
-Write each entry so it stands on its own: what is left, and why it was stopped where
-it was. `.chezmoiignore` excludes `backlog.md` so chezmoi does not apply it to
-the home directory.
+All task planning and tracking live in `backlog.md` at the repository root, not in GitHub Issues.
+GitHub Issues are disabled for this repository.
+
+**Rule: Always create an entry in `backlog.md` before starting any work.**
+- When starting work: create or update the entry in `backlog.md` describing the goals, context, and plan.
+- When work is finished: delete the entry from `backlog.md` — git history keeps the record.
+- Write each entry so it stands on its own: what is planned or left, and why it was designed/stopped where it was.
+- `.chezmoiignore` excludes `backlog.md` so chezmoi does not apply it to the home directory.
 
 ## Architecture
 
