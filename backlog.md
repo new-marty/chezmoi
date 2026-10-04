@@ -2,7 +2,39 @@
 
 このリポジトリで着手待ち・未完了の作業を置く。1項目ずつ見出しで区切り、
 何が残っているかと、なぜそうなっているかを、コードを読まなくても分かる形で書く。
-終わったら項目ごと削除する（履歴は git が持っている）。
+作業着手前に必ず起票し、終わったら項目ごと削除する（履歴は git が持っている）。
+
+---
+
+## [Doing] リポジトリを Public にする
+
+GitHub の `new-marty/chezmoi` は Private。2026-10-04 に全履歴を監査し、HEAD から
+自宅サーバーのアドレスを `~/.ssh/config.local`（chezmoi の管理外）へ移した。
+
+履歴に残っている個人情報を書き換えるかどうかが未決。書き換える場合、今のリポジトリに
+force push しても PR #1 の参照（`refs/pull/1/head`）が古い履歴を指し続ける。この参照は
+利用者には消せないので、書き換えた履歴を新しいリポジトリに push するほうが確実。
+
+---
+
+## [Todo] dotfiles リポジトリの Audit と掃除
+
+### 概要・ゴール
+dotfiles 環境の健全性を保つため、リポジトリ全体の Audit（監査）と不要ファイル・キャッシュ・ゴミの掃除を実施する。
+
+### 対象項目
+1. **ホームディレクトリおよびリポジトリの一時ファイル清掃**:
+   - `~/.claude.json.tmp.*` がホームディレクトリに大量に残存している問題の清掃と、再発防止策の確認
+   - chezmoi 作業ツリー内の未追跡ファイルや不要バックアップファイルの整理
+2. **実環境と chezmoi テンプレートのドリフト監査**:
+   - `chezmoi diff` による実環境と管理ファイルの乖離チェック・統合
+   - `Brewfile.personal_mac` の変更確認と不要パッケージの整理
+3. **会社用 Mac と個人用 Mac の分離監査**:
+   - `.is_personal_mac` / `.is_work_mac` の分岐が漏れて個人設定や機密情報が会社環境に漏洩しないかの総点検
+   - パスワードマネージャーポリシー（1Password 非依存性・ポータビリティ）の遵守チェック
+4. **ShellCheck・スクリプト健全性の改善**:
+   - `just lint` で検出される ShellCheck 警告（SC2148, SC2015, SC2155 等）の解消
+   - 各 zsh スクリプトの構文とパフォーマンス最適化
 
 ---
 
@@ -65,58 +97,6 @@ plist と実行スクリプトは生成された後に失敗するので、設�
 実行スクリプト（`~/Library/Application Support/com.github.domt4.homebrew-autoupdate/brew_autoupdate`）
 の `PATH` は生成時のシェル環境を焼き込む。初回生成時にセッション固有の一時ディレクトリを
 拾っていたため手で最小構成に書き換えてある。打ち直す場合は素のターミナルから実行すること。
-
----
-
-## Orca で仕事用の Claude アカウントに切り替える手間を減らすか決める
-
-Orca（複数のコーディングエージェントを worktree ごとに並列で動かすデスクトップアプリ）に
-Claude アカウントを2つ登録してある。個人の `yumabuchi1998@gmail.com`（Claude Max 20x）と、
-仕事の `work@example.com`（Starup Dev Team）。ホスト既定は個人にしてあり、仕事の
-リポジトリ `~/starup/archaive-pj` で作業するときだけ切り替えて使う。
-
-切り替えはステータスバーの Claude チップから手で行う。これを自動化するかどうかが未決。
-
-### 先に確かめること
-
-切り替えが **worktree ごとに1回で済むのか、エージェントを起動するたびに必要なのか**。
-公式ドキュメントは「選んだ後に起動したセッションがそのアカウントを使う。起動済みの
-セッションは再起動するまで元のアカウントのまま」と書いていて、Orca は
-`~/Library/Application Support/Orca/codex-pane-accounts.json` にペイン単位で
-`accountId` を記録している。1回で済むなら手動で十分。
-
-確かめ方: 仕事リポジトリで worktree を1つ作り、仕事アカウントに切り替えてエージェントを
-起動する。別の worktree に移動してから戻り、アカウントが保たれているかを見る。
-
-### 自動化する場合の手段と代償
-
-Orca の CLI には切り替えコマンドが無い。`orca agent-context --json` が返す全234コマンドを
-調べたが、アカウント関連は `account add` と `account list` だけで setter が存在しない。
-
-使えるのは Claude Code 側の `CLAUDE_CONFIG_DIR`。この環境変数は設定と認証をまとめて
-分離する（空ディレクトリを指して起動すると、既存のログインに触れずに "Not logged in" を
-返すことを確認済み）。仕事用の設定ディレクトリを用意すれば、起動コマンドで固定できる。
-
-```bash
-orca terminal create --worktree <archaive-pj の worktree> \
-  --command 'CLAUDE_CONFIG_DIR=$HOME/.claude-work claude'
-```
-
-代償が2つある。
-
-1. **Orca のアカウント管理が働かなくなる。** この経路で起動した Claude は Orca の管理下
-   (`~/Library/Application Support/Orca/claude-accounts/<id>/auth`) を見ないので、
-   ステータスバーの使用量とレート制限の残量はホスト側（個人）を映したままになる。
-   アカウントを登録した目的が切り替え UI と使用量表示なので、それを捨てることになる。
-2. **共有設定が二重になる。** `~/.claude` は new-marty/dotclaude で管理していて、
-   `CLAUDE.md`、`settings.json`、`skills/`、`output-styles/`、`scripts/` が入っている。
-   別の設定ディレクトリにはこれらが無いため、仕事セッションだけ指示もスキルも効かなくなる。
-   symlink で繋げば解決するが、維持する対象が増える。
-
-### 上流に要望を出す選択肢
-
-`orca account use <id>` にあたる setter が1つあれば、代償なしに自動化できる。
-リポジトリは https://github.com/stablyai/orca （MIT、活発に更新されている）。
 
 ---
 
