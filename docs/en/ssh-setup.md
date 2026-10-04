@@ -182,8 +182,8 @@ chezmoi update
 
 - Includes: OrbStack integration, and `~/.ssh/config.local` for home servers
 - `~/.ssh/config.local` is not managed by chezmoi, so their addresses stay out of
-  this repository. Create it by hand on a new machine (`chmod 600`). The `gary`
-  shell function reads the Tailscale address of `Host gary` from it.
+  this repository. Create it by hand on a new machine (`chmod 600`). The `mini` and `m1`
+  shell functions read the Tailscale addresses of `Host mini` and `Host m1` from it.
 - GitHub: Direct `github.com` access
 
 ### Work Mac

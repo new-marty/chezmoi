@@ -95,18 +95,26 @@ alias oca='openclaw agent'
 alias ocup='openclaw update'
 
 # remote
-# gary (mac-mini): 同一 LAN なら mDNS で直接、外出先などで届かなければ Tailscale 経由
-# Tailscale のアドレスは ~/.ssh/config.local の Host gary から読む
-function gary() {
-    if nc -z -G 2 mac-mini.local 5900 2>/dev/null; then
-        open vnc://mac-mini.local
-    else
-        local addr
-        addr=$(ssh -G gary | awk '$1 == "hostname" { print $2 }')
-        echo "LAN で届かないため Tailscale ($addr) 経由で接続します" >&2
-        open "vnc://$addr"
+# gary の Mac (mini: Mac mini, m1: M1 MacBook) を画面共有で開く
+# 同一 LAN なら mDNS で直接、外出先などで届かなければ Tailscale 経由
+# Tailscale のアドレスは ~/.ssh/config.local の Host mini / Host m1 から読む
+function _gary_vnc() {
+    local mdns=$1 host=$2
+    if nc -z -G 2 "$mdns" 5900 2>/dev/null; then
+        open "vnc://$mdns"
+        return
     fi
+    local addr
+    addr=$(ssh -G "$host" | awk '$1 == "hostname" { print $2 }')
+    if [[ $addr == "$host" ]]; then
+        echo "$mdns に LAN で届かず、~/.ssh/config.local に Host $host もありません" >&2
+        return 1
+    fi
+    echo "LAN で届かないため Tailscale ($addr) 経由で接続します" >&2
+    open "vnc://$addr"
 }
+function mini() { _gary_vnc mac-mini.local mini; }
+function m1() { _gary_vnc m1-macbook.local m1; }
 
 # help - Show custom commands and keybindings
 alias help='show_dotfiles_help'

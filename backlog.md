@@ -618,3 +618,22 @@ Caps Lock → Control は、macOS の「修飾キー」設定(内蔵キーボー
 Karabiner の `simple_modifications` に移した。Karabiner が掴んだキーボードの入力は
 仮想キーボードから届くので、macOS 側の設定が効かなくなるため。やめるときは
 macOS 側の設定が残っているので、そのまま元に戻る。
+
+---
+
+## [Todo] M1 MacBook に Tailscale を入れて `m1` を外から使えるようにする
+
+ユーザー gary の Mac は Mac mini と M1 MacBook の 2 台ある。画面共有で開くコマンドは
+`mini` と `m1`(`dot_zsh/alias.zsh`)で、同一 LAN なら mDNS で直接、届かなければ
+`~/.ssh/config.local` の `Host mini` / `Host m1` に書いた Tailscale のアドレスへ繋ぐ。
+
+M1 は LAN 上では `m1-macbook.local` として見えていて、画面共有も有効になっている。
+Tailscale はまだ入れていないので、LAN の外から `m1` を打つと
+「Host m1 がない」と出て終わる。
+
+### 残り
+- M1 に Tailscale を入れ、tailnet に参加させる
+- 各 Mac の `~/.ssh/config.local` に `Host m1`(HostName に Tailscale のアドレス、
+  `User gary`)を足す。このファイルは chezmoi 管理外なので手で書く
+- 他の Mac の `~/.ssh/config.local` に残っている `Host gary` を `Host mini` に改名する
+  (このMacは改名済み)
