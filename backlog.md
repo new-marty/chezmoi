@@ -6,17 +6,6 @@
 
 ---
 
-## [Doing] リポジトリを Public にする
-
-GitHub の `new-marty/chezmoi` は Private。2026-10-04 に全履歴を監査し、HEAD から
-自宅サーバーのアドレスを `~/.ssh/config.local`（chezmoi の管理外）へ移した。
-
-履歴に残っている個人情報を書き換えるかどうかが未決。書き換える場合、今のリポジトリに
-force push しても PR #1 の参照（`refs/pull/1/head`）が古い履歴を指し続ける。この参照は
-利用者には消せないので、書き換えた履歴を新しいリポジトリに push するほうが確実。
-
----
-
 ## [Todo] dotfiles リポジトリの Audit と掃除
 
 ### 概要・ゴール
