@@ -96,12 +96,15 @@ alias ocup='openclaw update'
 
 # remote
 # gary (mac-mini): 同一 LAN なら mDNS で直接、外出先などで届かなければ Tailscale 経由
+# Tailscale のアドレスは ~/.ssh/config.local の Host gary から読む
 function gary() {
     if nc -z -G 2 mac-mini.local 5900 2>/dev/null; then
         open vnc://mac-mini.local
     else
-        echo "LAN で届かないため Tailscale (100.64.0.11) 経由で接続します" >&2
-        open vnc://100.64.0.11
+        local addr
+        addr=$(ssh -G gary | awk '$1 == "hostname" { print $2 }')
+        echo "LAN で届かないため Tailscale ($addr) 経由で接続します" >&2
+        open "vnc://$addr"
     fi
 }
 

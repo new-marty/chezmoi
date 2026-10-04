@@ -180,7 +180,10 @@ chezmoi update
 
 ### Personal Mac
 
-- Includes: OrbStack integration, personal servers (debian, unraid)
+- Includes: OrbStack integration, and `~/.ssh/config.local` for home servers
+- `~/.ssh/config.local` is not managed by chezmoi, so their addresses stay out of
+  this repository. Create it by hand on a new machine (`chmod 600`). The `gary`
+  shell function reads the Tailscale address of `Host gary` from it.
 - GitHub: Direct `github.com` access
 
 ### Work Mac

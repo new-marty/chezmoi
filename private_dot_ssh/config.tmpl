@@ -8,6 +8,10 @@
 # Keep existing OrbStack integration for personal Mac
 Include ~/.orbstack/ssh/config
 
+# Home servers (addresses and users) live in this untracked file so they stay
+# out of the public repository. See docs/en/ssh-setup.md.
+Include ~/.ssh/config.local
+
 {{- end }}
 
 # --- SSH Agent Configuration (All Hosts) ---
@@ -48,21 +52,4 @@ Host github.com
     User git
     IdentityFile ~/.ssh/slalom_macbook.pub
     IdentitiesOnly yes
-{{- end }}
-
-
-{{- if .is_personal_mac }}
-# --- Personal Server Configurations ---
-# Keys managed by 1Password SSH Agent (Ed25519)
-Host debian
-    HostName 192.0.2.11
-    User server
-
-Host unraid
-    HostName 100.64.0.10
-    User root
-
-Host gary
-    HostName 100.64.0.11
-    User gary
 {{- end }}
