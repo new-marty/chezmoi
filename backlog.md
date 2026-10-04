@@ -586,3 +586,35 @@ Phase 8 実行前であれば完全にロールバック可能:
 - [Bitwarden Git Commit Signing](https://community.bitwarden.com/t/git-commit-signing-with-ssh-key/46495)
 - [chezmoi age 暗号化](https://www.chezmoi.io/user-guide/encryption/age/)
 - [chezmoi 暗号化 FAQ](https://www.chezmoi.io/user-guide/frequently-asked-questions/encryption/)
+
+---
+
+## [Doing] Space 長押しの矢印レイヤーを Karabiner-Elements で試す
+
+Space を押している間だけ h/j/k/l を矢印にする（SpaceFN）。HHKB と MacBook 内蔵
+キーボードの両方で使う。2026-10-04 に個人 Mac へ Karabiner-Elements を手で入れ、
+最初は SandS（Space 長押しで Shift）を入れたが、Shift だけでは物足りず矢印の
+レイヤーに替えた。英字入力（`com.apple.keylayout.US`）のときだけ効く。
+
+英字入力に絞った理由: Mac 標準の日本語入力ではスペースが変換キーで、誤爆すると
+変換中のかなが崩れる。Kanata は誤爆の判定が細かく選べるが、単体では入力ソースを
+見られず、補助の kanata-vk-agent（2025-02 から更新なし）が要る。
+
+ルールは Karabiner 公式ギャラリーの spacefn_plus と同じ形。Space を 200ms 押して
+からレイヤーに入り、それより前に別のキーが来たらスペースを打つ。速く打ったときに
+スペースが消えたり矢印に化けたりしないための形で、代わりに矢印の前に一呼吸要る。
+
+同じ日に、左 ⌘ の単押しで英数、右 ⌘ の単押しでかなに切り替えるルールも足した
+（公式ギャラリーの「For Japanese」と同じ形。300ms 以内に離したときだけ）。
+入力ソースをトグルで切り替えると今どちらか分からず、矢印レイヤーの条件
+（英字入力）とも噛み合わないため。
+
+残り: 数日使って続けると決めたら、`karabiner-elements` を `Brewfile.personal_mac`
+に足し、`~/.config/karabiner` をディレクトリごと chezmoi の `symlink_` で管理する。
+`karabiner.json` 単体をリンクすると Karabiner が変更を検知しない（公式ドキュメント）。
+やめるなら cask を消してこの項目を削除する。
+
+Caps Lock → Control は、macOS の「修飾キー」設定(内蔵キーボード向け)から
+Karabiner の `simple_modifications` に移した。Karabiner が掴んだキーボードの入力は
+仮想キーボードから届くので、macOS 側の設定が効かなくなるため。やめるときは
+macOS 側の設定が残っているので、そのまま元に戻る。
