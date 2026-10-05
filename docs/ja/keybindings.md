@@ -1,77 +1,49 @@
 # キーバインド
 
-この dotfiles で設定されているカスタムキーバインド一覧。
+この dotfiles が zsh に追加するキーバインドの一覧。どのキーも、表の「必要なもの」にあるツールが入っていないと役に立たない。ターミナルで `keys` と打つと、この表の短い版が出る。
 
-## コマンド補完・履歴
+| キー     | 動作                                                       | 必要なもの     |
+| -------- | ---------------------------------------------------------- | -------------- |
+| `Ctrl+G` | 決まったテンプレートの一覧からコマンドを選ぶ               | fzf            |
+| `Ctrl+S` | 今いるディレクトリのプロジェクトに合わせた候補から選ぶ     | fzf            |
+| `Ctrl+F` | よく使うコマンドの上位 20 件から選ぶ                       | fzf            |
+| `Ctrl+N` | navi のチートシートからコマンドを選ぶ                      | navi           |
+| `Ctrl+R` | 履歴を検索する                                             | peco           |
+| `Ctrl+H` | ディレクトリやセッションで絞り込みながら履歴を検索する     | atuin          |
+| `Ctrl+U` | 最近いたディレクトリに移動する                             | peco           |
+| `Tab`    | fzf の一覧で補完する。ファイルやフォルダの中身も表示する   | sheldon、fzf   |
 
-| キー     | 機能                 | 説明                                           |
-| -------- | -------------------- | ---------------------------------------------- |
-| `Ctrl+G` | コマンドテンプレート | 100+ のよく使うコマンドから選択                |
-| `Ctrl+S` | スマート候補         | カレントディレクトリのプロジェクトに応じた候補 |
-| `Ctrl+F` | よく使うコマンド     | 履歴から頻度順にコマンドを表示                 |
-| `Ctrl+N` | Navi チートシート    | インタラクティブなコマンドチートシート         |
-| `Ctrl+R` | Peco 履歴検索        | シンプルな履歴検索                             |
-| `Ctrl+H` | Atuin 拡張履歴       | 高度な履歴検索（同期対応）                     |
-| `Ctrl+U` | 最近のディレクトリ   | cdr + peco でディレクトリ移動                  |
-| `Tab`    | fzf-tab 補完         | fzf を使ったタブ補完（プレビュー付き）         |
+選んだコマンドは実行されず、コマンドラインに入るだけだ。Enter を押す前に手直しできる。
 
-## 編集
+## Ctrl+G: コマンドテンプレート
 
-| キー     | 機能       | 説明             |
-| -------- | ---------- | ---------------- |
-| `Ctrl+W` | 単語削除   | 直前の単語を削除 |
-| `Ctrl+A` | 行頭へ移動 | カーソルを行頭へ |
-| `Ctrl+E` | 行末へ移動 | カーソルを行末へ |
+git、docker、pnpm、chezmoi、システム系など、よく使うコマンドが 100 個ほど並ぶ。一覧は `~/.zsh/suggestions.zsh` の `show_command_templates` にある。自分のコマンドを足すときは `chezmoi edit ~/.zsh/suggestions.zsh` で編集する。
 
-※ `Ctrl+U` は最近のディレクトリ移動に割り当て済み。行頭削除は `kill-whole-line`（例: Emacs 互換の `Ctrl+Shift+U` など）に好みで再割り当てしてください。
+## Ctrl+S: プロジェクトに合わせた候補
 
-## 自動補完
+今いるディレクトリのファイルを見て、合いそうなコマンドを出す。
 
-zsh-autosuggestions により、入力中に履歴ベースの候補がグレーで表示されます。
+| 見つかったファイル   | 候補                                        |
+| -------------------- | ------------------------------------------- |
+| `package.json`       | `pnpm install`、`pnpm run dev`、build、test |
+| `Dockerfile`         | `docker build -t`、`docker run -p`          |
+| `docker-compose.yml` | `docker-compose up -d`、down、logs          |
+| `.git`               | `git status`、add、commit、push             |
+| `Makefile`           | `make`、install、clean、test                |
+| `requirements.txt`   | `pip3 install -r requirements.txt`、venv    |
+| `go.mod`             | `go run .`、build、test、`go mod tidy`      |
+| `Cargo.toml`         | `cargo run`、build、test、check             |
 
-| キー         | 機能                               |
-| ------------ | ---------------------------------- |
-| `→` (右矢印) | 候補を全て受け入れ                 |
-| `Ctrl+→`     | 単語単位で受け入れ                 |
-| `Tab`        | fzf-tab で補完（候補が複数の場合） |
+どれもなければ、`ls -la` などの汎用的なコマンドを出す。
 
-## zsh-autopair
+## Ctrl+N: navi のチートシート
 
-括弧やクォートを自動でペアリングします。
+`~/.config/navi/cheats/cheats.cheat` のチートシート（git、pnpm、docker、brew、terraform、kubernetes など）を開く。このファイルは `navi` スイッチで入る。[導入と設定の詳細](setup.md#オプトインのスイッチ)を参照。
 
-| 入力 | 結果                  |
-| ---- | --------------------- |
-| `(`  | `()` (カーソルは中央) |
-| `[`  | `[]`                  |
-| `{`  | `{}`                  |
-| `"`  | `""`                  |
-| `'`  | `''`                  |
+## Ctrl+R と Ctrl+H の違い
 
-## 設定場所
+`Ctrl+R` は、このシェルの履歴をあいまい検索で絞り込むだけの単純なものだ。`Ctrl+H` は atuin を開く。今いるディレクトリやセッションで絞り込めるほか、マシン間で履歴を同期できる。上矢印キーは zsh の通常の動作のままで、atuin には割り当てていない。
 
-キーバインドは以下のファイルで定義されています：
+## そのほかのキーバインド
 
-```
-~/.zshrc                    # メインのキーバインド設定
-~/.zsh/peco.zsh            # Peco 関連のキーバインド
-~/.zsh/suggestions.zsh     # 候補表示ウィジェット
-~/.config/sheldon/plugins.toml  # プラグイン設定
-```
-
-## カスタマイズ
-
-キーバインドを変更するには `~/.zshrc` を編集：
-
-```zsh
-# 例: Ctrl+X で独自コマンドを実行
-bindkey '^X' my_custom_widget
-
-# ウィジェットを先に定義
-function my_custom_widget() {
-    echo "Hello!"
-    zle reset-prompt
-}
-zle -N my_custom_widget
-```
-
-変更後は `exec $SHELL -l` でシェルを再起動してください。
+tmux（`tmux` スイッチ）はプレフィックスに `Ctrl+\` を使い、独自のショートカットを持つ。tmux の中で `Opt+/` を押すと一覧が出る。lazygit や btm の中のキーは、それぞれ `?` で確認できる。

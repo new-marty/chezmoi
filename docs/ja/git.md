@@ -1,125 +1,47 @@
-# Gitツール
+# Git
 
-Git関連のエイリアス、ツール、設定。
+共有の git 設定は `~/.config/git/config` にある。名前、メールアドレス、署名は `~/.gitconfig` に書く。git はこちらを後に読むので、こちらの値が優先される（[導入と設定の詳細](setup.md#git-の-gitconfig-は自分のもの)を参照）。git 用のシェルのエイリアスは[エイリアス](aliases.md#git)にある。
 
-## シェルエイリアス
+## 共有の設定で変わる動作
 
-| エイリアス | コマンド |
-| ---------- | -------- |
-| `gs`  | `git status` |
-| `gl`  | `git log --graph --pretty=format:...` |
-| `gls` | `git log --stat --summary` |
-| `ga`  | `git add` |
-| `br`  | `git branch --sort=-committerdate ...` |
-| `gd`  | `git diff` |
-| `gcm` | `git commit -m` |
-| `gca` | `git commit --amend` |
-| `gp`  | `git push origin head` |
-| `sw`  | `git switch` |
+| 設定                                     | 効果                                                         |
+| ---------------------------------------- | ------------------------------------------------------------ |
+| `init.defaultBranch = main`              | 新しいリポジトリは `main` から始まる                         |
+| `pull.rebase = true`                     | `git pull` はマージではなくリベースする                      |
+| `rebase.autoStash = true`                | コミットしていない変更は、リベースの前に退避され後で戻る     |
+| `push.default = current`、`push.autoSetupRemote = true` | 新しいブランチで `git push` すると、同じ名前のブランチがリモートに作られる |
+| `fetch.prune = true`                     | リモートで消えたブランチは、fetch のときに手元でも消える     |
+| `commit.verbose = true`                  | コミットメッセージを書くエディタに差分が表示される           |
+| `merge.conflictstyle = diff3`            | コンフリクトの表示に共通の祖先も含まれる                     |
+| `core.excludesfile = ~/.gitignore_global` | 共通の無視リストがすべてのリポジトリに効く                  |
+| `credential.helper = osxkeychain`        | HTTPS の認証情報は macOS のキーチェーンに保存される          |
 
----
+`core.editor` は Cursor か VS Code で、chezmoi がファイルを書くときに決まる。[エディタの決まり方](setup.md#エディタの決まり方)を参照。
 
-## Git Configエイリアス
+## git のエイリアス
 
-自分用の git 設定は `~/.gitconfig` に書く。git はこれを共有の設定の後に読むので、同じ項目は `~/.gitconfig` の値が優先される。次のエイリアスは共有の git 設定 `~/.config/git/config` で定義している:
-
-```bash
-git st          # 短いステータス
-git lg          # カラー付きグラフログ
-git lga         # 全ブランチのグラフログ
-git amend       # メッセージ編集なしでamend
-git undo        # 最後のコミットをソフトリセット
-git wip         # クイックWIPコミット
-git please      # leaseオプション付きforce push（安全）
-git cleanup     # マージ済みブランチを削除
-git aliases     # 全エイリアスを表示
-```
-
----
-
-## lazygit（エイリアス: `lg`）
-
-ビジュアルなgit TUI。複雑な操作がコマンドラインより簡単。
-
-```bash
-lg              # lazygitを開く
-```
-
-### キー操作
-
-| キー | アクション |
-|------|----------|
-| `Space` | ステージ/アンステージ |
-| `a` | 全ファイルをステージ |
-| `c` | コミット |
-| `p` | プッシュ |
-| `P` | プル |
-| `b` | ブランチ操作 |
-| `m` | マージ |
-| `r` | リベース |
-| `s` | スタッシュ |
-| `?` | 全キーバインドを表示 |
-| `q` | 終了 |
-
-### ワークフロー例
-
-1. 開く: `lg`
-2. 全てステージ: `a`
-3. コミット: `c` → メッセージ入力 → Enter
-4. プッシュ: `p`
-
----
+| エイリアス    | 実行するもの                                              |
+| ------------- | --------------------------------------------------------- |
+| `git co`      | `checkout`                                                |
+| `git ci`      | `commit`                                                  |
+| `git st`      | `status -sb`                                              |
+| `git br`      | `branch`                                                  |
+| `git df`      | `diff`                                                    |
+| `git lg`      | 1 コミット 1 行のグラフ付きログ                           |
+| `git lga`     | 同じものを全ブランチについて                              |
+| `git last`    | 最後のコミット                                            |
+| `git unstage` | `reset HEAD --`                                           |
+| `git amend`   | `commit --amend --no-edit`                                |
+| `git undo`    | `reset --soft HEAD~1`（最後のコミットを取り消し、変更は残す） |
+| `git wip`     | `add -A` して `WIP` というメッセージでコミットする        |
+| `git please`  | `push --force-with-lease`                                 |
+| `git cleanup` | 今のブランチにマージ済みのローカルブランチを消す。今のブランチと、名前に `main`、`master`、`develop` を含むものは残す |
+| `git aliases` | エイリアスの一覧                                          |
 
 ## delta
 
-シンタックスハイライト付きgit diff強化ツール。
+chezmoi が git の設定を書くときに [delta](https://dandavison.github.io/delta/) が入っていれば、git は `diff`、`log`、`show`、`reflog` のページャに delta を使う。左右に並べた表示と行番号つきで、`n` と `N` でファイル間を移動できる。一度だけ使わないときは `git --no-pager diff` とする。delta を後から入れたら、もう一度 `chezmoi apply` を実行する。
 
-chezmoi が git のページャに delta を設定するのは、`chezmoi apply` の時点で delta がインストールされているときだけ。delta を後から入れたら、もう一度 `chezmoi apply` を実行する。設定されると次のコマンドで使われる:
-- `git diff`
-- `git log`
-- `git show`
+## lazygit
 
-**機能:**
-- シンタックスハイライト
-- サイドバイサイド表示
-- 行番号
-- `n`/`N`でナビゲート
-
-```bash
-git diff              # deltaが自動的に使用される
-git --no-pager diff   # deltaを一時的に無効化
-```
-
----
-
-## 比較: lazygit vs Git CLI
-
-| タスク | Git CLI | Lazygit |
-|--------|---------|---------|
-| ファイルをステージ | `git add file` | ナビゲート + Space |
-| 全てステージ | `git add .` | `a` |
-| コミット | `git commit -m "msg"` | `c` + 入力 |
-| プッシュ | `git push` | `p` |
-| プル | `git pull` | `P` |
-| ブランチ切替 | `git switch branch` | `b` + 選択 |
-| インタラクティブリベース | `git rebase -i HEAD~n` | コミット上で `r` |
-| コンフリクト解決 | 手動編集 | ビジュアルインターフェース |
-| diffを見る | `git diff` | ファイルを選択 |
-| スタッシュ | `git stash` | `s` |
-
----
-
-## GitHub CLI (gh)
-
-```bash
-gh repo clone owner/repo    # クローン
-gh repo create my-project   # 新しいリポジトリを作成
-gh issue list               # Issue一覧
-gh issue create             # Issueを作成
-gh pr list                  # PR一覧
-gh pr create                # PRを作成
-gh pr checkout 123          # PRをチェックアウト
-gh pr view --web            # ブラウザで開く
-gh pr checks                # CIステータスを確認
-gh gist create file.txt     # gistを作成
-```
+[lazygit](https://github.com/jesseduffield/lazygit) が入っていれば `lg` で開く。中のキーは `?` で確認できる。`tmux` スイッチを入れていれば、`Ctrl+\` のあと `g` で tmux のポップアップに開く。

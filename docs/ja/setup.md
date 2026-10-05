@@ -1,61 +1,85 @@
-# マシン固有の設定とオプトイン
+# 導入と設定の詳細
 
-この dotfiles は、設定なしで誰のマシンにも同じように適用できるように作っている。リポジトリには名前、メールアドレス、鍵、ホストを一切入れていない。マシンごとに違う設定は、chezmoi の管理外にあるローカルファイルに書く。アプリケーションの設定は、使うマシンでだけ有効にする（オプトイン）。
+導入の手順に加えて、オプトインのスイッチごとに書かれるファイル、マシン固有のファイルの読み込まれ方、エディタの決まり方、以前の構成からの移行を扱う。
 
-## 導入
+## 導入の手順
 
-```bash
-brew install chezmoi
-chezmoi init new-marty/chezmoi
-chezmoi diff                          # ホームディレクトリで何が変わるかを確認
-chezmoi apply --less-interactive      # 既存のファイルを上書きする前に確認する
-```
+1. chezmoi を入れ、このリポジトリを chezmoi のソースディレクトリに clone する。自分の変更を git で残したいなら、先にフォークして、ここではフォークの名前を使う。
 
-`--less-interactive` には chezmoi v2.66 以降が必要だ（`chezmoi --version` で確認できる）。最初から `chezmoi init --apply` を使ったり、初回に素の `chezmoi apply` を実行したりしてはいけない。どちらも既存の `~/.zshrc` や `~/.ssh/config` などを確認なしで上書きする（[chezmoi issue #1551](https://github.com/twpayne/chezmoi/issues/1551)）。
+   ```bash
+   brew install chezmoi
+   chezmoi init new-marty/chezmoi
+   ```
 
-`chezmoi init` は何も質問せず、`chezmoi.toml` もなくてよい。
+2. ホームディレクトリで何が変わるかを確かめる。
 
-## オプトインするアプリケーション設定
+   ```bash
+   chezmoi diff
+   ```
 
-設定なしで適用されるのはコア部分（zsh、git、SSH、editorconfig）だけだ。下の表の設定は、`~/.config/chezmoi/chezmoi.toml` にスイッチ名を書いたマシンでだけ適用される。
+3. 置き換わるファイルから、残したいものを移しておく。置き換わるのは `~/.zshrc`、`~/.zshenv`、`~/.zprofile`、`~/.ssh/config`、`~/.editorconfig`、`~/.gitignore_global` で、`~/.zsh/` と `~/.config/git/config` が新しく入る。自分のエイリアスと関数は `~/.zshrc.local` に、`PATH` と環境変数は `~/.zshenv.local` に、SSH のホストは `~/.ssh/config.local` に写す。共有のファイルがこれらを読み込む（[マシン固有のファイル](#マシン固有のファイル)を参照）。既存の `~/.gitconfig` はそのまま残る。
+
+4. 適用する。chezmoi は既存のファイルごとに確認してくる。diff で差分を見てから、上書きするか飛ばすかを選ぶ。
+
+   ```bash
+   chezmoi apply --less-interactive
+   ```
+
+5. 新しいターミナルを開く。
+
+最初から `chezmoi init --apply` を使ったり、初回に素の `chezmoi apply` を実行したりしてはいけない。どちらも既存の `~/.zshrc` や `~/.ssh/config` などを確認なしで上書きする（[chezmoi issue #1551](https://github.com/twpayne/chezmoi/issues/1551)）。`--less-interactive` には chezmoi v2.66.0 以降が必要だ（`chezmoi --version` で確認できる）。`chezmoi init` は何も質問せず、設定ファイルもなくてよい。
+
+設定を変えるときは、ホームディレクトリのファイルを直接書き換えず `chezmoi edit ~/.zshrc`（エイリアス `cme`）で編集し、`chezmoi apply`（`cma`）で反映する。このリポジトリの更新を取り込むのは `chezmoi update`（`cmu`）だ。
+
+エイリアスを足したり、自分のマシンでだけ変えたりするときは `~/.zshrc.local` に書く。すべてのマシンで変えるなら、共有のファイルを `chezmoi edit ~/.zsh/alias.zsh` で編集して反映する。どちらも `sz` か新しいターミナルで読み込まれる。
+
+## オプトインのスイッチ
+
+コア部分（zsh、git、SSH、editorconfig）は常に適用される。下の表の設定は、`~/.config/chezmoi/chezmoi.toml` の `optin` にスイッチ名を書いたマシンでだけ適用される。このファイルは `chezmoi edit-config` で開ける。
 
 ```toml
 [data]
     optin = ["vscode", "ghostty", "tmux"]
 ```
 
-| スイッチ   | chezmoi が書くファイル（`~` 以下）                                  | 設定する内容                              |
-| ---------- | ------------------------------------------------------------------- | ----------------------------------------- |
-| `vscode`   | `Library/Application Support/Code/User/` の `settings.json`、`keybindings.json`、`extensions.json` | VS Code の設定とキーバインド |
-| `cursor`   | `Library/Application Support/Cursor/User/settings.json`             | Cursor の設定                             |
-| `ghostty`  | `.config/ghostty/config`、`.config/ghostty/themes/poimandres.ghostty` | Ghostty の設定とテーマ                  |
-| `tmux`     | `.config/tmux/tmux.conf`、`.config/tmux/cheatsheet.md`。加えて tmux プラグインマネージャー（tpm）を `~/.tmux/plugins/tpm` に一度だけ clone する | tmux |
-| `navi`     | `.config/navi/cheats/cheats.cheat`                                  | navi のチートシート                       |
-| `mise`     | `.config/mise/config.toml`                                          | mise のグローバルなツールバージョン       |
-| `justfile` | `justfile`                                                          | 更新と診断のレシピを持つ `~/justfile`     |
+| スイッチ   | chezmoi が書くファイル（`~` 以下）                                  |
+| ---------- | ------------------------------------------------------------------- |
+| `vscode`   | `Library/Application Support/Code/User/` の `settings.json`、`keybindings.json`、`extensions.json` |
+| `cursor`   | `Library/Application Support/Cursor/User/settings.json`             |
+| `ghostty`  | `.config/ghostty/config`、`.config/ghostty/themes/poimandres.ghostty` |
+| `tmux`     | `.config/tmux/tmux.conf`、`.config/tmux/cheatsheet.md`。加えて tmux プラグインマネージャー（tpm）を `~/.tmux/plugins/tpm` に一度だけ clone する |
+| `navi`     | `.config/navi/cheats/cheats.cheat`                                  |
+| `mise`     | `.config/mise/config.toml`                                          |
+| `justfile` | `justfile`                                                          |
 
-VS Code と Cursor は、同じ形式の設定を別々の場所から読む。そこで両方の `settings.json` を 1 つの共有テンプレートから生成しており、どちらか一方でも両方でも選べる。表の正本は `.chezmoidata/optin.toml` にある。そこにない名前を書くと、`chezmoi apply` は有効な名前を挙げたエラーで止まる。
+VS Code と Cursor は、同じ形式の設定を別々の場所から読む。そこで両方の `settings.json` を 1 つのテンプレートから生成しており、どちらか一方でも両方でも選べる。スイッチと書くファイルの対応は `.chezmoidata/optin.toml` で決めており、この表はその写しだ。そこにない名前を書くと、`chezmoi apply` は有効な名前を挙げたエラーで止まる。
 
-スイッチを外しても何も削除されない。chezmoi はそのスイッチのファイルを管理しなくなるだけで、何も知らせず、ファイルはそのままディスクに残って古くなっていく。スイッチができる前からこの dotfiles を使っていた場合も同じことが起きる。次に `chezmoi apply` を実行する前に `optin` を書いておかないと、残したかった設定が管理から外れる。
+一覧を変えたら `chezmoi apply --less-interactive` で反映する。素の `chezmoi apply` は、自分で書いた `~/.config/ghostty/config` のような既存のファイルを確認なしで上書きする。
 
-`just optin` は、スイッチごとに「このマシンで選ばれているか」「ファイルがあるか」「chezmoi がまだ管理しているか」を表示する。chezmoi が書いたファイルのうち、もう管理しておらず、その後だれも変更していないものについては、削除用の `rm` コマンドも表示する。chezmoi が書いた後にアプリや自分が変更したファイルは、`rm` を出さずに確認用の一覧として表示するので、中身を見てから消すかどうか決める。表示するのはファイルだけで、ディレクトリは対象にしない。`~/Library/Application Support/Cursor` のようなディレクトリには、拡張機能やワークスペースの状態といったアプリ自身のデータも入っている。オプトインをやめるときも、ディレクトリごと消してはいけない。
+### スイッチを外すとき
 
-`~/justfile` がない場合は `just --justfile "$(chezmoi source-path)/justfile" optin` で実行する。
+スイッチを外しても何も削除されない。chezmoi はそのスイッチのファイルを管理しなくなるだけで、何も知らせず、ファイルはディスクに残って古くなっていく。スイッチができる前からこの dotfiles を使っていたマシンでも同じことが起きる。次に `chezmoi apply` を実行する前に `optin` を書いておかないと、残したかった設定が管理から外れる。
+
+`just optin` は、スイッチごとに「このマシンで選ばれているか」「ファイルがあるか」「chezmoi がまだ管理しているか」を表示する。chezmoi が書いたファイルのうち、もう管理しておらず、その後だれも変更していないものには、削除用の `rm` コマンドも表示する。chezmoi が書いた後に変更されたファイルは、`rm` を出さずに確認用の一覧に載せる。実行には [just](https://just.systems/) が必要だ。`~/justfile` がない場合は `just --justfile "$(chezmoi source-path)/justfile" optin` で実行する。
+
+**消すのはファイルだけにし、ディレクトリごと消してはいけない。** `~/Library/Application Support/Cursor` のようなディレクトリには、拡張機能やワークスペースの状態といったアプリ自身のデータも入っている。
 
 ## マシン固有のファイル
 
-マシンごとに違うものは、共有ファイルが読み込むローカルファイルに書く。名前や鍵、公開したくないホストはここに書く。リポジトリにはこれらのファイルの中身が入らない。3 つの `*.local` ファイルは chezmoi の管理外で、存在するときだけ読み込まれる。`~/.gitconfig` だけは扱いが違う。chezmoi はこのファイルがなければコメントだけで作るので、apply の後は必ず存在する。ただし、その後 chezmoi が変更することはない。
+マシンごとに違うものは、共有ファイルが読み込むローカルファイルに書く。名前や鍵、公開したくないホストはここに書き、リポジトリには入れない。
 
-| ファイル              | 読み込む場所                        | 主な中身                                  |
-| --------------------- | ----------------------------------- | ----------------------------------------- |
-| `~/.zshenv.local`     | `.zshenv` の最後                    | 追加の `PATH`、環境変数による切り替え     |
-| `~/.zshrc.local`      | `.zshrc` の最後                     | 自分用のエイリアスと関数                  |
-| `~/.gitconfig`        | git が `~/.config/git/config` の後に読む | `user.name`、`user.email`、コミット署名 |
-| `~/.ssh/config.local` | `.ssh/config` の先頭                | ホスト、`IdentityFile`、`IdentityAgent`   |
+| ファイル              | 読み込まれる場所                         | 書くもの                                  |
+| --------------------- | ---------------------------------------- | ----------------------------------------- |
+| `~/.zshenv.local`     | `~/.zshenv` の最後                       | 追加の `PATH`、環境変数                   |
+| `~/.zshrc.local`      | `~/.zshrc` の最後                        | 自分用のエイリアスと関数                  |
+| `~/.gitconfig`        | git が `~/.config/git/config` の後に読む | `user.name`、`user.email`、コミット署名   |
+| `~/.ssh/config.local` | `~/.ssh/config` の先頭                   | ホスト、`IdentityFile`、`IdentityAgent`   |
 
-SSH のファイルだけは最後でなく先頭で読み込む。ssh は各オプションについて最初に見つけた値を使うので、こうすると `config.local` の設定が共有の既定値より優先される。詳しくは [SSH](ssh-setup.md) を参照。
+3 つの `.local` ファイルは chezmoi の管理外で、存在するときだけ読み込まれ、どれも共有の設定より優先される。zsh の 2 つは最後に読み込むことで優先させている。一方、`~/.ssh/config.local` は先頭で読み込む。ssh は各オプションについて最初に見つけた値を使うからだ。詳しくは [SSH](ssh-setup.md) を参照。
 
-共有の git 設定は `~/.config/git/config` にあり、`~/.gitconfig` はマシンごとのファイルになる。すでにある `~/.gitconfig` はそのまま残る。git は `~/.config/git/config` の後に `~/.gitconfig` を読むので、こちらの値が優先される。`git config --global` の書き込み先もこのファイルだ。最小限の `~/.gitconfig` は次のとおり。
+### git の `~/.gitconfig` は自分のもの
+
+共有の git 設定は `~/.config/git/config` にある。git はその後に `~/.gitconfig` を読むので、こちらの値が優先される。`git config --global` の書き込み先もこのファイルだ。chezmoi はこのファイルがなければコメントだけで作り、その後は変更しない。もともと持っていた `~/.gitconfig` はそのまま残り、その中の設定はすべて共有の設定より優先される。共有の設定に任せたい項目は消しておく。最小限の `~/.gitconfig` は次のとおり。
 
 ```ini
 [user]
@@ -63,23 +87,36 @@ SSH のファイルだけは最後でなく先頭で読み込む。ssh は各オ
     email = you@example.com
 ```
 
-以前の構成でこのリポジトリを当てたマシンでは、`~/.gitconfig` が昔の共有設定をまるごと写したファイルになっている。chezmoi はこれを置き換えない。git はこのファイルを最後に読むので、`~/.config/git/config` の設定（エディタの選び方も含む）は上書きされたままになる。名前、メールアドレス、署名、意図して上書きしたい設定だけを残して削り、`~/.gitconfig.local` を読む `[include]` を消して、そのファイルの中身を `~/.gitconfig` に移す。
+### 以前の構成で設定したマシン
 
-API キーはシェルの起動ファイルに書かない。そこで export した値は、シェルが起動するすべてのプロセスに渡ってしまう。キーは `security add-generic-password -a "$USER" -s my-api-key -w` で macOS のキーチェーンに保存し、必要な場所でだけ `security find-generic-password -a "$USER" -s my-api-key -w` で読み出す。たとえばプロジェクトの direnv 用 `.envrc` や、`~/.zshrc.local` の関数の中で読む。
+2026 年 10 月 5 日より前にこのリポジトリを適用したマシンだけが対象だ。以前の版は、git の設定をすべて `~/.gitconfig` に書いていた。chezmoi はこのファイルを置き換えない。git はこのファイルを最後に読むので、`~/.config/git/config` の設定（後述のエディタの選択も含む）が上書きされたままになる。名前、メールアドレス、署名、意図して残したい上書きだけを残して削る。`~/.gitconfig.local` を読む `[include]` があれば、そのファイルの中身を `~/.gitconfig` に移して `[include]` を消す。
 
-## 任意のツールとエディタの選択
+### API キー
 
-ツールはどれも必須ではない。シェルは起動時にそれぞれの有無を確かめ、あるときだけエイリアスや連携を設定する。ツールがなければ、元のコマンドがそのまま動く。たとえば `ls` が eza を呼ぶのは、eza がインストールされているときだけだ。各エイリアスの条件は [エイリアス](aliases.md) にある。
+API キーはシェルの起動ファイルに書かない。そこで export した値は、シェルが起動するすべてのプロセスに渡ってしまう。キーは macOS のキーチェーンに保存する。
 
-| 分野             | ツール                                                          |
-| ---------------- | --------------------------------------------------------------- |
-| シェルプラグイン | sheldon（なければ `~/.zsh/*.zsh` を直接読み込む）               |
-| 履歴、`cd`       | atuin, zoxide, peco, fzf, navi                                  |
-| 置き換え         | eza (`ls`), bat (`cat`), dust (`du`), duf (`df`), procs (`ps`), btm (`top`), lazygit (`lg`), colordiff (`diff`) |
-| 環境             | mise, direnv, thefuck                                           |
-| Git              | delta（ページャ）、Cursor または VS Code（`core.editor`）       |
-| エディタ         | Cursor または VS Code（`c`）                                    |
+```bash
+security add-generic-password -a "$USER" -s my-api-key -w
+```
 
-git の設定とエディタの選択だけは例外で、起動時ではなく chezmoi がファイルを生成するときに決まる。git の `core.editor` とシェルのエイリアス `c` は同じエディタを開く。`optin` に `cursor` があり `cursor` コマンドもあれば Cursor（`cursor --wait`）、そうでなく `code` コマンドがあれば VS Code（`code --wait`）を使い、どちらもなければ設定しない。delta、Cursor、VS Code を後から入れたら、もう一度 `chezmoi apply` を実行する。特定のマシンだけ別のエディタにしたいときは、`~/.gitconfig` で `core.editor` を設定し、`~/.zshrc.local` で `c` を定義し直す。
+読み出すのは、プロジェクトの direnv 用 `.envrc` や `~/.zshrc.local` の関数の中など、必要な場所だけにする。
 
-`just doctor` は、上の表のツールのうちどれがインストールされているかを一覧にする。新しいマシンを用意するときは、元のマシンで `brew bundle dump --file=-` を実行し、その一覧から必要なものを入れる。
+```bash
+security find-generic-password -a "$USER" -s my-api-key -w
+```
+
+## エディタの決まり方
+
+git の `core.editor` とシェルのエイリアス `c` は同じエディタを開く。どれを使うかはシェルの起動時ではなく、chezmoi がファイルを書くときに次の順で決まる。
+
+1. `optin` に `cursor` があり、`cursor` コマンドもあれば Cursor（`cursor --wait`）。
+2. そうでなく `code` コマンドがあれば VS Code（`code --wait`）。
+3. どちらもなければ設定しない。`core.editor` は空のまま、`c` も定義されない。
+
+git のページャの delta も同じで、chezmoi が git の設定を書くときに delta が入っていれば設定される。Cursor、VS Code、delta を後から入れたら、もう一度 `chezmoi apply` を実行する。
+
+特定のマシンだけ別のエディタにしたいときは、`~/.gitconfig` で `core.editor` を設定し、`~/.zshenv.local` で `DOTFILES_GUI_EDITOR` を設定する（または `~/.zshrc.local` で `c` を定義し直す）。
+
+## 新しいマシンを用意する
+
+このリポジトリにはパッケージの一覧がない。元のマシンで `brew bundle dump --file=-` を実行し、その出力から必要なものを新しいマシンに入れる。そのあと README の導入手順に従う。

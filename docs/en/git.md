@@ -1,129 +1,57 @@
-# Git Tools
+# Git
 
-Git-related aliases, tools, and configurations.
+The shared git settings are in `~/.config/git/config`. Your name, email and
+signing go in `~/.gitconfig`, which git reads afterwards, so its values win
+(see [Setup in detail](setup.md#git-gitconfig-is-yours)). The shell aliases for
+git are in [Aliases](aliases.md#git).
 
-## Shell Aliases
+## Behaviour the shared config sets
 
-| Alias | Command |
-| ----- | ------- |
-| `gs`  | `git status` |
-| `gl`  | `git log --graph --pretty=format:...` |
-| `gls` | `git log --stat --summary` |
-| `ga`  | `git add` |
-| `br`  | `git branch --sort=-committerdate ...` |
-| `gd`  | `git diff` |
-| `gcm` | `git commit -m` |
-| `gca` | `git commit --amend` |
-| `gp`  | `git push origin head` |
-| `sw`  | `git switch` |
+| Setting                                  | Effect                                                       |
+| ---------------------------------------- | ------------------------------------------------------------ |
+| `init.defaultBranch = main`              | new repositories start on `main`                             |
+| `pull.rebase = true`                     | `git pull` rebases instead of merging                        |
+| `rebase.autoStash = true`                | uncommitted changes are stashed and restored around a rebase |
+| `push.default = current`, `push.autoSetupRemote = true` | `git push` on a new branch creates it on the remote with the same name |
+| `fetch.prune = true`                     | branches deleted on the remote are removed locally on fetch  |
+| `commit.verbose = true`                  | the commit message editor shows the diff                     |
+| `merge.conflictstyle = diff3`            | conflict markers include the common ancestor                 |
+| `core.excludesfile = ~/.gitignore_global` | the global ignore list is applied in every repository       |
+| `credential.helper = osxkeychain`        | HTTPS credentials are stored in the macOS Keychain           |
 
----
+`core.editor` is Cursor or VS Code, chosen when chezmoi writes the file; see
+[How the editor is chosen](setup.md#how-the-editor-is-chosen).
 
-## Git Config Aliases
+## git aliases
 
-Your own git settings go in `~/.gitconfig`, which git reads after the shared
-config, so its values win. The aliases below are defined in the shared git
-config, `~/.config/git/config`:
-
-```bash
-git st          # Short status
-git lg          # Graph log with colors
-git lga         # Graph log with all branches
-git amend       # Amend without editing message
-git undo        # Soft reset last commit
-git wip         # Quick WIP commit
-git please      # Force push with lease (safe force)
-git cleanup     # Delete merged branches
-git aliases     # Show all aliases
-```
-
----
-
-## lazygit (alias: `lg`)
-
-Visual git TUI. Much easier than command line for complex operations.
-
-```bash
-lg              # Open lazygit
-```
-
-### Key Operations
-
-| Key | Action |
-|-----|--------|
-| `Space` | Stage/unstage file |
-| `a` | Stage all files |
-| `c` | Commit |
-| `p` | Push |
-| `P` | Pull |
-| `b` | Branch operations |
-| `m` | Merge |
-| `r` | Rebase |
-| `s` | Stash |
-| `?` | Show all keybindings |
-| `q` | Quit |
-
-### Workflow Example
-
-1. Open: `lg`
-2. Stage all: `a`
-3. Commit: `c` → type message → Enter
-4. Push: `p`
-
----
+| Alias         | Runs                                                       |
+| ------------- | ---------------------------------------------------------- |
+| `git co`      | `checkout`                                                 |
+| `git ci`      | `commit`                                                   |
+| `git st`      | `status -sb`                                               |
+| `git br`      | `branch`                                                   |
+| `git df`      | `diff`                                                     |
+| `git lg`      | graph log, one line per commit                             |
+| `git lga`     | the same for all branches                                  |
+| `git last`    | the last commit                                            |
+| `git unstage` | `reset HEAD --`                                            |
+| `git amend`   | `commit --amend --no-edit`                                 |
+| `git undo`    | `reset --soft HEAD~1` (undo the last commit, keep changes) |
+| `git wip`     | `add -A` and commit with the message `WIP`                 |
+| `git please`  | `push --force-with-lease`                                  |
+| `git cleanup` | delete local branches merged into the current one, except the current one and any whose name contains `main`, `master` or `develop` |
+| `git aliases` | list all aliases                                           |
 
 ## delta
 
-Enhanced git diff with syntax highlighting.
+When [delta](https://dandavison.github.io/delta/) is installed at the time
+chezmoi writes the git config, git uses it as the pager for `diff`, `log`,
+`show` and `reflog`, with side-by-side view and line numbers. Press `n` and `N`
+to jump between files. `git --no-pager diff` skips it once. If you install delta
+later, run `chezmoi apply` again.
 
-chezmoi sets delta as git's pager only when delta is installed at the time of
-`chezmoi apply`. After installing delta, run `chezmoi apply` again. Once set, it
-is used for:
-- `git diff`
-- `git log`
-- `git show`
+## lazygit
 
-**Features:**
-- Syntax highlighting
-- Side-by-side view
-- Line numbers
-- Navigate with `n`/`N`
-
-```bash
-git diff              # Uses delta automatically
-git --no-pager diff   # Disable delta temporarily
-```
-
----
-
-## Comparison: lazygit vs Git CLI
-
-| Task | Git CLI | Lazygit |
-|------|---------|---------|
-| Stage file | `git add file` | Navigate + Space |
-| Stage all | `git add .` | `a` |
-| Commit | `git commit -m "msg"` | `c` + type |
-| Push | `git push` | `p` |
-| Pull | `git pull` | `P` |
-| Switch branch | `git switch branch` | `b` + select |
-| Interactive rebase | `git rebase -i HEAD~n` | `r` on commit |
-| Resolve conflicts | Manual editing | Visual interface |
-| View diff | `git diff` | Select file |
-| Stash | `git stash` | `s` |
-
----
-
-## GitHub CLI (gh)
-
-```bash
-gh repo clone owner/repo    # Clone
-gh repo create my-project   # Create new repo
-gh issue list               # List issues
-gh issue create             # Create issue
-gh pr list                  # List PRs
-gh pr create                # Create PR
-gh pr checkout 123          # Checkout PR
-gh pr view --web            # Open in browser
-gh pr checks                # Check CI status
-gh gist create file.txt     # Create gist
-```
+`lg` opens [lazygit](https://github.com/jesseduffield/lazygit) when it is
+installed. Press `?` inside it for the keys. With the `tmux` switch, `Ctrl+\`
+then `g` opens it in a tmux popup.

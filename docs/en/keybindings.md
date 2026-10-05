@@ -1,125 +1,62 @@
 # Keybindings
 
-All keyboard shortcuts configured in this dotfiles setup.
+These are the zsh keybindings the dotfiles add. Each one needs the tool named in
+its row; without it the key does nothing useful. Type `keys` in a terminal for a
+short version of this table.
 
-## Command Line Keybindings
+| Key      | What it does                                                   | Needs          |
+| -------- | -------------------------------------------------------------- | -------------- |
+| `Ctrl+G` | Pick a command from a fixed list of templates                  | fzf            |
+| `Ctrl+S` | Pick a command suggested for the project in this directory     | fzf            |
+| `Ctrl+F` | Pick one of your 20 most used commands                         | fzf            |
+| `Ctrl+N` | Pick a command from the navi cheat sheets                      | navi           |
+| `Ctrl+R` | Search history                                                 | peco           |
+| `Ctrl+H` | Search history with more filters (directory, session)          | atuin          |
+| `Ctrl+U` | Jump to a recently visited directory                           | peco           |
+| `Tab`    | Completion in an fzf list, with a preview of files and folders | sheldon, fzf   |
 
-| Key | Function | Description |
-| --- | -------- | ----------- |
-| `Ctrl+G` | `show_command_templates` | Show 100+ predefined command templates |
-| `Ctrl+S` | `smart_command_suggest` | Context-aware suggestions based on project type |
-| `Ctrl+F` | `show_frequent_commands` | Show your most frequently used commands |
-| `Ctrl+N` | `navi_widget` | Open navi interactive cheat sheets |
-| `Ctrl+R` | `peco-select-history` | Search command history with peco |
-| `Ctrl+H` | `_atuin_search_widget` | Search history with atuin (more features) |
-| `Ctrl+U` | `peco-cdr` | Jump to recently visited directories |
-| `Tab` | fzf-tab | Enhanced completion with file preview |
+The picked command is placed on the command line, not run, so you can edit it
+before pressing Enter.
 
----
+## Ctrl+G: command templates
 
-## Details
+A list of about a hundred common commands (git, docker, pnpm, chezmoi and
+system commands), defined in `show_command_templates` in
+`~/.zsh/suggestions.zsh`. To add your own, edit that list with
+`chezmoi edit ~/.zsh/suggestions.zsh`.
 
-### Ctrl+G - Command Templates
+## Ctrl+S: project suggestions
 
-Shows a fuzzy-searchable list of common commands:
-- Git commands
-- Docker commands
-- Package manager commands
-- System commands
-- And more...
+Looks at the files in the current directory and offers matching commands:
 
-### Ctrl+S - Smart Suggestions
+| File found           | Suggested commands                          |
+| -------------------- | ------------------------------------------- |
+| `package.json`       | `pnpm install`, `pnpm run dev`, build, test |
+| `Dockerfile`         | `docker build -t`, `docker run -p`          |
+| `docker-compose.yml` | `docker-compose up -d`, down, logs          |
+| `.git`               | `git status`, add, commit, push             |
+| `Makefile`           | `make`, install, clean, test                |
+| `requirements.txt`   | `pip3 install -r requirements.txt`, venv    |
+| `go.mod`             | `go run .`, build, test, `go mod tidy`      |
+| `Cargo.toml`         | `cargo run`, build, test, check             |
 
-Detects your project type and suggests relevant commands:
+With none of these, it offers a few general commands such as `ls -la`.
 
-| Detected File | Suggestions |
-|---------------|-------------|
-| `package.json` | pnpm install, pnpm run dev, etc. |
-| `Dockerfile` | docker build, docker run |
-| `docker-compose.yml` | docker-compose up/down/logs |
-| `.git` | git status, add, commit, push |
-| `Makefile` | make, make install, make clean |
-| `requirements.txt` | pip install, venv |
-| `go.mod` | go run, go build, go test |
-| `Cargo.toml` | cargo run, cargo build, cargo test |
+## Ctrl+N: navi cheat sheets
 
-### Ctrl+F - Frequent Commands
+Opens the cheat sheets in `~/.config/navi/cheats/cheats.cheat` (git, pnpm,
+docker, brew, terraform, kubernetes and more). The file is applied with the
+`navi` switch; see [Setup in detail](setup.md#opt-in-switches).
 
-Shows your 20 most frequently used commands from history.
+## Ctrl+R and Ctrl+H: two history searches
 
-### Ctrl+N - Navi Cheat Sheets
+`Ctrl+R` is a plain fuzzy filter over this shell's history. `Ctrl+H` opens
+atuin, which can narrow the search to the current directory or session and
+sync history between machines. The up arrow keeps zsh's normal behaviour;
+atuin does not take it over.
 
-Interactive cheat sheets for:
-- git
-- docker
-- npm/pnpm
-- terraform
-- kubernetes
-- system commands
-- And custom cheats
+## Other keybindings
 
-### Ctrl+R vs Ctrl+H
-
-| Feature | Ctrl+R (peco) | Ctrl+H (atuin) |
-|---------|---------------|----------------|
-| Interface | Simple list | Rich UI |
-| Search | Basic fuzzy | Full-text + filters |
-| Context | None | Directory-aware |
-| Sync | No | Optional cloud sync |
-
-### Tab - fzf-tab
-
-Enhanced tab completion:
-- Shows file/directory preview
-- Fuzzy matching
-- Works with all commands
-
-```bash
-cd <Tab>              # Preview directories
-cat <Tab>             # Preview files
-git checkout <Tab>    # Show branches
-kill <Tab>            # Show processes
-```
-
----
-
-## lazygit Keybindings
-
-| Key | Action |
-|-----|--------|
-| `Space` | Stage/unstage |
-| `a` | Stage all |
-| `c` | Commit |
-| `p` | Push |
-| `P` | Pull |
-| `b` | Branches |
-| `m` | Merge |
-| `r` | Rebase |
-| `s` | Stash |
-| `?` | Help |
-| `q` | Quit |
-
----
-
-## bottom (btm) Keybindings
-
-| Key | Action |
-|-----|--------|
-| `e` | Expand widget |
-| `h/l` | Move between widgets |
-| `j/k` | Scroll |
-| `/` | Search |
-| `t` | Tree view |
-| `dd` | Kill process |
-| `?` | Help |
-| `q` | Quit |
-
----
-
-## Quick Reference Command
-
-Type `keys` in terminal to see keybindings:
-
-```bash
-keys
-```
+tmux (with the `tmux` switch) uses `Ctrl+\` as its prefix and has its own
+shortcuts; press `Opt+/` inside tmux to see them. For keys inside lazygit and
+btm, press `?` in the program.

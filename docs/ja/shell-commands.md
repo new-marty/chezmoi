@@ -1,141 +1,78 @@
 # シェルコマンド
 
-カスタムシェルコマンドと関数。
+この dotfiles が zsh の関数として定義しているコマンド。定義は `~/.zsh/commands.zsh` と `~/.zsh/alias.zsh` にある。
 
 ## update-dev
 
-開発ツールを一括更新するメンテナンスコマンド。
+開発ツールをまとめて更新する。各段階はそのツールが入っているときだけ動き、途中で 1 つ失敗しても残りは続ける。
 
 ```bash
-update-dev           # すべて更新（brew, chezmoi, sheldon, atuin, mise）
-update-dev --dry-run # 変更をプレビュー（実際には適用しない）
+update-dev            # すべての段階を実行する
+update-dev --dry-run  # 実行せず、コマンドだけを表示する（-n でも同じ）
 ```
 
-**更新対象:**
-- Homebrew（update, upgrade, cleanup）
-- Chezmoi（pull & apply）
-- Sheldon プラグイン（lock --update）
-- Atuin 履歴同期
-- Mise ランタイムツール更新
-- NPM グローバルパッケージ
-- TLDR キャッシュ
+| 段階       | 実行するコマンド                                           |
+| ---------- | ---------------------------------------------------------- |
+| Homebrew   | `brew update`、`brew upgrade`、`brew cleanup`              |
+| chezmoi    | `chezmoi update --apply`                                   |
+| sheldon    | `sheldon lock --update` のあと、プラグインのキャッシュを消す |
+| atuin      | `atuin sync`                                               |
+| mise       | `mise self-update --yes`、`mise upgrade`                   |
+| npm        | `npm update -g`                                            |
+| tldr       | `tldr --update`                                            |
 
----
+終わったら `rs` でシェルを再起動すると、新しい版が使われる。
 
 ## mkcd
 
-ディレクトリを作成して移動。
+ディレクトリを作り、そこへ移動する。
 
 ```bash
-mkcd my-new-project
-# my-new-project/ を作成して移動
+mkcd my-project
 ```
-
----
 
 ## cdf
 
-fzfを使ってディレクトリを検索して移動。
+今いる場所より下のディレクトリを fzf で一覧にし、選んだところへ移動する。fd と fzf が必要で、ホームディレクトリの中でしか動かない。
 
 ```bash
 cdf
-# fzfが開いてディレクトリを検索・選択
 ```
-
----
 
 ## fcat
 
-ヘッダー付きでファイル内容を再帰的に表示。
+指定したパスの下にあるファイルの中身を、ファイル名の見出しをつけてすべて表示する。複数のファイルをまとめてチャットや issue に貼るときに使う。
 
 ```bash
-fcat src/              # ディレクトリ内のすべてのファイルを表示
-fcat -i src/           # .gitignoreを考慮
-fcat -n '*.js' src/    # パターンでフィルタ
-fcat -c src/main.js    # クリップボードにコピー
-fcat -o output.txt lib/  # ファイルに保存
+fcat src/                 # src/ の下のすべてのファイル
+fcat -i src/              # .gitignore で無視されるファイルを除く
+fcat -n '*.js' src/       # パターンに合うファイルだけ
+fcat -c src/main.js       # 出力をクリップボードにコピーする
+fcat -o out.txt lib/      # 出力をファイルに書く
 ```
 
-### オプション
-
-| オプション | 説明 |
-|-----------|------|
-| `-i, --ignore-gitignore` | .gitignoreパターンを考慮 |
-| `-o, --output FILE` | ファイルに出力 |
-| `-c, --clipboard` | クリップボードにコピー |
-| `-n, --name PATTERN` | ファイル名でフィルタ |
-| `-h, --help` | ヘルプを表示 |
-
----
+| オプション                 | 効果                                               |
+| -------------------------- | -------------------------------------------------- |
+| `-i`, `--ignore-gitignore` | `.gitignore` で無視されるファイルを除く（既定ではすべて表示） |
+| `-n`, `--name PATTERN`     | 名前がパターンに合うファイルだけ。`find -name` と同じ書き方 |
+| `-o`, `--output FILE`      | 画面ではなく `FILE` に書く                         |
+| `-c`, `--clipboard`        | クリップボードにコピーする（`pbcopy`）             |
+| `-h`, `--help`             | ヘルプを表示する                                   |
 
 ## ts2mp4
 
-TS動画ファイルをMP4に変換。
+今いるディレクトリの `.ts` 動画をすべて `.mp4` に変換する。ffmpeg で中身をそのままコピーするので、再エンコードはしない。ffmpeg が必要。変換先の `.mp4` がすでにあるファイルは、`-f` を付けない限り飛ばす。
 
 ```bash
-ts2mp4               # 現在のディレクトリのすべてのTSファイルを変換
-ts2mp4 -o converted/ # 出力ディレクトリを指定
-ts2mp4 --force       # 既存ファイルを上書き
+ts2mp4                # ./mp4/ に書く
+ts2mp4 -o converted   # ./converted/ に書く
+ts2mp4 -f             # 既存の .mp4 を上書きする
 ```
 
-### オプション
+## help、keys、docs
 
-| オプション | 説明 |
-|-----------|------|
-| `-o, --output DIR` | 出力ディレクトリ（デフォルト: mp4） |
-| `-f, --force` | 既存ファイルを上書き |
-| `-h, --help` | ヘルプを表示 |
-
----
-
-## help
-
-すべてのカスタムコマンドとキーバインドを表示。
-
-```bash
-help
-```
-
----
-
-## keys
-
-キーバインドのクイックリファレンスを表示。
-
-```bash
-keys
-```
-
----
-
-## docs
-
-このドキュメントを、`c` と同じ GUI エディタ（Cursor または VS Code）で開く。どちらもなければ Finder でドキュメントのフォルダを開く。
-
-```bash
-docs
-```
-
----
-
-## direnv
-
-ディレクトリ毎の環境変数。ディレクトリに入ると自動的に`.envrc`をロード。
-
-```bash
-echo 'export API_KEY=secret123' > .envrc  # .envrcを作成
-direnv allow      # direnvにロードを許可
-direnv edit       # .envrcを編集
-direnv reload     # 手動でリロード
-direnv deny       # direnvをブロック
-```
-
-### よくある.envrcパターン
-
-```bash
-dotenv                    # .envファイルをロード
-use mise                  # miseでバージョン管理
-PATH_add bin              # ローカルbinをPATHに追加
-source_env .env.local     # 別のファイルをソース
-```
-
+| コマンド | 動作                                                                   |
+| -------- | ---------------------------------------------------------------------- |
+| `help`   | 自作コマンド、エイリアス、キーバインドの一覧を表示する                 |
+| `keys`   | キーバインドの一覧だけを表示する                                       |
+| `docs`   | このドキュメントを `c` と同じエディタで開く。エディタがなければ Finder で開く |

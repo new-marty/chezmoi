@@ -1,142 +1,84 @@
-# Shell Commands
+# Shell commands
 
-Custom shell commands and functions.
+Commands the dotfiles define as zsh functions, in `~/.zsh/commands.zsh` and
+`~/.zsh/alias.zsh`.
 
 ## update-dev
 
-One-command daily maintenance for all development tools.
+Updates the development tools in one go. Each step runs only if its tool is
+installed, and a failed step does not stop the rest.
 
 ```bash
-update-dev           # Update everything (brew, chezmoi, sheldon, atuin, mise)
-update-dev --dry-run # Preview changes without applying
+update-dev            # run every step
+update-dev --dry-run  # print the commands without running them (also -n)
 ```
 
-**What it updates:**
-- Homebrew (update, upgrade, cleanup)
-- Chezmoi (pull & apply)
-- Sheldon plugins (lock --update)
-- Atuin history sync
-- Mise runtime tools upgrade
-- NPM global packages
-- TLDR cache
+| Step       | Command                                                    |
+| ---------- | ---------------------------------------------------------- |
+| Homebrew   | `brew update`, `brew upgrade`, `brew cleanup`              |
+| chezmoi    | `chezmoi update --apply`                                   |
+| sheldon    | `sheldon lock --update`, then clears the plugin cache      |
+| atuin      | `atuin sync`                                               |
+| mise       | `mise self-update --yes`, `mise upgrade`                   |
+| npm        | `npm update -g`                                            |
+| tldr       | `tldr --update`                                            |
 
----
+Run `rs` afterwards to restart the shell with the new versions.
 
 ## mkcd
 
-Create a directory and cd into it.
+Creates a directory and changes into it.
 
 ```bash
-mkcd my-new-project
-# Creates my-new-project/ and changes to it
+mkcd my-project
 ```
-
----
 
 ## cdf
 
-Fuzzy find and cd to a directory using fzf.
+Lists the directories below the current one in fzf and changes into the one
+you pick. It needs fd and fzf, and works only inside your home directory.
 
 ```bash
 cdf
-# Opens fzf to search and select a directory
 ```
-
----
 
 ## fcat
 
-Recursively display file contents with headers.
+Prints the contents of every file under the given paths, each with a header
+naming the file. Useful for pasting a set of files into a chat or an issue.
 
 ```bash
-fcat src/              # Display all files in a directory
-fcat -i src/           # Respect .gitignore
-fcat -n '*.js' src/    # Filter by pattern
-fcat -c src/main.js    # Copy to clipboard
-fcat -o output.txt lib/  # Save to file
+fcat src/                 # every file under src/
+fcat -i src/              # skip files that .gitignore ignores
+fcat -n '*.js' src/       # only files matching the pattern
+fcat -c src/main.js       # copy the output to the clipboard
+fcat -o out.txt lib/      # write the output to a file
 ```
 
-### Options
-
-| Option | Description |
-|--------|-------------|
-| `-i, --ignore-gitignore` | Respect .gitignore patterns |
-| `-o, --output FILE` | Write output to file |
-| `-c, --clipboard` | Copy output to clipboard |
-| `-n, --name PATTERN` | Filter files by name pattern |
-| `-h, --help` | Display help |
-
----
+| Option                   | Effect                                         |
+| ------------------------ | ---------------------------------------------- |
+| `-i`, `--ignore-gitignore` | skip files ignored by `.gitignore` (default: show all) |
+| `-n`, `--name PATTERN`   | only files whose name matches, as in `find -name` |
+| `-o`, `--output FILE`    | write to `FILE` instead of the terminal        |
+| `-c`, `--clipboard`      | copy to the clipboard (`pbcopy`)               |
+| `-h`, `--help`           | show the help                                  |
 
 ## ts2mp4
 
-Convert TS video files to MP4.
+Converts every `.ts` video in the current directory to `.mp4` with ffmpeg,
+copying the streams without re-encoding. It needs ffmpeg. A file whose `.mp4`
+already exists is skipped unless you pass `-f`.
 
 ```bash
-ts2mp4               # Convert all TS files in current directory
-ts2mp4 -o converted/ # Specify output directory
-ts2mp4 --force       # Force overwrite existing files
+ts2mp4                # write to ./mp4/
+ts2mp4 -o converted   # write to ./converted/
+ts2mp4 -f             # overwrite existing .mp4 files
 ```
 
-### Options
+## help, keys, docs
 
-| Option | Description |
-|--------|-------------|
-| `-o, --output DIR` | Output directory (default: mp4) |
-| `-f, --force` | Overwrite existing files |
-| `-h, --help` | Display help |
-
----
-
-## help
-
-Display all custom commands and keybindings.
-
-```bash
-help
-```
-
----
-
-## keys
-
-Show keybindings quick reference.
-
-```bash
-keys
-```
-
----
-
-## docs
-
-Open this documentation in the GUI editor chezmoi chose for `c` (Cursor or VS
-Code). Without either, the docs folder opens in Finder.
-
-```bash
-docs
-```
-
----
-
-## direnv
-
-Per-directory environment variables. Automatically loads `.envrc` when entering a directory.
-
-```bash
-echo 'export API_KEY=secret123' > .envrc  # Create .envrc
-direnv allow      # Allow direnv to load it
-direnv edit       # Edit .envrc
-direnv reload     # Reload manually
-direnv deny       # Block direnv
-```
-
-### Common .envrc patterns
-
-```bash
-dotenv                    # Load .env file
-use mise                  # Use mise for version management
-PATH_add bin              # Add local bin to PATH
-source_env .env.local     # Source another file
-```
-
+| Command | Does                                                               |
+| ------- | ------------------------------------------------------------------ |
+| `help`  | prints the custom commands, aliases and keybindings                |
+| `keys`  | prints the keybindings only                                        |
+| `docs`  | opens this documentation in the editor `c` uses, or Finder without one |

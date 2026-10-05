@@ -1,126 +1,94 @@
 # エイリアス
 
-この dotfiles 設定の完全なエイリアスリファレンス。
+この dotfiles が定義するエイリアスの一覧。任意のツールを呼ぶエイリアスは、シェルの起動時にそのツールがあるときだけ設定される。ツールがなければ元のコマンドがそのまま動く。自分のエイリアスは `~/.zshrc.local` に書く。そこで同じ名前を定義すれば、ここにあるものを置き換えられる。
 
-## Git エイリアス
+## Git
 
-| エイリアス | コマンド                               |
-| ---------- | -------------------------------------- |
-| `gs`       | `git status`                           |
-| `gl`       | `git log --graph --pretty=format:...`  |
-| `gls`      | `git log --stat --summary`             |
-| `ga`       | `git add`                              |
-| `br`       | `git branch --sort=-committerdate ...` |
-| `gd`       | `git diff`                             |
-| `gcm`      | `git commit -m`                        |
-| `gca`      | `git commit --amend`                   |
-| `gp`       | `git push origin head`                 |
-| `sw`       | `git switch`                           |
-| `lg`       | `lazygit`（lazygit があるときだけ）    |
+| エイリアス | 実行するもの                                   |
+| ---------- | ---------------------------------------------- |
+| `gs`       | `git status`                                   |
+| `gst`      | `git status --short --branch`                  |
+| `ga`       | `git add`                                      |
+| `gd`       | `git diff`                                     |
+| `gdiff`    | `git diff --color-words`                       |
+| `gcm`      | `git commit -m`                                |
+| `gca`      | `git commit --amend`                           |
+| `gp`       | `git push origin head`                         |
+| `sw`       | `git switch`                                   |
+| `br`       | `git branch`。新しい順、日付つき               |
+| `gl`       | `git log --graph`。1 行の書式                  |
+| `gls`      | `git log --stat --summary`                     |
+| `glog`     | `git log --oneline --graph --decorate --all`   |
+| `gtree`    | `git log --graph --full-history --all`。色つき |
+| `lg`       | `lazygit`（入っているとき）                    |
 
----
+git 自体にもエイリアス（`git st`、`git undo` など）がある。[Git](git.md) を参照。
 
-## モダン CLI エイリアス
+## 標準コマンドの置き換え
 
-下の表のエイリアスは、対応するツールがインストールされているときだけ設定される。シェルの起動時に確認するので、ツールがなければ元のコマンドがそのまま動く（`diff` だけは `diff -u` になる）。
+| エイリアス | 実行するもの                       | 条件                     |
+| ---------- | ---------------------------------- | ------------------------ |
+| `ls`       | `eza --icons=auto`                 | eza があるとき           |
+| `lll`      | `eza -abghHliS --git --icons=auto` | eza があるとき           |
+| `cat`      | `bat --style=plain --paging=never` | bat があるとき           |
+| `catp`     | `bat`（ページャと行番号つき）      | bat があるとき           |
+| `du`       | `dust`                             | dust があるとき          |
+| `df`       | `duf`                              | duf があるとき           |
+| `ps`       | `procs`                            | procs があるとき         |
+| `top`      | `btm`                              | btm があるとき           |
+| `diff`     | `colordiff -u`。なければ `diff -u` | 常に                     |
+| `ll`       | `ls -la`                           | 常に                     |
+| `la`       | `ls -l`                            | 常に                     |
+| `l1`       | `ls -1`                            | 常に                     |
 
-| エイリアス | コマンド                           | 元コマンド | 説明                           |
-| ---------- | ---------------------------------- | ---------- | ------------------------------ |
-| `ls`       | `eza --icons=auto`                 | `ls`       | アイコン付きリスト             |
-| `du`       | `dust`                             | `du`       | ビジュアルディスク使用量       |
-| `df`       | `duf`                              | `df`       | 美しいディスク空き             |
-| `ps`       | `procs`                            | `ps`       | モダンプロセス表示             |
-| `top`      | `btm`                              | `top`      | グラフィカルシステムモニター   |
-| `cat`      | `bat --style=plain --paging=never` | `cat`      | シンタックスハイライト付き cat |
-| `catp`     | `bat`                              | -          | ページャと行番号付きの bat     |
-| `diff`     | `colordiff -u`                     | `diff`     | カラー付き diff                |
+`ll`、`la`、`l1` は `ls` を呼ぶので、eza があれば eza で表示される。
 
----
+## chezmoi
 
-## ファイル＆ナビゲーションエイリアス
+| エイリアス | 実行するもの     |
+| ---------- | ---------------- |
+| `cm`       | `chezmoi`        |
+| `cma`      | `chezmoi apply`  |
+| `cmd`      | `chezmoi diff`   |
+| `cme`      | `chezmoi edit`   |
+| `cmu`      | `chezmoi update` |
+| `cmcd`     | `chezmoi cd`     |
 
-| エイリアス | コマンド                           | 説明                                     |
-| ---------- | ---------------------------------- | ---------------------------------------- |
-| `ls`       | `eza --icons=auto`                 | アイコン付きリスト（eza があるとき）     |
-| `ll`       | `ls -la`                           | 長形式、全ファイル                       |
-| `la`       | `ls -l`                            | 長形式                                   |
-| `l1`       | `ls -1`                            | 1 行に 1 ファイル                        |
-| `lll`      | `eza -abghHliS --git --icons=auto` | git ステータス付き詳細（eza があるとき） |
+## tmux
 
----
+| エイリアス | 実行するもの           |
+| ---------- | ---------------------- |
+| `t`        | `tmux`                 |
+| `ta`       | `tmux attach -t`       |
+| `tl`       | `tmux list-sessions`   |
+| `tn`       | `tmux new-session -s`  |
 
-## パッケージマネージャーエイリアス
+## pnpm と Docker
 
-| エイリアス | コマンド       | 説明                   |
-| ---------- | -------------- | ---------------------- |
-| `pp`       | `pnpm`         | pnpm                   |
-| `pi`       | `pnpm install` | 依存関係をインストール |
-| `pr`       | `pnpm run`     | スクリプトを実行       |
-| `pd`       | `pnpm dev`     | 開発サーバーを起動     |
-| `pu`       | `pnpm update`  | 依存関係を更新         |
-| `pb`       | `pnpm build`   | プロジェクトをビルド   |
+| エイリアス | 実行するもの           |
+| ---------- | ---------------------- |
+| `pp`       | `pnpm`                 |
+| `pi`       | `pnpm install`         |
+| `pr`       | `pnpm run`             |
+| `pd`       | `pnpm dev`             |
+| `pu`       | `pnpm update`          |
+| `pb`       | `pnpm build`           |
+| `dcu`      | `docker compose up`    |
+| `dcud`     | `docker compose up -d` |
+| `dcd`      | `docker compose down`  |
 
----
+## シェルとその他
 
-## ユーティリティエイリアス
+| エイリアス | 実行するもの                               |
+| ---------- | ------------------------------------------ |
+| `rs`       | `exec zsh -l`（シェルを再起動する）        |
+| `sz`       | `source ~/.zshrc`                          |
+| `c`        | Cursor か VS Code（下を参照）              |
+| `p`        | `python3`                                  |
+| `tf`       | `terraform`                                |
+| `yolo`     | `claude --dangerously-skip-permissions`    |
+| `help`     | 自作コマンド、エイリアス、キーバインドの一覧を出す |
+| `keys`     | キーバインドの一覧を出す                   |
+| `docs`     | このドキュメントをエディタで開く           |
 
-| エイリアス | コマンド               | 説明                                    |
-| ---------- | ---------------------- | --------------------------------------- |
-| `rs`       | `exec zsh -l`          | シェルを再起動                          |
-| `sz`       | `source ~/.zshrc`      | zshrc をリロード                        |
-| `c`        | Cursor または VS Code  | GUI エディタを開く（下記参照）          |
-| `p`        | `python3`              | Python 3                                |
-| `tf`       | `terraform`            | Terraform                               |
-| `dcud`     | `docker compose up -d` | Docker compose をバックグラウンドで起動 |
-| `dcu`      | `docker compose up`    | Docker compose 起動                     |
-| `dcd`      | `docker compose down`  | Docker compose 停止                     |
-
-`c` が開くのは、git の `core.editor` と同じエディタだ。どちらを使うかは、chezmoi がファイルを生成するときに決まる。`~/.config/chezmoi/chezmoi.toml` の `optin` に `cursor` があり、`cursor` コマンドもあれば Cursor を使う。そうでなければ、`code` コマンドがあるときに VS Code を使う。どちらもなければ `c` は定義されない。Cursor や VS Code を後から入れたら、もう一度 `chezmoi apply` を実行する。
-
-選ばれたエディタはシェル変数 `DOTFILES_GUI_EDITOR` に入る。特定のマシンだけ別のエディタにしたいときは、`~/.zshenv.local` でこの変数を設定するか、`~/.zshrc.local` で `c` を定義し直す。
-
----
-
-## Chezmoi エイリアス
-
-| エイリアス | コマンド         | 説明             |
-| ---------- | ---------------- | ---------------- |
-| `cm`       | `chezmoi`        | Chezmoi          |
-| `cma`      | `chezmoi apply`  | 変更を適用       |
-| `cmd`      | `chezmoi diff`   | diff を表示      |
-| `cme`      | `chezmoi edit`   | ファイルを編集   |
-| `cmu`      | `chezmoi update` | リモートから更新 |
-| `cmcd`     | `chezmoi cd`     | ソースに移動     |
-
----
-
-## ヘルプエイリアス
-
-| エイリアス | コマンド             | 説明                         |
-| ---------- | -------------------- | ---------------------------- |
-| `help`     | `show_dotfiles_help` | 全コマンドを表示             |
-| `keys`     | `show_keybindings`   | キーバインドを表示           |
-| `docs`     | `open_dotfiles_docs` | ドキュメントをエディタで開く |
-
----
-
-## キーバインド
-
-| キー     | 機能                         |
-| -------- | ---------------------------- |
-| `Ctrl+G` | コマンドテンプレート         |
-| `Ctrl+S` | スマート候補（コンテキスト） |
-| `Ctrl+F` | よく使うコマンド             |
-| `Ctrl+N` | Navi チートシート            |
-| `Ctrl+R` | Peco 履歴検索                |
-| `Ctrl+H` | Atuin 拡張履歴検索           |
-| `Ctrl+U` | 最近のディレクトリ           |
-| `Tab`    | fzf-tab 補完                 |
-
----
-
-## メンテナンスエイリアス
-
-| エイリアス   | コマンド | 説明                   |
-| ------------ | -------- | ---------------------- |
-| `update-dev` | (関数)   | 全開発ツールを一括更新 |
+`c` は git の `core.editor` と同じエディタを開く。Cursor と VS Code のどちらにするかは、chezmoi がファイルを書くときに決まる。どちらも入っていなければ `c` は定義されない。決まり方と変え方は[導入と設定の詳細](setup.md#エディタの決まり方)にある。

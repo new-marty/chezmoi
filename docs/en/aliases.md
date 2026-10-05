@@ -1,118 +1,100 @@
 # Aliases
 
-Complete alias reference for this dotfiles setup.
+Every alias the dotfiles define. An alias for an optional tool is set only when
+the tool is installed (the shell checks when it starts), so without the tool the
+original command runs unchanged. Add your own aliases in `~/.zshrc.local`; an
+alias defined there replaces one of these.
 
-## Git Aliases
+## Git
 
-| Alias | Command |
-| ----- | ------- |
-| `gs`  | `git status` |
-| `gl`  | `git log --graph --pretty=format:...` |
-| `gls` | `git log --stat --summary` |
-| `ga`  | `git add` |
-| `br`  | `git branch --sort=-committerdate ...` |
-| `gd`  | `git diff` |
-| `gcm` | `git commit -m` |
-| `gca` | `git commit --amend` |
-| `gp`  | `git push origin head` |
-| `sw`  | `git switch` |
-| `lg`  | `lazygit` (only when lazygit is installed) |
+| Alias   | Runs                                                   |
+| ------- | ------------------------------------------------------ |
+| `gs`    | `git status`                                           |
+| `gst`   | `git status --short --branch`                          |
+| `ga`    | `git add`                                              |
+| `gd`    | `git diff`                                             |
+| `gdiff` | `git diff --color-words`                               |
+| `gcm`   | `git commit -m`                                        |
+| `gca`   | `git commit --amend`                                   |
+| `gp`    | `git push origin head`                                 |
+| `sw`    | `git switch`                                           |
+| `br`    | `git branch`, newest first, with dates                 |
+| `gl`    | `git log --graph` with a one-line format               |
+| `gls`   | `git log --stat --summary`                             |
+| `glog`  | `git log --oneline --graph --decorate --all`           |
+| `gtree` | `git log --graph --full-history --all`, colored        |
+| `lg`    | `lazygit` (when installed)                             |
 
----
+git itself has more aliases (`git st`, `git undo` and so on); see [Git](git.md).
 
-## Modern CLI Aliases
+## Replacements for standard commands
 
-Each alias below is set only when its tool is installed; the shell checks when
-it starts. Without the tool, the original command runs unchanged (`diff` still
-becomes `diff -u`).
+| Alias  | Runs                               | When                     |
+| ------ | ---------------------------------- | ------------------------ |
+| `ls`   | `eza --icons=auto`                 | eza is installed         |
+| `lll`  | `eza -abghHliS --git --icons=auto` | eza is installed         |
+| `cat`  | `bat --style=plain --paging=never` | bat is installed         |
+| `catp` | `bat` (paging, line numbers)       | bat is installed         |
+| `du`   | `dust`                             | dust is installed        |
+| `df`   | `duf`                              | duf is installed         |
+| `ps`   | `procs`                            | procs is installed       |
+| `top`  | `btm`                              | btm is installed         |
+| `diff` | `colordiff -u`, or `diff -u`       | always                   |
+| `ll`   | `ls -la`                           | always                   |
+| `la`   | `ls -l`                            | always                   |
+| `l1`   | `ls -1`                            | always                   |
 
-| Alias | Command | Original | Description |
-| ----- | ------- | -------- | ----------- |
-| `ls`  | `eza --icons=auto` | `ls` | List with icons |
-| `du`  | `dust` | `du` | Visual disk usage |
-| `df`  | `duf` | `df` | Beautiful disk free |
-| `ps`  | `procs` | `ps` | Modern process viewer |
-| `top` | `btm` | `top` | Graphical system monitor |
-| `cat` | `bat --style=plain --paging=never` | `cat` | Syntax-highlighted cat |
-| `catp`| `bat` | - | bat with paging and line numbers |
-| `diff`| `colordiff -u` | `diff` | Colored diff |
+`ll`, `la` and `l1` call `ls`, so they use eza when it is installed.
 
----
+## chezmoi
 
-## File & Navigation Aliases
+| Alias  | Runs             |
+| ------ | ---------------- |
+| `cm`   | `chezmoi`        |
+| `cma`  | `chezmoi apply`  |
+| `cmd`  | `chezmoi diff`   |
+| `cme`  | `chezmoi edit`   |
+| `cmu`  | `chezmoi update` |
+| `cmcd` | `chezmoi cd`     |
 
-| Alias | Command | Description |
-| ----- | ------- | ----------- |
-| `ls`  | `eza --icons=auto` | List with icons (when eza is installed) |
-| `ll`  | `ls -la` | Long format, all files |
-| `la`  | `ls -l` | Long format |
-| `l1`  | `ls -1` | One file per line |
-| `lll` | `eza -abghHliS --git --icons=auto` | Detailed with git status (when eza is installed) |
+## tmux
 
----
+| Alias | Runs                   |
+| ----- | ---------------------- |
+| `t`   | `tmux`                 |
+| `ta`  | `tmux attach -t`       |
+| `tl`  | `tmux list-sessions`   |
+| `tn`  | `tmux new-session -s`  |
 
-## Package Manager Aliases
+## pnpm and Docker
 
-| Alias | Command | Description |
-| ----- | ------- | ----------- |
-| `pp`  | `pnpm` | pnpm |
-| `pi`  | `pnpm install` | Install dependencies |
-| `pr`  | `pnpm run` | Run script |
-| `pd`  | `pnpm dev` | Run dev server |
-| `pu`  | `pnpm update` | Update dependencies |
-| `pb`  | `pnpm build` | Build project |
+| Alias  | Runs                   |
+| ------ | ---------------------- |
+| `pp`   | `pnpm`                 |
+| `pi`   | `pnpm install`         |
+| `pr`   | `pnpm run`             |
+| `pd`   | `pnpm dev`             |
+| `pu`   | `pnpm update`          |
+| `pb`   | `pnpm build`           |
+| `dcu`  | `docker compose up`    |
+| `dcud` | `docker compose up -d` |
+| `dcd`  | `docker compose down`  |
 
----
+## Shell and other
 
-## Utility Aliases
+| Alias  | Runs                                       |
+| ------ | ------------------------------------------ |
+| `rs`   | `exec zsh -l` (restart the shell)          |
+| `sz`   | `source ~/.zshrc`                          |
+| `c`    | Cursor or VS Code (see below)              |
+| `p`    | `python3`                                  |
+| `tf`   | `terraform`                                |
+| `yolo` | `claude --dangerously-skip-permissions`    |
+| `help` | list the custom commands, aliases and keybindings |
+| `keys` | list the keybindings                       |
+| `docs` | open this documentation in the editor      |
 
-| Alias | Command | Description |
-| ----- | ------- | ----------- |
-| `rs`  | `exec zsh -l` | Restart shell |
-| `sz`  | `source ~/.zshrc` | Reload zshrc |
-| `c`   | Cursor or VS Code | Open the GUI editor (see below) |
-| `p`   | `python3` | Python 3 |
-| `tf`  | `terraform` | Terraform |
-| `dcud`| `docker compose up -d` | Docker compose up, detached |
-| `dcu` | `docker compose up` | Docker compose up |
-| `dcd` | `docker compose down` | Docker compose down |
-
-`c` opens the same editor as git's `core.editor`. chezmoi picks it when it
-renders the files: Cursor when `cursor` is in the `optin` list in
-`~/.config/chezmoi/chezmoi.toml` and the `cursor` command exists, otherwise VS
-Code when `code` exists. With neither, `c` is not defined. After installing
-Cursor or VS Code, run `chezmoi apply` again. The choice is stored in
-`DOTFILES_GUI_EDITOR`; to use another editor on one machine, set that variable
-in `~/.zshenv.local` or redefine `c` in `~/.zshrc.local`.
-
----
-
-## Chezmoi Aliases
-
-| Alias | Command | Description |
-| ----- | ------- | ----------- |
-| `cm`  | `chezmoi` | Chezmoi |
-| `cma` | `chezmoi apply` | Apply changes |
-| `cmd` | `chezmoi diff` | Show diff |
-| `cme` | `chezmoi edit` | Edit file |
-| `cmu` | `chezmoi update` | Update from remote |
-| `cmcd`| `chezmoi cd` | Go to source |
-
----
-
-## Help Aliases
-
-| Alias | Command | Description |
-| ----- | ------- | ----------- |
-| `help`| `show_dotfiles_help` | Show all commands |
-| `keys`| `show_keybindings` | Show keybindings |
-| `docs`| `open_dotfiles_docs` | Open docs in editor |
-
----
-
-## Maintenance Aliases
-
-| Alias | Command | Description |
-| ----- | ------- | ----------- |
-| `update-dev` | (function) | Update all dev tools |
-
+`c` opens the same editor as git's `core.editor`: Cursor or VS Code, chosen
+when chezmoi writes the files. With neither installed, `c` is not defined.
+[Setup in detail](setup.md#how-the-editor-is-chosen) explains the choice and
+how to override it.
