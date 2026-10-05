@@ -11,6 +11,11 @@ function peco-select-history() {
 zle -N peco-select-history
 bindkey '^r' peco-select-history
 
+# cdr and its directory list are zsh functions that must be loaded before use;
+# chpwd_recent_dirs records each directory change for `cdr -l` to list.
+autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+add-zsh-hook chpwd chpwd_recent_dirs
+
 # Get destination from cdr list
 function peco-get-destination-from-cdr() {
   cdr -l |
