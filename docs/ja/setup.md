@@ -51,6 +51,7 @@
 | `navi`     | `.config/navi/cheats/cheats.cheat`                                  |
 | `mise`     | `.config/mise/config.toml`                                          |
 | `justfile` | `justfile`                                                          |
+| `karabiner`| `.config/karabiner`(ソースディレクトリの `karabiner/` へのシンボリックリンク) |
 
 VS Code と Cursor は、同じ形式の設定を別々の場所から読む。そこで両方の `settings.json` を 1 つのテンプレートから生成しており、どちらか一方でも両方でも選べる。スイッチと書くファイルの対応は `.chezmoidata/optin.toml` で決めており、この表はその写しだ。そこにない名前を書くと、`chezmoi apply` は有効な名前を挙げたエラーで止まる。
 

@@ -160,13 +160,16 @@ jobs:
             [ -e "$home/$p" ] || { echo "::error::opted in but missing: ~/$p"; fail=1; }
           done < "$RUNNER_TEMP/optin-files.txt"
           # A file added under a switch's directory must also be added to its
-          # `files` list, or `just optin` would not report it.
+          # `files` list, or `just optin` would not report it. Entries outside
+          # every switch's directories (~/justfile, the ~/.config/karabiner
+          # symlink) are covered by the existence check above instead.
+          sed 's|$|/|' "$RUNNER_TEMP/optin-dirs.txt" > "$RUNNER_TEMP/optin-dir-prefixes.txt"
           chezmoi managed --config "$RUNNER_TEMP/all.toml" --source "$SRC" \
             --destination "$home" --include=files \
-            | grep -F -f <(sed 's|$|/|' "$RUNNER_TEMP/optin-dirs.txt") \
+            | grep -F -f "$RUNNER_TEMP/optin-dir-prefixes.txt" \
             | sort > "$RUNNER_TEMP/managed-in-dirs.txt"
-          if ! sort "$RUNNER_TEMP/optin-files.txt" | grep -v '^justfile$' \
-              | diff - "$RUNNER_TEMP/managed-in-dirs.txt"; then
+          if ! grep -F -f "$RUNNER_TEMP/optin-dir-prefixes.txt" "$RUNNER_TEMP/optin-files.txt" \
+              | sort | diff - "$RUNNER_TEMP/managed-in-dirs.txt"; then
             echo "::error::.chezmoidata/optin.toml files lists differ from what chezmoi manages"
             fail=1
           fi

@@ -31,3 +31,6 @@ Thumbs.db
 # Cursor IDE
 .cursor/
 
+# Backups Karabiner-Elements writes next to karabiner.json
+karabiner/automatic_backups/
+

@@ -2,7 +2,7 @@
 
 macOS dotfiles managed with [chezmoi](https://www.chezmoi.io/). The core
 (zsh, git, SSH and editorconfig) applies to any machine with no configuration.
-Settings for VS Code, Cursor, Ghostty, tmux, navi, mise and a `justfile` apply
+Settings for VS Code, Cursor, Ghostty, tmux, navi, mise, Karabiner-Elements and a `justfile` apply
 only on machines that opt in to them. Nothing in the repository identifies a
 person: names, email addresses, keys and hosts go in local files that chezmoi
 never touches.
@@ -104,6 +104,7 @@ chezmoi apply --less-interactive
 | `navi`     | navi cheat sheets                                           |
 | `mise`     | mise global tool versions                                   |
 | `justfile` | `~/justfile` with update and diagnostic recipes             |
+| `karabiner`| Karabiner-Elements rules (`~/.config/karabiner` links into the repository) |
 
 Removing a switch later deletes nothing: chezmoi stops managing those files
 and leaves them where they are. [Setup in detail](docs/en/setup.md) lists the
@@ -145,6 +146,7 @@ in, where to keep API keys, and what to do if this repository wrote an older
 ├── private_dot_ssh/              # ~/.ssh/config
 ├── private_dot_config/           # git (shared config), ghostty, mise, navi, sheldon, tmux
 ├── private_Library/              # VS Code and Cursor settings (macOS)
+├── karabiner/                    # Karabiner-Elements config, linked from ~/.config/karabiner
 ├── .chezmoidata/optin.toml       # opt-in switches and the files each one writes
 ├── .chezmoitemplates/            # settings template shared by VS Code and Cursor
 ├── run_once_before_install-tpm.sh.tmpl   # installs the tmux plugin manager (tmux switch)

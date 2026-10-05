@@ -25,6 +25,7 @@ only when its switch is in the `optin` list of
 | `navi`     | `.config/navi/cheats/cheats.cheat`                                  |
 | `mise`     | `.config/mise/config.toml`                                          |
 | `justfile` | `justfile`                                                          |
+| `karabiner`| `.config/karabiner` (a symlink to `karabiner/` in the source directory) |
 
 VS Code and Cursor read settings in the same format from different places, so
 both `settings.json` files come from one template and you can select either or

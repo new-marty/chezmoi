@@ -14,6 +14,10 @@ README.md
 docs
 scripts
 
+# The Karabiner-Elements config itself. ~/.config/karabiner links here (see
+# private_dot_config/symlink_karabiner.tmpl), so it is not copied to ~/karabiner.
+karabiner
+
 {{ if ne .chezmoi.os "darwin" }}
 # macOS-only: Library/Application Support paths (VS Code and Cursor settings)
 Library

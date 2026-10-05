@@ -66,3 +66,9 @@ dirs = [".config/mise"]
 
 [optin_paths.justfile]
 files = ["justfile"]
+
+# ~/.config/karabiner becomes a symlink to karabiner/ in the source directory,
+# because Karabiner-Elements rewrites karabiner.json itself and stops noticing
+# changes when karabiner.json alone is a symlink.
+[optin_paths.karabiner]
+files = [".config/karabiner"]
