@@ -30,7 +30,6 @@ log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 # Parse aliases from alias.zsh
 parse_aliases() {
     local section=""
-    local aliases=()
     
     while IFS= read -r line; do
         # Detect section headers (# comments)

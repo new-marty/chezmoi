@@ -14,7 +14,7 @@ chezmoi apply --dry-run -v # Preview changes without applying
 chezmoi diff               # Show diff between source and target
 chezmoi execute-template '{{ .chezmoi.os }}'  # Test template rendering
 
-just lint                  # Lint shell scripts with shellcheck
+just lint                  # zsh -n on zsh files, ShellCheck on bash/sh scripts
 just doctor                # Check all tools are installed
 ```
 
@@ -129,7 +129,7 @@ GitHub Issues are disabled for this repository.
 ## CI
 
 GitHub Actions (`.github/workflows/lint.yml`) runs on pushes/PRs to main:
-- ShellCheck on `dot_zsh/*.zsh`
+- `zsh -n` on `dot_zshrc` and `dot_zsh/`, ShellCheck on `scripts/*.sh` and the `run_once_` script (ShellCheck does not support zsh)
 - fcat tests on macOS runner
 - chezmoi doctor + template validation
 - `fresh-apply`: apply into an empty home three times, with paths taken from `.chezmoidata/optin.toml`: empty config (core files only, interactive zsh starts), every switch selected (every listed file exists, and the `files` lists match `chezmoi managed` under each switch's `dirs`), an unknown switch (apply fails)

@@ -198,9 +198,12 @@ clean:
     brew cleanup --prune=all 2>/dev/null || true
     @echo "✅ Caches cleaned"
 
-# Lint shell scripts
+# Lint shell scripts the same way CI does: zsh syntax, then ShellCheck on bash/sh
 lint:
-    @echo "🔍 Linting shell scripts..."
-    shellcheck ~/.zsh/*.zsh 2>/dev/null || echo "⚠️  shellcheck not found or issues found"
-    @echo "✅ Lint complete"
+    #!/usr/bin/env bash
+    set -euo pipefail
+    # Run from ~/justfile (the opt-in copy), this file sits outside the source tree.
+    [ -f dot_zshrc ] || cd "$(chezmoi source-path)"
+    for f in dot_zshrc dot_zsh/*.zsh dot_zsh/tests/*.zsh; do zsh -n "$f"; done
+    shellcheck scripts/*.sh run_once_before_install-tpm.sh.tmpl
 

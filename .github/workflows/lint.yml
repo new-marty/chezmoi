@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "dot_zsh/**"
+      - "dot_zshrc"
+      - "scripts/**"
       - "**.tmpl"
       - ".chezmoi*"
       - ".chezmoidata/**"
@@ -15,6 +17,8 @@ on:
     branches: [main]
     paths:
       - "dot_zsh/**"
+      - "dot_zshrc"
+      - "scripts/**"
       - "**.tmpl"
       - ".chezmoi*"
       - ".chezmoidata/**"
@@ -24,23 +28,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  shellcheck:
-    name: ShellCheck
+  lint:
+    name: Lint shell scripts
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install ShellCheck
-        run: sudo apt-get install -y shellcheck
+      - name: Install zsh and ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y zsh shellcheck
 
-      - name: Run ShellCheck on zsh files
+      # ShellCheck does not support zsh (koalaman/shellcheck#809), so zsh files
+      # get a syntax check only, as oh-my-zsh's CI does.
+      - name: Check zsh syntax
         run: |
-          echo "📋 Checking dot_zsh/*.zsh files..."
-          find dot_zsh -name "*.zsh" -type f | while read -r file; do
-            echo "Checking: $file"
-            # ShellCheck with zsh dialect and allow some zsh-specific constructs
-            shellcheck --shell=bash --severity=warning --exclude=SC1090,SC2034,SC2154,SC2086,SC2206,SC2128,SC1091,SC2296,SC2168 "$file" || true
+          for f in dot_zshrc dot_zsh/*.zsh dot_zsh/tests/*.zsh; do
+            zsh -n "$f"
           done
+
+      - name: Run ShellCheck on bash and sh scripts
+        run: shellcheck scripts/*.sh run_once_before_install-tpm.sh.tmpl
 
   test:
     name: Run Tests
