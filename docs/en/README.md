@@ -18,12 +18,12 @@ navi          # Interactive cheat sheets
 |----------|-------------|
 | [Core Tools](core-tools.md) | chezmoi, sheldon, atuin, zoxide, navi, fzf, etc. |
 | [Modern CLI](modern-cli.md) | lazygit, dust, duf, procs, btm, httpie, delta |
-| [Shell Commands](shell-commands.md) | fcat, ts2mp4, mkcd, cdf, brew wrapper |
+| [Shell Commands](shell-commands.md) | fcat, ts2mp4, mkcd, cdf |
 | [Git](git.md) | Git aliases, lazygit usage, delta |
 | [Keybindings](keybindings.md) | All keyboard shortcuts |
 | [SSH Setup](ssh-setup.md) | SSH config, keys, agent, sockets |
 | [Aliases](aliases.md) | Complete alias reference |
-| [Claude Code Config](claude-config.md) | How `~/.claude` is managed and bootstrapped |
+| [Install, opt-in and machine-local files](../../README.md#try-it) | Install steps, opt-in application settings, `*.local` files, editor choice (in the top-level README) |
 
 ## Keybindings Quick Reference
 

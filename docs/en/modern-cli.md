@@ -1,6 +1,8 @@
 # Modern CLI Tools
 
 These are modern replacements for traditional Unix commands with better UX.
+All of them are optional. An alias such as `du` → `dust` is set only when the
+tool is installed, so without it the original command runs.
 
 ## lazygit (alias: `lg`)
 
@@ -182,7 +184,8 @@ http --headers httpbin.org/get
 
 ## delta
 
-Git diff enhancer - automatically used for `git diff`, `git log`, `git show`.
+Git diff enhancer, used for `git diff`, `git log` and `git show` when it was
+installed at the last `chezmoi apply` (run it again after installing delta).
 
 **Features:**
 - Syntax highlighting
@@ -194,7 +197,7 @@ Git diff enhancer - automatically used for `git diff`, `git log`, `git show`.
 git diff              # Delta is auto-configured
 # n = next file, N = previous file
 
-git diff --no-pager   # Temporarily disable delta
+git --no-pager diff   # Temporarily disable delta
 ```
 
 ---

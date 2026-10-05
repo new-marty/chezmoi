@@ -148,7 +148,7 @@ git status [enter/↑/↓/ctrl+c]
 アイコンとgit統合を備えたモダンなls代替。
 
 ```bash
-ls              # 基本リスト（エイリアス）
+ls              # 基本リスト（eza があればエイリアス）
 ll              # 長形式で全ファイル
 lll             # gitステータス付き
 eza --tree --level=2  # ツリー表示
@@ -213,19 +213,6 @@ gh pr list                  # PRを表示
 gh pr create                # PRを作成
 gh pr checkout 123          # PRをチェックアウト
 gh pr view --web            # ブラウザで開く
-```
-
----
-
-## 1Password CLI (op)
-
-コマンドラインから1Passwordにアクセス。
-
-```bash
-op signin                   # サインイン
-op vault list               # vault一覧
-op item get "Item Name"     # アイテムを取得
-op item get "Item" --fields password  # 特定のフィールドを取得
 ```
 
 ---

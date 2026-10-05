@@ -88,30 +88,6 @@ ts2mp4 --force       # 既存ファイルを上書き
 
 ---
 
-## brew（ラッパー）
-
-インタラクティブなBrewfile管理機能付きの拡張brewコマンド。
-
-```bash
-# Brewfileから全パッケージをインストール（引数なし）
-brew install
-# → 実行: brew bundle install --file=~/Brewfile
-
-# 特定のパッケージをインストール
-brew install ripgrep
-# プロンプト: どのBrewfileに追加しますか？
-#   > 全マシン共通 (common)
-#     個人Macのみ
-#     会社Macのみ
-#     スキップ
-
-# パッケージをアンインストール
-brew uninstall ripgrep
-# プロンプト: どのBrewfileから削除しますか？
-```
-
----
-
 ## help
 
 すべてのカスタムコマンドとキーバインドを表示。
@@ -134,7 +110,7 @@ keys
 
 ## docs
 
-ドキュメントをVS Codeエディタで開く。
+このドキュメントを、`c` と同じ GUI エディタ（Cursor または VS Code）で開く。どちらもなければ Finder でドキュメントのフォルダを開く。
 
 ```bash
 docs

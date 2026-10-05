@@ -14,38 +14,12 @@ export BROWSER='open'
 export BROWSER='xdg-open'
 {{ end -}}
 
-# Load secrets if the file exists
-[[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
-
-{{ if .is_personal_mac -}}
-# Claude Code account switching: personal (Keychain login) is the default
-# everywhere; under ~/starup, or inside any directory named archaive-pj
-# (e.g. Orca worktrees in ~/orca/workspaces/archaive-pj), the starup account
-# is used instead.
-# CLAUDE_SECURESTORAGE_CONFIG_DIR (undocumented; may change) points secure
-# storage at its own directory, so Claude Code stores and reads the starup
-# credential there and never sees the personal Keychain entry. Authenticate
-# that directory once by running /login in a session started under ~/starup.
-#
-# CLAUDE_CODE_OAUTH_TOKEN is intentionally not set: a `claude setup-token`
-# credential makes Claude Code keep the Chrome extension integration off
-# (`/chrome` reports Disabled even with --chrome), because the extension
-# cannot authenticate with it. An interactive /login credential can.
-#
-# Set here (not via direnv) because some launchers (e.g. cmux) run a login
-# shell straight into a command without an interactive precmd cycle, so
-# direnv's chpwd/precmd hook never fires before the command starts.
-if [[ "$PWD" == "$HOME/starup"* || "$PWD" == */archaive-pj || "$PWD" == */archaive-pj/* ]]; then
-  export CLAUDE_SECURESTORAGE_CONFIG_DIR="$HOME/.claude-starup"
-fi
-{{- end }}
-
 # Less configuration
 export LESS='-R'
 {{ if eq .chezmoi.os "darwin" -}}
-export LESSOPEN='| /opt/homebrew/bin/src-hilite-lesspipe.sh %s'
+[[ -x /opt/homebrew/bin/src-hilite-lesspipe.sh ]] && export LESSOPEN='| /opt/homebrew/bin/src-hilite-lesspipe.sh %s'
 {{ else if eq .chezmoi.os "linux" -}}
-export LESSOPEN='| /home/linuxbrew/.linuxbrew/bin/src-hilite-lesspipe.sh %s'
+[[ -x /home/linuxbrew/.linuxbrew/bin/src-hilite-lesspipe.sh ]] && export LESSOPEN='| /home/linuxbrew/.linuxbrew/bin/src-hilite-lesspipe.sh %s'
 {{ end -}}
 
 # Application configurations
@@ -56,19 +30,14 @@ export GOOGLE_CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google
 # Homebrew - ensure commands are available in non-interactive shells
 # (Primary setup is in .zprofile for interactive shells)
 {{ if eq .chezmoi.os "darwin" -}}
-[[ -z "$HOMEBREW_PREFIX" ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+[[ -z "$HOMEBREW_PREFIX" && -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 {{ else if eq .chezmoi.os "linux" -}}
-[[ -z "$HOMEBREW_PREFIX" ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+[[ -z "$HOMEBREW_PREFIX" && -x /home/linuxbrew/.linuxbrew/bin/brew ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 {{ end -}}
 
 # Development languages managed by mise (in .zshrc)
 # mise handles: node, python, ruby, rust, go, java, etc.
 # Run 'mise ls' to see installed versions, 'mise use node@20' to set version
-
-{{ if .is_personal_mac -}}
-# TeX Live (personal Mac only)
-export PATH="/usr/local/texlive/2022/bin/universal-darwin:$PATH"
-{{ end -}}
 
 # Development tools and utilities
 export PATH="$HOME/go/bin:$PATH"
@@ -79,6 +48,23 @@ export PNPM_HOME="$HOME/Library/pnpm"
 export PNPM_HOME="$HOME/.local/share/pnpm"
 {{ end -}}
 export PATH="$PNPM_HOME:$PATH"
+
+# GUI editor for the `c` alias (alias.zsh). chezmoi picks it when it renders
+# this file, the same way it picks git's core.editor: Cursor when "cursor" is in
+# the machine's opt-in list and installed, otherwise VS Code when installed.
+# A plain shell variable, not exported, so child processes do not see it.
+# Override it in ~/.zshenv.local, or redefine `c` in ~/.zshrc.local.
+{{- $optin := dig "optin" list . }}
+{{- if and (has "cursor" $optin) (lookPath "cursor") }}
+DOTFILES_GUI_EDITOR='cursor'
+{{- else if lookPath "code" }}
+DOTFILES_GUI_EDITOR='code'
+{{- else }}
+DOTFILES_GUI_EDITOR=''
+{{- end }}
+
+# Machine-local environment (not managed by chezmoi)
+[[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"
 
 # Remove duplicate entries from PATH
 typeset -U path

@@ -1,0 +1,8 @@
+# Machine-local git settings: user.name, user.email, commit signing, and any
+# override of the shared settings. chezmoi created this file once and never
+# changes it. The shared settings are in ~/.config/git/config; git reads this
+# file after that one, so values here win, and `git config --global` writes here.
+#
+# [user]
+#     name = Your Name
+#     email = you@example.com

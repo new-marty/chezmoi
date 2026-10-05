@@ -15,15 +15,33 @@ docs
 scripts
 
 {{ if ne .chezmoi.os "darwin" }}
-# macOS-only: Library/Application Support paths (VS Code settings)
+# macOS-only: Library/Application Support paths (VS Code and Cursor settings)
 Library
 
-# macOS-only: Custom VS Code theme installer (uses SSH git clone)
-install-custom-theme.sh
 {{ end }}
 
-{{ if not .is_personal_mac }}
-# Personal Mac only: Antigravity profile switcher
-.gemini/switch-profile.sh
-{{ end }}
-
+{{- /*
+Opt-in application settings. .chezmoidata/optin.toml maps each switch to the
+files, directories and scripts it controls; the machine selects switches with
+`optin = [...]` under [data] in its chezmoi.toml. `dig` returns an empty list when the key is
+missing, so a machine with no config gets only the core. Paths of switches
+that are not selected are ignored here, which means chezmoi leaves an
+existing file in place and stops managing it; it never deletes it.
+*/}}
+{{- $optin := dig "optin" list . }}
+{{- if not (kindIs "slice" $optin) }}
+{{-   fail "chezmoi.toml: data.optin must be a list of names, e.g. optin = [\"vscode\"]" }}
+{{- end }}
+{{- range $optin }}
+{{-   if not (hasKey $.optin_paths .) }}
+{{-     fail (printf "chezmoi.toml: unknown opt-in %q in data.optin; valid names are in .chezmoidata/optin.toml: %s" . (keys $.optin_paths | sortAlpha | join ", ")) }}
+{{-   end }}
+{{- end }}
+# Opt-in paths not selected on this machine
+{{- range $name, $sw := .optin_paths }}
+{{-   if not (has $name $optin) }}
+{{-     range concat (dig "dirs" list $sw) (dig "files" list $sw) (dig "scripts" list $sw) }}
+{{ . }}
+{{-     end }}
+{{-   end }}
+{{- end }}

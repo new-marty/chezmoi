@@ -1,8 +1,0 @@
-# =============================================================================
-# Work Mac Packages
-#
-# Starts empty on purpose. Set it up when the machine exists and its needs are
-# known, rather than guessing months ahead. To copy entries from another
-# machine's list, run `just brew-pick personal_mac` and select what you need;
-# start with the Essentials block at the top of that file.
-# =============================================================================

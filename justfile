@@ -11,147 +11,19 @@ default:
 # Setup & Apply
 # =============================================================================
 
-# Full setup for a new machine
-setup: brew-bundle apply sheldon-update mise-install
-    @echo "✅ Setup complete! Run 'exec $SHELL -l' to reload shell."
-
 # Apply chezmoi changes
 apply:
-    chezmoi apply --exclude=encrypted
-    @echo "✅ Dotfiles applied"
-
-# Apply with secrets (requires 1Password auth)
-apply-all:
     chezmoi apply
-    @echo "✅ Dotfiles applied (including secrets)"
+    @echo "✅ Dotfiles applied"
 
 # =============================================================================
 # Package Management
 # =============================================================================
 
-# Install all Homebrew packages
-brew-bundle:
-    brew bundle install --file=~/Brewfile
-    @echo "✅ Homebrew packages installed"
-
 # Update Homebrew and upgrade packages
 brew-update:
     brew update && brew upgrade
     @echo "✅ Homebrew packages updated"
-
-# Pick packages from another machine's list and install them here
-brew-pick MACHINE="":
-    #!/usr/bin/env bash
-    # Each machine keeps its own Brewfile template, so a new machine starts
-    # empty. This browses another machine's list, installs what you select, and
-    # records it in this machine's list. Start with the Essentials block at the
-    # top of the source list: those are what the dotfiles themselves need.
-    set -uo pipefail
-    src="$(chezmoi source-path)/.chezmoitemplates"
-    mine=""
-    for f in personal_mac work_mac; do
-        if [[ "$(chezmoi execute-template "{{{{ .is_${f} }}")" == "true" ]]; then
-            mine="Brewfile.${f}"; break
-        fi
-    done
-    [[ -n "$mine" ]] || { echo "No machine type flag set in chezmoi.toml"; exit 1; }
-    from="{{MACHINE}}"
-    if [[ -z "$from" ]]; then
-        from=$(ls "$src" | grep '^Brewfile\.' | grep -v "^${mine}$" | head -1)
-    else
-        from="Brewfile.${from#Brewfile.}"
-    fi
-    [[ -f "$src/$from" ]] || { echo "No such list: $from"; exit 1; }
-    echo "Picking from ${from} into ${mine}"
-    # Entries already in this machine's list are filtered out. grep exits 1 when
-    # it filters everything away and fzf exits 1/130 on empty input or Esc, so
-    # the pipeline must not abort the recipe.
-    candidates=$(grep -E '^(brew|cask) "' "$src/$from" \
-        | grep -vxF -f <(grep -E '^(brew|cask) "' "$src/$mine") || true)
-    [[ -n "$candidates" ]] || { echo "Nothing left to pick: ${mine} already has every entry"; exit 0; }
-    selected=$(printf '%s\n' "$candidates" \
-        | fzf --multi --height 80% --layout=reverse --border \
-              --prompt="Install on this machine > " \
-              --header="TAB to select, Enter to confirm" || true)
-    [[ -n "$selected" ]] || { echo "Nothing selected"; exit 0; }
-    while IFS= read -r line; do
-        [[ -n "$line" ]] || continue
-        kind="${line%% *}"; pkg="${line#*\"}"; pkg="${pkg%%\"*}"
-        if [[ "$kind" == "cask" ]]; then
-            brew install --cask "$pkg" < /dev/null || { echo "Failed: $pkg"; continue; }
-        else
-            brew install "$pkg" < /dev/null || { echo "Failed: $pkg"; continue; }
-        fi
-        # Record it. The zsh brew() wrapper is not in scope under bash, so the
-        # declaration has to be written here or it would be lost.
-        if grep -qE "^${kind} \"${pkg}\"[[:space:]]*(#.*)?$" "$src/$mine"; then
-            echo "Already declared: $line"
-        else
-            last=$(grep -n "^${kind} \"" "$src/$mine" | tail -1 | cut -d: -f1 || true)
-            if [[ -n "$last" ]]; then
-                tmp="$(mktemp "${TMPDIR:-/tmp}/brewfile.XXXXXX")"
-                awk -v n="$last" -v l="$line" 'NR==n{print; print l; next} {print}' "$src/$mine" > "$tmp"
-                mv "$tmp" "$src/$mine"
-            else
-                printf '\n%s\n' "$line" >> "$src/$mine"
-            fi
-            echo "Recorded: $line -> $mine"
-        fi
-    done <<< "$selected"
-    echo "Run 'chezmoi apply' to regenerate ~/Brewfile"
-
-# Move a declaration from one machine's list to another
-brew-move PACKAGE TARGET:
-    #!/usr/bin/env bash
-    set -uo pipefail
-    src="$(chezmoi source-path)/.chezmoitemplates"
-    target="Brewfile.{{TARGET}}"; target="${target/Brewfile.Brewfile./Brewfile.}"
-    [[ -f "$src/$target" ]] || { echo "No such list: $target"; exit 1; }
-    moved=0
-    for f in "$src"/Brewfile.*; do
-        base="$(basename "$f")"
-        [[ "$base" == "$target" ]] && continue
-        # Trailing comments are allowed on a declaration, so anchor on the
-        # closing quote rather than the end of the line.
-        line="$(grep -E "^(brew|cask) \"{{PACKAGE}}\"[[:space:]]*(#.*)?$" "$f" | head -1 || true)"
-        [[ -n "$line" ]] || continue
-        kind="${line%% *}"
-        tmp="$(mktemp "${TMPDIR:-/tmp}/brewfile.XXXXXX")"
-        grep -vE "^${kind} \"{{PACKAGE}}\"[[:space:]]*(#.*)?$" "$f" > "$tmp"
-        if [[ -s "$tmp" ]]; then mv "$tmp" "$f"; else rm -f "$tmp"; fi
-        if grep -qE "^${kind} \"{{PACKAGE}}\"[[:space:]]*(#.*)?$" "$src/$target"; then
-            echo "Removed from ${base}; ${target} already declared it"
-        else
-            last=$(grep -n "^${kind} \"" "$src/$target" | tail -1 | cut -d: -f1 || true)
-            if [[ -n "$last" ]]; then
-                tmp="$(mktemp "${TMPDIR:-/tmp}/brewfile.XXXXXX")"
-                awk -v n="$last" -v l="$line" 'NR==n{print; print l; next} {print}' "$src/$target" > "$tmp"
-                mv "$tmp" "$src/$target"
-            else
-                printf '\n%s\n' "$line" >> "$src/$target"
-            fi
-            echo "Moved ${line} from ${base} to ${target}"
-        fi
-        moved=1
-    done
-    (( moved )) || echo "{{PACKAGE}} is not declared in any list"
-
-# Show what each machine's list holds, and where this machine drifted from it
-brew-status:
-    #!/usr/bin/env bash
-    set -uo pipefail
-    src="$(chezmoi source-path)/.chezmoitemplates"
-    for f in "$src"/Brewfile.*; do
-        printf '%-28s brew %3s  cask %3s  vscode %3s\n' "$(basename "$f")" \
-            "$(grep -c '^brew "' "$f" || true)" \
-            "$(grep -c '^cask "' "$f" || true)" \
-            "$(grep -c '^vscode "' "$f" || true)"
-    done
-    echo
-    echo "Outdated on this machine:"
-    export HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_ENV_HINTS=1
-    printf '  formula %s\n' "$(brew outdated --formula --quiet 2>/dev/null | wc -l | tr -d ' ')"
-    printf '  cask    %s\n' "$(brew outdated --cask --quiet 2>/dev/null | wc -l | tr -d ' ')"
 
 # Clean up Homebrew
 brew-cleanup:
@@ -188,11 +60,6 @@ atuin-sync:
     atuin sync
     @echo "✅ Atuin history synced"
 
-# Push dotfiles changes
-push MESSAGE="update dotfiles":
-    cd ~/.local/share/chezmoi && git add -A && git commit -m "{{MESSAGE}}" && git push
-    @echo "✅ Dotfiles pushed"
-
 # Pull latest dotfiles
 pull:
     chezmoi update
@@ -209,11 +76,10 @@ doctor:
     echo "🔍 Checking dotfiles health..."
     echo ""
     
-    echo "📦 Required tools:"
-    # Keep this list in step with the Essentials block at the top of
-    # .chezmoitemplates/Brewfile.<machine>: these are what the shell startup
-    # files and gitconfig depend on.
-    for cmd in chezmoi git delta mise sheldon just tmux fzf peco navi atuin zoxide direnv bat eza fd rg jq gh; do
+    echo "📦 Tools the dotfiles use (all optional except chezmoi and git):"
+    # The shell and gitconfig check for each of these and fall back to the
+    # stock command when one is missing, so ❌ means a feature is off, not broken.
+    for cmd in chezmoi git delta mise sheldon just tmux fzf peco navi atuin zoxide direnv thefuck bat eza dust duf procs btm lazygit colordiff code cursor fd rg jq gh; do
         if command -v $cmd &>/dev/null; then
             printf "  ✅ %-12s %s\n" "$cmd" "$(command -v $cmd)"
         else
@@ -229,7 +95,7 @@ doctor:
     echo ""
     
     echo "📁 Config files:"
-    for f in ~/.zshrc ~/.zshenv ~/.gitconfig ~/.config/chezmoi/chezmoi.toml; do
+    for f in ~/.zshrc ~/.zshenv ~/.config/git/config ~/.gitconfig ~/.config/chezmoi/chezmoi.toml; do
         if [[ -f "$f" ]]; then
             echo "  ✅ $f"
         else
@@ -240,16 +106,75 @@ doctor:
     
     echo "✅ Health check complete!"
 
-# Measure shell startup time
-benchmark:
+# Show each opt-in switch: selected here, its files present, managed by chezmoi
+optin:
     #!/usr/bin/env bash
-    echo "⏱️  Measuring shell startup time (5 runs)..."
-    for i in 1 2 3 4 5; do
-        /usr/bin/time zsh -i -c exit 2>&1 || true
-    done
-    echo ""
-    echo "💡 Target: < 200ms for fast startup"
-    echo "✅ Your average: ~185ms - Great!"
+    set -euo pipefail
+    # chezmoi stops managing the files of a switch that is not selected without
+    # saying so, and never deletes them, so an old file can stay on disk unmanaged.
+    # The switch table is .chezmoidata/optin.toml; the selection is `optin` under
+    # [data] in ~/.config/chezmoi/chezmoi.toml. Only the files chezmoi writes are
+    # listed, never their directories, which can hold the application's own data.
+    rows="$(chezmoi execute-template '{{{{- $sel := dig "optin" list . -}}
+    {{{{- range $name, $sw := .optin_paths -}}
+    {{{{- $on := ternary "yes" "no" (has $name $sel) -}}
+    {{{{- range dig "files" list $sw -}}
+    {{{{ $name }}{{{{ "\t" }}{{{{ $on }}{{{{ "\tfile\t" }}{{{{ . }}{{{{ "\n" }}
+    {{{{- end -}}
+    {{{{- range dig "scripts" list $sw -}}
+    {{{{ $name }}{{{{ "\t" }}{{{{ $on }}{{{{ "\tscript\t" }}{{{{ . }}{{{{ "\n" }}
+    {{{{- end -}}
+    {{{{- end -}}')"
+    managed="$(chezmoi managed --include=all 2>&1)" || {
+        echo "chezmoi managed failed (an unknown name in the optin list?):"
+        echo "$managed"
+        exit 1
+    }
+    # chezmoi records the SHA-256 of every file it writes (bucket entryState).
+    # A file is offered for deletion only when that record exists and still
+    # matches, i.e. chezmoi wrote it and nothing changed it since.
+    written_by_chezmoi() {
+        local want got
+        want="$(chezmoi state get --bucket=entryState --key="$dest/$1" 2>/dev/null \
+            | sed -n 's/.*"contentsSHA256": *"\([0-9a-f]*\)".*/\1/p')"
+        [[ -n "$want" ]] || { echo no; return; }
+        got="$(shasum -a 256 "$dest/$1" | cut -d' ' -f1)"
+        if [[ "$want" == "$got" ]]; then echo yes; else echo changed; fi
+    }
+    # chezmoi keys its records by the destination path it normalised; $HOME
+    # can differ in form (a trailing or doubled slash), so ask chezmoi for it.
+    dest="$(chezmoi execute-template '{{{{ .chezmoi.destDir }}')"
+    stale=()
+    changed=()
+    printf "%-10s %-9s %-8s %-8s %s\n" SWITCH SELECTED EXISTS MANAGED PATH
+    while IFS=$'\t' read -r name selected kind path; do
+        if [[ "$kind" == script ]]; then exists="script"
+        elif [[ -e "$dest/$path" ]]; then exists="yes"
+        else exists="no"; fi
+        if grep -qxF "$path" <<<"$managed"; then is_managed="yes"; else is_managed="no"; fi
+        printf "%-10s %-9s %-8s %-8s %s\n" "$name" "$selected" "$exists" "$is_managed" "$path"
+        if [[ "$exists" == yes && "$is_managed" == no ]]; then
+            case "$(written_by_chezmoi "$path")" in
+                yes) stale+=("$path") ;;
+                changed) changed+=("$path") ;;
+            esac
+        fi
+    done <<<"$rows"
+    if (( ${#stale[@]} )); then
+        echo ""
+        echo "chezmoi wrote these files, no longer manages them, and they are unchanged"
+        echo "since. Delete them if you do not want them (the files only, never their"
+        echo "directories, which can hold the application's own data):"
+        for p in "${stale[@]}"; do printf '  rm %q\n' "$dest/$p"; done
+    fi
+    if (( ${#changed[@]} )); then
+        echo ""
+        echo "chezmoi wrote these files earlier, but they have changed since (the"
+        echo "application or you edited them). Review them before deleting anything:"
+        for p in "${changed[@]}"; do printf '  %s\n' "$dest/$p"; done
+    fi
+    # Files that exist without a chezmoi record were created by the application
+    # or by hand; they are listed in the table but never offered for deletion.
 
 # Show shell startup breakdown
 startup-profile:

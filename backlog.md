@@ -6,6 +6,52 @@
 
 ---
 
+## [Todo] VS Code と Cursor の拡張機能の一覧を見直す
+
+`private_Library/Application Support/Code/User/extensions.json` は VS Code が読まない
+ファイルで、一覧のメモにしかなっていない。VS Code が推奨拡張として読むのは
+ワークスペースの `.vscode/extensions.json` だけ。Cursor は拡張を Open VSX から入れ、
+一部は別の ID（Anysphere 版）に置き換わる。
+
+案: エディタごとに一覧を持ち、`code --install-extension` / `cursor --install-extension`
+で入れる `just` レシピにする。opt-in の対応表（`.chezmoidata/optin.toml`）の `vscode` の
+`files` から `extensions.json` を外すなら、CI の同期チェックも合わせて直す。
+
+---
+
+## [Todo] ログインシェルで PATH の追加が後ろに回る件を直すか決める
+
+`dot_zshenv.tmpl` と `~/.zshenv.local` で足した PATH（`~/.local/bin`、pnpm、`~/go/bin`
+など）は、ログインシェルでは macOS の `/etc/zprofile` が呼ぶ `path_helper` によって
+`/usr/bin` より後ろに回される（`env -i HOME=$HOME zsh -lic 'print -l $path'` で確認）。
+macOS のターミナルはログインシェルで起動するので、システムのコマンドを同名の
+コマンドで上書きしたいときに効かない。今のところ実害は見つかっていない。
+
+直すなら、PATH の追加を `dot_zprofile.tmpl` 側へ移すか、`~/.zprofile.local` を読む口を
+足す。
+
+---
+
+## [Todo] OrbStack が `~/.ssh/config` に書き足す行への対応
+
+OrbStack は更新のたびに `~/.ssh/config` の先頭へ `Include ~/.orbstack/ssh/config` を
+書き足す（OrbStack の issue #544、#489）。このマシンではその行を `~/.ssh/config.local`
+に移してあるので、書き足されると `chezmoi diff` に差分が出て、次の apply で消える。
+差分が出たら、共有の `private_dot_ssh/config` にその行を入れるか（ファイルが無ければ
+ssh は無視する）、毎回 apply で戻すかを決める。
+
+---
+
+## [Todo] 使わなくなったローカルの設定を片付ける
+
+コミット署名をやめたので `~/.ssh/allowed_signers` は使われていない。
+`~/.config/chezmoi/chezmoi.toml` にも、今のテンプレートが読まないデータが残っている
+（`is_personal_mac`、`is_work_mac`、`is_windows`、`is_linux`、`is_ubuntu`、`git_name`、
+`git_email`、`ssh_public_keys`、`ssh_signing_key`、`[onepassword]`）。どちらも
+リポジトリの外のファイルで、残っていても害は無い。消すかどうかは本人が決める。
+
+---
+
 ## [Todo] dotfiles リポジトリの Audit と掃除
 
 ### 概要・ゴール
@@ -17,10 +63,7 @@ dotfiles 環境の健全性を保つため、リポジトリ全体の Audit（�
    - chezmoi 作業ツリー内の未追跡ファイルや不要バックアップファイルの整理
 2. **実環境と chezmoi テンプレートのドリフト監査**:
    - `chezmoi diff` による実環境と管理ファイルの乖離チェック・統合
-   - `Brewfile.personal_mac` の変更確認と不要パッケージの整理
-3. **会社用 Mac と個人用 Mac の分離監査**:
-   - `.is_personal_mac` / `.is_work_mac` の分岐が漏れて個人設定や機密情報が会社環境に漏洩しないかの総点検
-   - パスワードマネージャーポリシー（1Password 非依存性・ポータビリティ）の遵守チェック
+3. **パスワードマネージャーポリシーの遵守チェック**（1Password 非依存性・ポータビリティ）
 4. **ShellCheck・スクリプト健全性の改善**:
    - `just lint` で検出される ShellCheck 警告（SC2148, SC2015, SC2155 等）の解消
    - 各 zsh スクリプトの構文とパフォーマンス最適化
@@ -95,7 +138,9 @@ plist と実行スクリプトは生成された後に失敗するので、設�
 Git コミット署名、chezmoi の age 暗号化までを扱う。もとは PR #1 のブランチにあった
 `docs/ja/migration-1password-to-vaultwarden-infisical.md` で、リポジトリを作り直した
 ときにここへ移した。2026-02 時点の調査なので、ファイル名や行番号は今のコードと
-ずれている（例: `Brewfile.common` はもう無い）。
+ずれている（例: `Brewfile.common` はもう無い）。2026-10 時点では、コミット署名はやめていて、
+1Password のエージェントの設定は公開リポジトリから外れ `~/.ssh/config.local` にだけある。
+移行で触るのはそのローカルファイルになる。
 
 背景は `CLAUDE.md` の Password Manager Policy にある方針 — パスワードマネージャは
 Vaultwarden/Bitwarden へ移行できる範囲の機能しか使わない。現状は 1Password を
@@ -609,8 +654,8 @@ Space を押している間だけ h/j/k/l を矢印にする（SpaceFN）。HHKB
 入力ソースをトグルで切り替えると今どちらか分からず、矢印レイヤーの条件
 （英字入力）とも噛み合わないため。
 
-残り: 数日使って続けると決めたら、`karabiner-elements` を `Brewfile.personal_mac`
-に足し、`~/.config/karabiner` をディレクトリごと chezmoi の `symlink_` で管理する。
+残り: 数日使って続けると決めたら、`~/.config/karabiner` をディレクトリごと chezmoi の
+`symlink_` で管理する。リポジトリは Public なので、中身に個人の情報がないか確かめる。
 `karabiner.json` 単体をリンクすると Karabiner が変更を検知しない（公式ドキュメント）。
 やめるなら cask を消してこの項目を削除する。
 
@@ -624,7 +669,7 @@ macOS 側の設定が残っているので、そのまま元に戻る。
 ## [Todo] M1 MacBook に Tailscale を入れて `m1` を外から使えるようにする
 
 ユーザー gary の Mac は Mac mini と M1 MacBook の 2 台ある。画面共有で開くコマンドは
-`mini` と `m1`(`dot_zsh/alias.zsh`)で、同一 LAN なら mDNS で直接、届かなければ
+`mini` と `m1`(chezmoi 管理外の `~/.zshrc.local`)で、同一 LAN なら mDNS で直接、届かなければ
 `~/.ssh/config.local` の `Host mini` / `Host m1` に書いた Tailscale のアドレスへ繋ぐ。
 
 M1 は LAN 上では `m1-macbook.local` として見えていて、画面共有も有効になっている。

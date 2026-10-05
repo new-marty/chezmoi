@@ -5,16 +5,20 @@ on:
     branches: [main]
     paths:
       - "dot_zsh/**"
-      - "Brewfile.tmpl"
-      - ".chezmoitemplates/**"
+      - "**.tmpl"
+      - ".chezmoi*"
+      - ".chezmoidata/**"
+      - "create_*"
       - "justfile"
       - ".github/workflows/lint.yml"
   pull_request:
     branches: [main]
     paths:
       - "dot_zsh/**"
-      - "Brewfile.tmpl"
-      - ".chezmoitemplates/**"
+      - "**.tmpl"
+      - ".chezmoi*"
+      - ".chezmoidata/**"
+      - "create_*"
       - "justfile"
       - ".github/workflows/lint.yml"
   workflow_dispatch:
@@ -82,59 +86,96 @@ jobs:
           # Check for template errors
           chezmoi execute-template < /dev/null || true
 
-  brewfile:
-    name: Validate Brewfile
+  fresh-apply:
+    name: Apply on a machine with no config
     runs-on: macos-latest
+    env:
+      SRC: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Install chezmoi
         run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
 
-      - name: Render every machine's Brewfile
+      - name: Read the opt-in table
         run: |
-          # Each machine type renders a different list. Render all of them so a
-          # mistake in one cannot hide behind the flags of the machine that
-          # happens to run CI.
-          #
-          # The flags have to arrive as template data. `--promptBool` only
-          # answers promptBool calls inside a config template, and this repo has
-          # no .chezmoi.toml.tmpl, so a throwaway config file is written instead.
+          # The switch names and paths come from .chezmoidata/optin.toml, so
+          # adding a switch there is enough for the checks below to cover it.
+          # optin-files.txt: the files each switch writes (must all appear when
+          # selected). optin-paths.txt: those files plus the switch's own
+          # directories (none may appear when nothing is selected). Scripts are
+          # left out: these applies exclude them (they clone from the network).
           set -euo pipefail
-          for machine in personal_mac work_mac; do
-            echo "== $machine =="
-            mkdir -p "$HOME/.config/chezmoi"
-            cat > "$HOME/.config/chezmoi/chezmoi.toml" <<EOF
-          [data]
-              is_personal_mac = $([ "$machine" = personal_mac ] && echo true || echo false)
-              is_work_mac = $([ "$machine" = work_mac ] && echo true || echo false)
-          EOF
-            chezmoi execute-template --source="$GITHUB_WORKSPACE" \
-              < "$GITHUB_WORKSPACE/Brewfile.tmpl" > "/tmp/Brewfile.${machine}"
-            echo "declarations: $(grep -cE '^(brew|cask|vscode) "' "/tmp/Brewfile.${machine}" || true)"
-          done
+          : > "$RUNNER_TEMP/empty.toml"
+          chezmoi execute-template --config "$RUNNER_TEMP/empty.toml" --source "$SRC" \
+            '{{ range $n, $sw := .optin_paths }}{{ range dig "files" list $sw }}{{ . }}{{ "\n" }}{{ end }}{{ end }}' \
+            > "$RUNNER_TEMP/optin-files.txt"
+          chezmoi execute-template --config "$RUNNER_TEMP/empty.toml" --source "$SRC" \
+            '{{ range $n, $sw := .optin_paths }}{{ range dig "dirs" list $sw }}{{ . }}{{ "\n" }}{{ end }}{{ end }}' \
+            > "$RUNNER_TEMP/optin-dirs.txt"
+          cat "$RUNNER_TEMP/optin-files.txt" "$RUNNER_TEMP/optin-dirs.txt" > "$RUNNER_TEMP/optin-paths.txt"
+          names="$(chezmoi execute-template --config "$RUNNER_TEMP/empty.toml" --source "$SRC" \
+            '{{ keys .optin_paths | sortAlpha | toJson }}')"
+          printf '[data]\n    optin = %s\n' "$names" > "$RUNNER_TEMP/all.toml"
+          printf '[data]\n    optin = ["vscode", "no-such-switch"]\n' > "$RUNNER_TEMP/unknown.toml"
+          cat "$RUNNER_TEMP/optin-paths.txt" "$RUNNER_TEMP/all.toml"
+          [ -s "$RUNNER_TEMP/optin-files.txt" ]
 
-      - name: Check each declaration resolves to the right kind
+      - name: Empty config applies only the core
         run: |
-          # A cask written as `brew "name"` (or the reverse) makes
-          # `brew bundle install` fail forever, and nothing else catches it.
-          set -uo pipefail
+          # Someone who clones this repository has no chezmoi.toml data and none
+          # of the optional tools. chezmoi fails on a missing template key
+          # (missingkey=error), so this catches any template that assumes data.
+          set -euo pipefail
+          home="$(mktemp -d)"
+          chezmoi apply --config "$RUNNER_TEMP/empty.toml" \
+            --source "$SRC" --destination "$home" --exclude=scripts \
+            --persistent-state "$RUNNER_TEMP/empty.boltdb"
           fail=0
-          for f in /tmp/Brewfile.*; do
-            while read -r kind name; do
-              case "$name" in */*) continue ;; esac  # tap entries: skipped
-              formula=$(curl -s -o /dev/null -w '%{http_code}' \
-                "https://formulae.brew.sh/api/formula/${name}.json")
-              cask=$(curl -s -o /dev/null -w '%{http_code}' \
-                "https://formulae.brew.sh/api/cask/${name}.json")
-              if [ "$kind" = "brew" ] && [ "$formula" != "200" ]; then
-                echo "::error file=$f::brew \"$name\" is not a formula (cask=$cask)"
-                fail=1
-              fi
-              if [ "$kind" = "cask" ] && [ "$cask" != "200" ]; then
-                echo "::error file=$f::cask \"$name\" is not a cask (formula=$formula)"
-                fail=1
-              fi
-            done < <(grep -E '^(brew|cask) "' "$f" | sed -E 's/^([a-z]+) "([^"]+)".*/\1 \2/')
+          for f in .zshenv .zprofile .zshrc .editorconfig .gitconfig .config/git/config .ssh/config; do
+            [ -e "$home/$f" ] || { echo "::error::core file missing: ~/$f"; fail=1; }
           done
-          exit $fail
+          while IFS= read -r p; do
+            [ -e "$home/$p" ] && { echo "::error::not opted in but applied: ~/$p"; fail=1; }
+          done < "$RUNNER_TEMP/optin-paths.txt"
+          [ "$fail" = 0 ]
+          HOME="$home" git config --get core.pager
+          HOME="$home" zsh -i -c 'echo "interactive shell started"'
+
+      - name: Every switch selected writes every mapped file
+        run: |
+          set -euo pipefail
+          home="$(mktemp -d)"
+          chezmoi apply --config "$RUNNER_TEMP/all.toml" \
+            --source "$SRC" --destination "$home" --exclude=scripts \
+            --persistent-state "$RUNNER_TEMP/all.boltdb"
+          fail=0
+          while IFS= read -r p; do
+            [ -e "$home/$p" ] || { echo "::error::opted in but missing: ~/$p"; fail=1; }
+          done < "$RUNNER_TEMP/optin-files.txt"
+          # A file added under a switch's directory must also be added to its
+          # `files` list, or `just optin` would not report it.
+          chezmoi managed --config "$RUNNER_TEMP/all.toml" --source "$SRC" \
+            --destination "$home" --include=files \
+            | grep -F -f <(sed 's|$|/|' "$RUNNER_TEMP/optin-dirs.txt") \
+            | sort > "$RUNNER_TEMP/managed-in-dirs.txt"
+          if ! sort "$RUNNER_TEMP/optin-files.txt" | grep -v '^justfile$' \
+              | diff - "$RUNNER_TEMP/managed-in-dirs.txt"; then
+            echo "::error::.chezmoidata/optin.toml files lists differ from what chezmoi manages"
+            fail=1
+          fi
+          [ "$fail" = 0 ]
+          HOME="$home" zsh -i -c 'echo "interactive shell started"'
+
+      - name: An unknown switch name stops the apply
+        run: |
+          set -uo pipefail
+          home="$(mktemp -d)"
+          if chezmoi apply --config "$RUNNER_TEMP/unknown.toml" \
+              --source "$SRC" --destination "$home" --exclude=scripts \
+              --persistent-state "$RUNNER_TEMP/unknown.boltdb" 2> "$RUNNER_TEMP/unknown.err"; then
+            echo "::error::apply succeeded with an unknown opt-in name"
+            exit 1
+          fi
+          cat "$RUNNER_TEMP/unknown.err"
+          grep -q 'unknown opt-in "no-such-switch"' "$RUNNER_TEMP/unknown.err"

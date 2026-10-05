@@ -18,11 +18,12 @@ navi          # インタラクティブチートシート
 |-------------|------|
 | [コアツール](core-tools.md) | chezmoi, sheldon, atuin, zoxide, navi, fzf など |
 | [モダンCLI](modern-cli.md) | lazygit, dust, duf, procs, btm, httpie, delta |
-| [シェルコマンド](shell-commands.md) | fcat, ts2mp4, mkcd, cdf, brew ラッパー |
+| [シェルコマンド](shell-commands.md) | fcat, ts2mp4, mkcd, cdf |
 | [Git](git.md) | Git エイリアス、lazygit の使い方、delta |
 | [キーバインド](keybindings.md) | すべてのキーボードショートカット |
 | [エイリアス](aliases.md) | エイリアス一覧 |
-| [Claude Code 設定](claude-config.md) | `~/.claude` の管理方針と新マシンでの初期化 |
+| [SSH](ssh-setup.md) | SSH の設定、鍵、エージェント、ソケット、コミット署名 |
+| [マシン固有の設定とオプトイン](local-and-optin.md) | 導入手順、アプリ設定のオプトイン、`*.local` などマシンごとのファイル、エディタの選択 |
 
 ## キーバインド早見表
 

@@ -156,9 +156,6 @@ ssh <user>@<host>
 
 % brew
 
-# Install ALL packages from Brewfile
-brew install
-
 # Install specific package
 brew install <package_name>
 

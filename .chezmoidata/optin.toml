@@ -1,0 +1,68 @@
+# Opt-in switches for application settings.
+#
+# The core (zsh, git, ssh, editorconfig) is always applied. Everything listed
+# here is applied only on machines that select it in their own
+# ~/.config/chezmoi/chezmoi.toml:
+#
+#   [data]
+#       optin = ["vscode", "ghostty"]
+#
+# Each switch has up to three lists, all relative to the home directory:
+#
+#   files    the files chezmoi writes for the switch. These are the only paths
+#            `just optin` reports, and the only ones it is safe to delete after
+#            opting out, because chezmoi wrote them.
+#   dirs     directories chezmoi creates only for this switch. Ignoring them
+#            keeps an unselected switch from leaving empty directories behind.
+#            They can hold the application's own data (Library/Application
+#            Support/Code is all of VS Code's state), so they are never offered
+#            for deletion.
+#   scripts  run_ scripts, by the target name chezmoi gives them
+#            (run_once_before_install-tpm.sh.tmpl becomes install-tpm.sh).
+#
+# .chezmoiignore ignores every path of every switch that is not selected, and
+# stops the apply when the selection names a switch that is not in this table.
+# Ignoring a path only stops chezmoi from managing it; chezmoi never deletes
+# anything. Run `just optin` to see each switch's state on this machine.
+#
+# Keep `files` in step with the source tree: `chezmoi managed` in a home where
+# every switch is selected lists them. The table is named optin_paths rather
+# than optin so that it cannot collide with the machine's own `optin` list.
+
+[optin_paths.vscode]
+files = [
+    "Library/Application Support/Code/User/settings.json",
+    "Library/Application Support/Code/User/keybindings.json",
+    "Library/Application Support/Code/User/extensions.json",
+]
+dirs = ["Library/Application Support/Code"]
+
+[optin_paths.cursor]
+files = ["Library/Application Support/Cursor/User/settings.json"]
+dirs = ["Library/Application Support/Cursor"]
+
+[optin_paths.ghostty]
+files = [
+    ".config/ghostty/config",
+    ".config/ghostty/themes/poimandres.ghostty",
+]
+dirs = [".config/ghostty"]
+
+[optin_paths.tmux]
+files = [
+    ".config/tmux/tmux.conf",
+    ".config/tmux/cheatsheet.md",
+]
+dirs = [".config/tmux"]
+scripts = ["install-tpm.sh"]
+
+[optin_paths.navi]
+files = [".config/navi/cheats/cheats.cheat"]
+dirs = [".config/navi"]
+
+[optin_paths.mise]
+files = [".config/mise/config.toml"]
+dirs = [".config/mise"]
+
+[optin_paths.justfile]
+files = ["justfile"]

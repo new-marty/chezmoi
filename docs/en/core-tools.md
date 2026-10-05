@@ -148,7 +148,7 @@ git status [enter/↑/↓/ctrl+c]
 Modern replacement for ls with icons and git integration.
 
 ```bash
-ls              # Basic listing (aliased)
+ls              # Basic listing (aliased when eza is installed)
 ll              # Long format with all files
 lll             # With git status
 eza --tree --level=2  # Tree view
@@ -213,19 +213,6 @@ gh pr list                  # View PRs
 gh pr create                # Create PR
 gh pr checkout 123          # Checkout PR
 gh pr view --web            # Open in browser
-```
-
----
-
-## 1Password CLI (op)
-
-Access 1Password from the command line.
-
-```bash
-op signin                   # Sign in
-op vault list               # List vaults
-op item get "Item Name"     # Get item
-op item get "Item" --fields password  # Get specific field
 ```
 
 ---

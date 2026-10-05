@@ -21,7 +21,7 @@ Git関連のエイリアス、ツール、設定。
 
 ## Git Configエイリアス
 
-`~/.gitconfig`で定義:
+自分用の git 設定は `~/.gitconfig` に書く。git はこれを共有の設定の後に読むので、同じ項目は `~/.gitconfig` の値が優先される。次のエイリアスは共有の git 設定 `~/.config/git/config` で定義している:
 
 ```bash
 git st          # 短いステータス
@@ -74,7 +74,7 @@ lg              # lazygitを開く
 
 シンタックスハイライト付きgit diff強化ツール。
 
-以下に自動適用:
+chezmoi が git のページャに delta を設定するのは、`chezmoi apply` の時点で delta がインストールされているときだけ。delta を後から入れたら、もう一度 `chezmoi apply` を実行する。設定されると次のコマンドで使われる:
 - `git diff`
 - `git log`
 - `git show`
@@ -87,7 +87,7 @@ lg              # lazygitを開く
 
 ```bash
 git diff              # deltaが自動的に使用される
-git diff --no-pager   # deltaを一時的に無効化
+git --no-pager diff   # deltaを一時的に無効化
 ```
 
 ---

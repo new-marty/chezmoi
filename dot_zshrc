@@ -44,22 +44,28 @@ command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
 command -v navi &>/dev/null && eval "$(navi widget zsh)"
 
 # Load Sheldon with caching for faster startup
-# (plugins are managed via ~/.config/sheldon/plugins.toml)
-cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}
-sheldon_cache="$cache_dir/sheldon.zsh"
-sheldon_toml="$HOME/.config/sheldon/plugins.toml"
+# (plugins are managed via ~/.config/sheldon/plugins.toml). Without sheldon,
+# source the local files directly so the aliases and widgets still load.
+if command -v sheldon &>/dev/null; then
+  cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}
+  sheldon_cache="$cache_dir/sheldon.zsh"
+  sheldon_toml="$HOME/.config/sheldon/plugins.toml"
 
-if [[ ! -r "$sheldon_cache" || "$sheldon_toml" -nt "$sheldon_cache" ]]; then
-  mkdir -p "$cache_dir"
-  sheldon source > "$sheldon_cache"
+  if [[ ! -r "$sheldon_cache" || "$sheldon_toml" -nt "$sheldon_cache" ]]; then
+    mkdir -p "$cache_dir"
+    sheldon source > "$sheldon_cache"
+  fi
+  source "$sheldon_cache"
+  unset cache_dir sheldon_cache sheldon_toml
+else
+  for f in ~/.zsh/*.zsh(N) ~/.zsh/*.zsh-theme(N); do source "$f"; done
+  unset f
 fi
-source "$sheldon_cache"
-unset cache_dir sheldon_cache sheldon_toml
 
 # Custom key bindings (after sheldon loading)
 # Note: atuin uses --disable-up-arrow so up/down arrows work normally
 bindkey '^R' peco-select-history  # Ctrl+R: peco history search
-bindkey '^H' _atuin_search_widget # Ctrl+H: atuin enhanced history search
+(( $+widgets[_atuin_search_widget] )) && bindkey '^H' _atuin_search_widget # Ctrl+H: atuin enhanced history search
 
 # Ensure suggestion widgets work properly (after all other bindings)
 bindkey '^G' show_command_templates # Ctrl+G for command templates
@@ -67,5 +73,5 @@ bindkey '^S' smart_command_suggest  # Ctrl+S for smart suggestions
 bindkey '^F' show_frequent_commands # Ctrl+F for frequent commands
 bindkey '^N' navi_widget            # Ctrl+N for navi cheat sheets
 
-# AWS Kiro IDE shell integration (https://kiro.dev)
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+# Machine-local aliases and functions (not managed by chezmoi)
+if [[ -f ~/.zshrc.local ]]; then source ~/.zshrc.local; fi

@@ -16,33 +16,36 @@
 | `gca`      | `git commit --amend`                   |
 | `gp`       | `git push origin head`                 |
 | `sw`       | `git switch`                           |
-| `lg`       | `lazygit`                              |
+| `lg`       | `lazygit`（lazygit があるときだけ）    |
 
 ---
 
 ## モダン CLI エイリアス
 
-| エイリアス | コマンド       | 元コマンド | 説明                         |
-| ---------- | -------------- | ---------- | ---------------------------- |
-| `ls`       | `eza --icons`  | `ls`       | アイコン付きリスト           |
-| `du`       | `dust`         | `du`       | ビジュアルディスク使用量     |
-| `df`       | `duf`          | `df`       | 美しいディスク空き           |
-| `ps`       | `procs`        | `ps`       | モダンプロセス表示           |
-| `top`      | `btm`          | `top`      | グラフィカルシステムモニター |
-| `cat`      | `ccat`         | `cat`      | カラー付き cat               |
-| `diff`     | `colordiff -u` | `diff`     | カラー付き diff              |
+下の表のエイリアスは、対応するツールがインストールされているときだけ設定される。シェルの起動時に確認するので、ツールがなければ元のコマンドがそのまま動く（`diff` だけは `diff -u` になる）。
+
+| エイリアス | コマンド                           | 元コマンド | 説明                           |
+| ---------- | ---------------------------------- | ---------- | ------------------------------ |
+| `ls`       | `eza --icons=auto`                 | `ls`       | アイコン付きリスト             |
+| `du`       | `dust`                             | `du`       | ビジュアルディスク使用量       |
+| `df`       | `duf`                              | `df`       | 美しいディスク空き             |
+| `ps`       | `procs`                            | `ps`       | モダンプロセス表示             |
+| `top`      | `btm`                              | `top`      | グラフィカルシステムモニター   |
+| `cat`      | `bat --style=plain --paging=never` | `cat`      | シンタックスハイライト付き cat |
+| `catp`     | `bat`                              | -          | ページャと行番号付きの bat     |
+| `diff`     | `colordiff -u`                     | `diff`     | カラー付き diff                |
 
 ---
 
 ## ファイル＆ナビゲーションエイリアス
 
-| エイリアス | コマンド             | 説明                   |
-| ---------- | -------------------- | ---------------------- |
-| `ls`       | `eza --icons`        | アイコン付きリスト     |
-| `ll`       | `ls -la`             | 長形式、全ファイル     |
-| `la`       | `ls -l`              | 長形式                 |
-| `l1`       | `ls -1`              | 1 行に 1 ファイル      |
-| `lll`      | `ls -abghHliS --git` | git ステータス付き詳細 |
+| エイリアス | コマンド                           | 説明                                     |
+| ---------- | ---------------------------------- | ---------------------------------------- |
+| `ls`       | `eza --icons=auto`                 | アイコン付きリスト（eza があるとき）     |
+| `ll`       | `ls -la`                           | 長形式、全ファイル                       |
+| `la`       | `ls -l`                            | 長形式                                   |
+| `l1`       | `ls -1`                            | 1 行に 1 ファイル                        |
+| `lll`      | `eza -abghHliS --git --icons=auto` | git ステータス付き詳細（eza があるとき） |
 
 ---
 
@@ -61,14 +64,20 @@
 
 ## ユーティリティエイリアス
 
-| エイリアス | コマンド               | 説明                  |
-| ---------- | ---------------------- | --------------------- |
-| `rs`       | `exec $SHELL -l`       | シェルを再起動        |
-| `sz`       | `source ~/.zshrc`      | zshrc をリロード      |
-| `c`        | `code`                 | VS Code エディタを開く |
-| `p`        | `python3`              | Python 3              |
-| `tf`       | `terraform`            | Terraform             |
-| `dcu`      | `docker-compose up -d` | Docker compose 起動   |
+| エイリアス | コマンド               | 説明                                    |
+| ---------- | ---------------------- | --------------------------------------- |
+| `rs`       | `exec zsh -l`          | シェルを再起動                          |
+| `sz`       | `source ~/.zshrc`      | zshrc をリロード                        |
+| `c`        | Cursor または VS Code  | GUI エディタを開く（下記参照）          |
+| `p`        | `python3`              | Python 3                                |
+| `tf`       | `terraform`            | Terraform                               |
+| `dcud`     | `docker compose up -d` | Docker compose をバックグラウンドで起動 |
+| `dcu`      | `docker compose up`    | Docker compose 起動                     |
+| `dcd`      | `docker compose down`  | Docker compose 停止                     |
+
+`c` が開くのは、git の `core.editor` と同じエディタだ。どちらを使うかは、chezmoi がファイルを生成するときに決まる。`~/.config/chezmoi/chezmoi.toml` の `optin` に `cursor` があり、`cursor` コマンドもあれば Cursor を使う。そうでなければ、`code` コマンドがあるときに VS Code を使う。どちらもなければ `c` は定義されない。Cursor や VS Code を後から入れたら、もう一度 `chezmoi apply` を実行する。
+
+選ばれたエディタはシェル変数 `DOTFILES_GUI_EDITOR` に入る。特定のマシンだけ別のエディタにしたいときは、`~/.zshenv.local` でこの変数を設定するか、`~/.zshrc.local` で `c` を定義し直す。
 
 ---
 

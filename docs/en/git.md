@@ -21,7 +21,9 @@ Git-related aliases, tools, and configurations.
 
 ## Git Config Aliases
 
-These are defined in `~/.gitconfig`:
+Your own git settings go in `~/.gitconfig`, which git reads after the shared
+config, so its values win. The aliases below are defined in the shared git
+config, `~/.config/git/config`:
 
 ```bash
 git st          # Short status
@@ -74,7 +76,9 @@ lg              # Open lazygit
 
 Enhanced git diff with syntax highlighting.
 
-Automatically applied to:
+chezmoi sets delta as git's pager only when delta is installed at the time of
+`chezmoi apply`. After installing delta, run `chezmoi apply` again. Once set, it
+is used for:
 - `git diff`
 - `git log`
 - `git show`
@@ -87,7 +91,7 @@ Automatically applied to:
 
 ```bash
 git diff              # Uses delta automatically
-git diff --no-pager   # Disable delta temporarily
+git --no-pager diff   # Disable delta temporarily
 ```
 
 ---

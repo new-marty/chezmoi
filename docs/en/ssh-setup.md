@@ -1,246 +1,76 @@
-# SSH Configuration with 1Password - Setup Guide
+# SSH
 
-This repository uses 1Password SSH Agent for secure SSH key management across multiple machines.
+The shared `~/.ssh/config` holds only defaults that suit any machine. Keys,
+agents and hosts go in `~/.ssh/config.local`, which chezmoi does not manage and
+the repository never contains.
 
-## Architecture
+## What the shared config sets
 
-- **SSH Config**: Managed by chezmoi, templates based on machine type
-- **SSH Keys**: Stored in 1Password, machine-specific (macbook, work, ubuntu, etc.)
-- **Commit Signing**: Automatic SSH-based signing with 1Password
+For every host:
 
-## Initial Setup (New Machine)
+- `ServerAliveInterval 60` and `ServerAliveCountMax 3` keep idle connections
+  open through NAT and firewalls.
+- `ControlMaster auto`, `ControlPath ~/.ssh/sockets/%C` and
+  `ControlPersist 10m` reuse one connection per host, so a second `ssh` or
+  `git fetch` to the same host starts without a new handshake. chezmoi creates
+  `~/.ssh/sockets` with mode 700.
 
-### 1. Determine Machine Type
+## Machine-specific settings in `config.local`
 
-Choose a machine type identifier:
+The shared config includes `~/.ssh/config.local` on its first line. ssh keeps
+the first value it finds for each option, so anything set in `config.local`
+overrides the defaults above. If the file does not exist, ssh skips it.
 
-- `macbook` - Personal MacBook
-- `work` - Work MacBook
-- `ubuntu` - Ubuntu machine
-- `windows` - Windows machine
-- `unraid` - Unraid server
+An example with an SSH agent from a password manager, a key for GitHub and a
+private host:
 
-### 2. Configure chezmoi
+```ssh-config
+# Agent for every host. Use the socket path your agent documents.
+Host *
+    IdentityAgent "~/path/to/agent.sock"
 
-Edit `~/.config/chezmoi/chezmoi.toml`:
+Host github.com
+    IdentityFile ~/.ssh/id_ed25519.pub
+    IdentitiesOnly yes
 
-```toml
-[data]
-    # Set machine type flags
-    is_personal_mac = true  # or false
-    is_work_mac = false     # or false
-
-    # Git configuration
-    git_name = "Your Name"
-    git_email = "your@email.com"
-
-    # SSH Configuration (will be updated after key generation)
-    ssh_public_keys = []
-    ssh_signing_key = ""
-
-[git]
-    autoCommit = true
-    autoPush = true
-
-[onepassword]
-    command = "op"
+Host homeserver
+    HostName 192.0.2.10
+    User me
 ```
 
-### 3. Apply chezmoi Configuration
+`IdentityFile` can point at the public key when the private key lives in the
+agent; ssh then asks the agent for that key only. Keep the file private:
+`chmod 600 ~/.ssh/config.local`.
+
+## Signing commits with an SSH key
+
+Commit signing is configured in `~/.gitconfig`, the machine's own git file.
+chezmoi creates it once and never changes it, and git reads it after the shared
+`~/.config/git/config`, so its values win:
+
+```ini
+[user]
+    signingkey = ssh-ed25519 AAAA... (the public key)
+[commit]
+    gpgsign = true
+[gpg]
+    format = ssh
+[gpg "ssh"]
+    allowedSignersFile = ~/.ssh/allowed_signers
+```
+
+If the private key is held by an agent that needs its own signing program, set
+`gpg.ssh.program` there as well. `~/.ssh/allowed_signers` lists the keys that
+`git log --show-signature` should trust, one per line:
+
+```
+you@example.com ssh-ed25519 AAAA...
+```
+
+## Checking the result
 
 ```bash
-chezmoi apply
-```
-
-This creates:
-
-- `~/.ssh/config` - SSH configuration with 1Password Agent
-- `~/.ssh/sockets/` - ControlMaster socket directory
-- `~/.ssh/allowed_signers` - Git commit signature verification
-- `~/.gitconfig` - Git configuration with commit signing
-
-### 4. Generate SSH Key
-
-```bash
-# Replace MACHINE with your machine type (macbook, work, etc.)
-MACHINE="macbook"
-
-ssh-keygen -t ed25519 \
-  -C "${MACHINE}-2025" \
-  -f ~/.ssh/id_ed25519_${MACHINE}
-```
-
-### 5. Register Public Key to GitHub
-
-```bash
-# For authentication
-gh ssh-key add ~/.ssh/id_ed25519_${MACHINE}.pub \
-  -t "$(hostname) - ${MACHINE}"
-
-# For commit signing
-gh ssh-key add ~/.ssh/id_ed25519_${MACHINE}.pub \
-  -t "$(hostname) - ${MACHINE} (Signing)" \
-  --type signing
-```
-
-### 6. Save SSH Key to 1Password
-
-**Option A: Using 1Password GUI** (Recommended)
-
-1. Open 1Password app
-2. New Item → SSH Key
-3. Add Private Key → Import a Key File
-4. Select `~/.ssh/id_ed25519_${MACHINE}`
-5. **Important**: Add `github.com` to "Websites & Apps" field
-6. Save with title like "macbook SSH Key"
-
-**Option B: Using 1Password CLI**
-
-_Note: SSH Key type cannot be created via CLI. Create as Secure Note instead, then manually convert in GUI._
-
-### 7. Update chezmoi Configuration with Public Key
-
-Get your public key:
-
-```bash
-cat ~/.ssh/id_ed25519_${MACHINE}.pub
-```
-
-Edit `~/.config/chezmoi/chezmoi.toml` and add:
-
-```toml
-[data]
-    # ... existing config ...
-
-    ssh_public_keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... macbook",
-        # Add more keys as you set up additional machines
-    ]
-    ssh_signing_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... macbook"
-```
-
-Apply the updated configuration:
-
-```bash
-chezmoi apply --force ~/.ssh/allowed_signers ~/.gitconfig
-```
-
-### 8. Enable 1Password SSH Agent
-
-1. Open 1Password app
-2. Settings (⌘,) → Developer
-3. Check "Use the SSH agent"
-4. Verify "SSH Agent is running" badge appears
-
-### 9. Verify Setup
-
-```bash
-# Test SSH connection to GitHub
+ssh -G github.com | grep -E '^(identityagent|identityfile|controlpath) '
 ssh -T git@github.com
-# Expected: "Hi <username>! You've successfully authenticated..."
-
-# Test commit signing
-cd /tmp
-git init test-repo && cd test-repo
-git commit --allow-empty -m "Test commit"
 git log --show-signature -1
-# Expected: "Good "git" signature for your@email.com..."
 ```
-
-## Adding Additional Machines
-
-When setting up a new machine:
-
-1. Follow steps 1-6 above with the new machine type
-2. Add the new public key to `chezmoi.toml`:
-
-```toml
-ssh_public_keys = [
-    "ssh-ed25519 AAAAC3...existing... macbook",
-    "ssh-ed25519 AAAAC3...new-key... work",  # Add new key
-]
-```
-
-3. Commit and push from any machine:
-
-```bash
-cd ~/.local/share/chezmoi
-git add .config/chezmoi/chezmoi.toml  # if tracking config
-git commit -m "Add work machine SSH public key"
-git push
-```
-
-4. On all machines, pull the update:
-
-```bash
-chezmoi update
-```
-
-## Machine-Specific Configuration
-
-### Personal Mac
-
-- Includes: OrbStack integration, and `~/.ssh/config.local` for home servers
-- `~/.ssh/config.local` is not managed by chezmoi, so their addresses stay out of
-  this repository. Create it by hand on a new machine (`chmod 600`). The `mini` and `m1`
-  shell functions read the Tailscale addresses of `Host mini` and `Host m1` from it.
-- GitHub: Direct `github.com` access
-
-### Work Mac
-
-- GitHub: Separate hosts (`github.com-personal`, `github.com-work`)
-- No OrbStack or personal server configs
-
-### Ubuntu/Windows/Unraid
-
-- Basic SSH Agent configuration only
-- Add custom server configs as needed
-
-## Troubleshooting
-
-### SSH Agent Socket Not Found
-
-```bash
-# Check 1Password SSH Agent status
-ls -la ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
-
-# Restart 1Password
-killall "1Password"
-open -a "1Password"
-```
-
-### Commits Not Signed
-
-```bash
-# Verify signing key is configured
-git config --get user.signingkey
-
-# Verify allowed_signers exists
-cat ~/.ssh/allowed_signers
-
-# Re-apply templates
-chezmoi apply --force ~/.gitconfig ~/.ssh/allowed_signers
-```
-
-### Permission Denied (publickey)
-
-1. Verify 1Password SSH Agent is running
-2. Check that SSH Key item in 1Password has `github.com` in "Websites & Apps"
-3. Test SSH config:
-
-```bash
-ssh -G github.com | grep identityagent
-```
-
-## Security Notes
-
-- Private keys are only stored in 1Password, not on disk
-- Each machine has a unique SSH key
-- 1Password prompts for approval on first SSH use per application
-- Commit signatures are automatically verified via `allowed_signers`
-
-## References
-
-- [1Password SSH Agent Documentation](https://developer.1password.com/docs/ssh/)
-- [chezmoi Documentation](https://www.chezmoi.io/)
-- [GitHub SSH Documentation](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)

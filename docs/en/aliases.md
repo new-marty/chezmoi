@@ -16,20 +16,25 @@ Complete alias reference for this dotfiles setup.
 | `gca` | `git commit --amend` |
 | `gp`  | `git push origin head` |
 | `sw`  | `git switch` |
-| `lg`  | `lazygit` |
+| `lg`  | `lazygit` (only when lazygit is installed) |
 
 ---
 
 ## Modern CLI Aliases
 
+Each alias below is set only when its tool is installed; the shell checks when
+it starts. Without the tool, the original command runs unchanged (`diff` still
+becomes `diff -u`).
+
 | Alias | Command | Original | Description |
 | ----- | ------- | -------- | ----------- |
-| `ls`  | `eza --icons` | `ls` | List with icons |
+| `ls`  | `eza --icons=auto` | `ls` | List with icons |
 | `du`  | `dust` | `du` | Visual disk usage |
 | `df`  | `duf` | `df` | Beautiful disk free |
 | `ps`  | `procs` | `ps` | Modern process viewer |
 | `top` | `btm` | `top` | Graphical system monitor |
-| `cat` | `ccat` | `cat` | Colored cat |
+| `cat` | `bat --style=plain --paging=never` | `cat` | Syntax-highlighted cat |
+| `catp`| `bat` | - | bat with paging and line numbers |
 | `diff`| `colordiff -u` | `diff` | Colored diff |
 
 ---
@@ -38,11 +43,11 @@ Complete alias reference for this dotfiles setup.
 
 | Alias | Command | Description |
 | ----- | ------- | ----------- |
-| `ls`  | `eza --icons` | List with icons |
+| `ls`  | `eza --icons=auto` | List with icons (when eza is installed) |
 | `ll`  | `ls -la` | Long format, all files |
 | `la`  | `ls -l` | Long format |
 | `l1`  | `ls -1` | One file per line |
-| `lll` | `ls -abghHliS --git` | Detailed with git status |
+| `lll` | `eza -abghHliS --git --icons=auto` | Detailed with git status (when eza is installed) |
 
 ---
 
@@ -63,12 +68,22 @@ Complete alias reference for this dotfiles setup.
 
 | Alias | Command | Description |
 | ----- | ------- | ----------- |
-| `rs`  | `exec $SHELL -l` | Restart shell |
+| `rs`  | `exec zsh -l` | Restart shell |
 | `sz`  | `source ~/.zshrc` | Reload zshrc |
-| `c`   | `code` | Open VS Code editor |
+| `c`   | Cursor or VS Code | Open the GUI editor (see below) |
 | `p`   | `python3` | Python 3 |
 | `tf`  | `terraform` | Terraform |
-| `dcu` | `docker-compose up -d` | Docker compose up |
+| `dcud`| `docker compose up -d` | Docker compose up, detached |
+| `dcu` | `docker compose up` | Docker compose up |
+| `dcd` | `docker compose down` | Docker compose down |
+
+`c` opens the same editor as git's `core.editor`. chezmoi picks it when it
+renders the files: Cursor when `cursor` is in the `optin` list in
+`~/.config/chezmoi/chezmoi.toml` and the `cursor` command exists, otherwise VS
+Code when `code` exists. With neither, `c` is not defined. After installing
+Cursor or VS Code, run `chezmoi apply` again. The choice is stored in
+`DOTFILES_GUI_EDITOR`; to use another editor on one machine, set that variable
+in `~/.zshenv.local` or redefine `c` in `~/.zshrc.local`.
 
 ---
 

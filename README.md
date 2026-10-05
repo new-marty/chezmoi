@@ -1,154 +1,155 @@
 # Dotfiles
 
-Personal development environment configuration managed with [chezmoi](https://www.chezmoi.io/).
+zsh, git, SSH and editorconfig settings for macOS, managed with
+[chezmoi](https://www.chezmoi.io/), plus optional settings for VS Code, Cursor,
+Ghostty, tmux, navi, mise and a `justfile`. The core applies with no
+configuration; each set of application settings applies only on a machine that
+opts in to it. The setup uses the tools it finds and leaves the stock commands
+in place for the ones it does not.
 
-## Prerequisites
-
-- macOS (Apple Silicon or Intel)
-- [Homebrew](https://brew.sh/)
-- Git
-- 1Password account (for secrets management)
-
-## Quick Start
-
-### New Machine Setup (3 commands)
+## Try it
 
 ```bash
-# 1. Install chezmoi and initialize
 brew install chezmoi
-chezmoi init --apply git@github.com:new-marty/chezmoi.git
-
-# 2. Install all tools
-brew bundle install --file=~/Brewfile
-
-# 3. Install runtimes and restart
-mise install && exec $SHELL -l
+chezmoi init new-marty/chezmoi
+chezmoi diff                          # see what would change in your home directory
+chezmoi apply --less-interactive      # asks before overwriting a file you already have
 ```
 
-### Full Setup with Task Runner
+`--less-interactive` needs chezmoi v2.66.0 or later (`chezmoi --version`). Do not
+start with `chezmoi init --apply`, and do not run a plain `chezmoi apply` the
+first time: both overwrite an existing `~/.zshrc`, `~/.ssh/config` and the like
+without asking ([chezmoi issue #1551](https://github.com/twpayne/chezmoi/issues/1551)).
 
-```bash
-# After chezmoi init, use just for automation:
-just setup          # Full setup (brew + mise + sheldon)
-just doctor         # Check all tools are installed
-just benchmark      # Measure shell startup time
-```
+`chezmoi init` asks no questions and needs no `chezmoi.toml`. Nothing here holds
+a name, an email address, a key or a host, so the files apply the same way on
+every machine.
 
-### Update Existing Machine
+## Opt-in application settings
 
-```bash
-just update-all     # Update everything (brew, sheldon, mise, atuin)
-# or individually:
-chezmoi update      # Pull latest dotfiles
-just brew-update    # Update Homebrew packages
-just sheldon-update # Update shell plugins
-```
-
-## Features
-
-- **Fast shell startup**: < 200ms with cached completions and shim-based mise
-- **Multi-machine support**: Separate configs for personal/work Mac
-- **Runtime management**: mise handles Node, Python, Go, etc.
-- **Task automation**: justfile for setup, updates, and diagnostics
-- **Per-machine Brewfile**: one package list per machine, no shared list to keep in sync
-- **Modern CLI tools**: delta, lazygit, bat, eza, fzf, ripgrep, and more
-- **Enhanced shell**: zsh with sheldon plugins, atuin history, zoxide, fzf-tab
-
-## Directory Structure
-
-```
-~/.local/share/chezmoi/
-├── Brewfile.tmpl                 # Homebrew packages (templated)
-├── dot_editorconfig              # Global EditorConfig for consistent coding style
-├── dot_gitconfig.tmpl            # Git configuration
-├── dot_gitignore_global          # Global gitignore
-├── .chezmoitemplates/
-│   ├── Brewfile.personal_mac     # Personal Mac packages (one list per machine)
-│   └── Brewfile.work_mac         # Work Mac packages (one list per machine)
-├── dot_secrets.tmpl              # Secrets (1Password integration)
-├── dot_zprofile                  # zsh profile
-├── dot_zshenv.tmpl               # Environment variables
-├── dot_zshrc                     # zsh configuration
-├── dot_zsh/                      # Custom zsh scripts
-│   ├── alias.zsh                 # Aliases
-│   ├── commands.zsh              # Custom commands
-│   ├── peco.zsh                  # Peco configuration
-│   ├── steeef.zsh-theme          # Prompt theme
-│   └── suggestions.zsh           # Command suggestions
-├── private_dot_Library/          # macOS Library settings
-│   └── Application Support/Code/ # VS Code settings
-├── private_dot_config/
-│   ├── ghostty/                  # Ghostty terminal
-│   ├── mise/                     # mise runtime config
-│   ├── navi/                     # Navi cheat sheets
-│   ├── raycast/                  # Raycast scripts
-│   └── sheldon/                  # Sheldon plugin manager
-├── justfile                      # Task automation
-└── docs/                         # Documentation
-    └── ja/                       # Japanese translations
-```
-
-## Configuration
-
-### Machine Type (`~/.config/chezmoi/chezmoi.toml`)
+Without configuration you get only the core: zsh, git, SSH and editorconfig.
+The settings below are applied only on a machine that lists their switch in
+`~/.config/chezmoi/chezmoi.toml`:
 
 ```toml
 [data]
-    is_personal_mac = true   # Personal Mac
-    is_work_mac = false      # Work Mac
-
-[onepassword]
-    command = "op"
+    optin = ["vscode", "ghostty", "tmux"]
 ```
 
-### Multi-Machine Settings
+| Switch     | Files chezmoi writes (under `~`)                                   | What it configures                   |
+| ---------- | ------------------------------------------------------------------ | ------------------------------------ |
+| `vscode`   | `Library/Application Support/Code/User/` `settings.json`, `keybindings.json`, `extensions.json` | VS Code settings and keybindings |
+| `cursor`   | `Library/Application Support/Cursor/User/settings.json`            | Cursor settings                      |
+| `ghostty`  | `.config/ghostty/config`, `.config/ghostty/themes/poimandres.ghostty` | Ghostty terminal config and theme |
+| `tmux`     | `.config/tmux/tmux.conf`, `.config/tmux/cheatsheet.md`, plus a one-time clone of the tmux plugin manager (tpm) into `~/.tmux/plugins/tpm` | tmux |
+| `navi`     | `.config/navi/cheats/cheats.cheat`                                 | navi cheat sheets                    |
+| `mise`     | `.config/mise/config.toml`                                         | mise global tool versions            |
+| `justfile` | `justfile`                                                         | `~/justfile` with update and diagnostic recipes |
 
-| Machine      | is_personal_mac | is_work_mac |
-| ------------ | --------------- | ----------- |
-| Personal Mac | true            | false       |
-| Work Mac     | false           | true        |
+VS Code and Cursor read settings in the same format from different places, so
+both `settings.json` files are generated from one shared template and you can
+select either or both. The full table lives in `.chezmoidata/optin.toml`; a name
+that is not in it stops `chezmoi apply` with an error that lists the valid ones.
 
-Each machine has its own package list; there is no shared "common" list. A new
-machine starts from the Essentials block at the top of another machine's list —
-see `just brew-pick`.
+Removing a switch does not delete anything. chezmoi stops managing that
+switch's files without telling you and leaves them on disk as they were, where
+they go stale. The same happens if you already used these dotfiles before
+switches existed: write the `optin` list before your next `chezmoi apply`, or
+the settings you meant to keep drop out of management.
 
-## Brew Package Management
+`just optin` shows, for every switch, whether this machine selects it, whether
+its files exist and whether chezmoi still manages them. For files that chezmoi
+wrote, no longer manages and that nobody has changed since, it prints the `rm`
+commands to remove them. Files changed since chezmoi wrote them are listed for
+you to review instead, with no command. It suggests deleting files only. Directories such as
+`~/Library/Application Support/Cursor` also hold the application's own data
+(extensions, workspace state), so never delete those to opt out. Without
+`~/justfile`, run it as `just --justfile "$(chezmoi source-path)/justfile" optin`.
 
-Each machine has its own package list under `.chezmoitemplates/`. There is no
-shared "common" list, so installing a package records it for this machine only.
-The `brew` command is wrapped to keep the list in step; it never prompts.
+## Machine-local files
 
-```bash
-brew install ripgrep      # installs, then records brew "ripgrep" in this machine's list
-brew uninstall ripgrep    # uninstalls, then removes the declaration wherever it is
+Anything that differs between machines goes in a local file that the shared
+file reads, so these files are where your identity, keys and private hosts
+belong. The repository never holds their contents. chezmoi does not manage the
+three `*.local` files, and each is read only if it exists. `~/.gitconfig` is
+different: chezmoi creates it, with only a comment, when it is missing, so it
+always exists after an apply, but chezmoi never changes it after that.
+
+| File                   | Read by          | Typical contents                                     |
+| ---------------------- | ---------------- | ---------------------------------------------------- |
+| `~/.zshenv.local`      | end of `.zshenv` | extra `PATH` entries, environment switches           |
+| `~/.zshrc.local`       | end of `.zshrc`  | personal aliases and functions                       |
+| `~/.gitconfig`         | git, after `~/.config/git/config` | `user.name`, `user.email`, commit signing |
+| `~/.ssh/config.local`  | top of `.ssh/config` | hosts, `IdentityFile`, `IdentityAgent`           |
+
+The SSH file is included first rather than last because ssh keeps the first
+value it finds for each option, so settings in `config.local` override the
+shared defaults.
+
+The shared git settings live in `~/.config/git/config`, and `~/.gitconfig`
+belongs to the machine. An existing `~/.gitconfig` is kept as it is. git reads
+`~/.gitconfig` after `~/.config/git/config`, so its values win, and
+`git config --global` writes to it.
+
+If this repository applied an earlier layout to your machine, your
+`~/.gitconfig` is a full copy of the old shared settings that chezmoi used to
+write there. chezmoi will not replace it, and because git reads it last, it
+keeps overriding `~/.config/git/config`, including the editor choice described
+under "Optional tools". Cut it down to your own settings (name, email, signing,
+deliberate overrides) and remove its `[include]` of `~/.gitconfig.local`,
+moving anything in that file into `~/.gitconfig`.
+
+A minimal `~/.gitconfig`:
+
+```ini
+[user]
+    name = Your Name
+    email = you@example.com
 ```
 
-The wrapper reads where Homebrew actually put the package, so `--cask` is
-optional: `brew install google-chrome` records it as a cask.
+Keep API keys out of shell startup files: anything exported there reaches
+every process the shell starts. Store a key in the macOS Keychain with
+`security add-generic-password -a "$USER" -s my-api-key -w`, and read it with
+`security find-generic-password -a "$USER" -s my-api-key -w` only where it is
+needed, such as a project's direnv `.envrc` or a function in `~/.zshrc.local`.
 
-Three recipes manage the lists themselves:
+## Optional tools
 
-| Command                          | What it does                                                      |
-| -------------------------------- | ----------------------------------------------------------------- |
-| `just brew-pick <machine>`       | Browse another machine's list, install what you select, record it   |
-| `just brew-move <package> <to>`  | Move one declaration between machine lists                          |
-| `just brew-status`               | Show the size of each list and what is outdated here                |
+Every tool below is optional. The shell checks for each one when it starts and
+only then sets the alias or loads the integration, so a missing tool leaves the
+original command working. For example, `ls` runs eza only when eza is
+installed.
 
-Setting up a new machine means running `just brew-pick` against an existing
-list and starting with its Essentials block: the packages the shell startup
-files and gitconfig depend on.
+| Area            | Tools                                                    |
+| --------------- | -------------------------------------------------------- |
+| Shell plugins   | sheldon (without it, `~/.zsh/*.zsh` is sourced directly) |
+| History, `cd`   | atuin, zoxide, peco, fzf, navi                           |
+| Replacements    | eza (`ls`), bat (`cat`), dust (`du`), duf (`df`), procs (`ps`), btm (`top`), lazygit (`lg`), colordiff (`diff`) |
+| Environment     | mise, direnv, thefuck                                    |
+| Git             | delta (pager), Cursor or VS Code (`core.editor`)         |
+| Editor alias    | Cursor or VS Code (`c`)                                  |
 
-## Custom Commands
+The git config and the editor choice are the exceptions to checking at startup:
+chezmoi decides when it renders the files. git's `core.editor` and the shell
+alias `c` open the same editor: Cursor (`cursor --wait`) when `cursor` is in the
+`optin` list and the `cursor` command exists, otherwise VS Code (`code --wait`)
+when `code` exists, otherwise none. After installing delta, Cursor or VS Code,
+run `chezmoi apply` again. To use another editor on one machine, set
+`core.editor` in `~/.gitconfig` and redefine `c` in `~/.zshrc.local`.
+
+`just doctor` lists which of these are installed. To set up a new machine from
+an existing one, run `brew bundle dump --file=-` on the old machine and install
+what you want from that list.
+
+## Custom commands and keybindings
 
 | Command  | Description                          |
 | -------- | ------------------------------------ |
 | `help`   | Show custom commands and keybindings |
 | `fcat`   | Recursively display file contents    |
 | `ts2mp4` | Convert TS files to MP4              |
-| `mkcd`   | Create directory and cd into it      |
-| `cdf`    | Fuzzy find and cd to directory       |
-
-## Keybindings
+| `mkcd`   | Create a directory and cd into it    |
+| `cdf`    | Fuzzy find and cd to a directory     |
 
 | Key      | Function                          |
 | -------- | --------------------------------- |
@@ -157,113 +158,41 @@ files and gitconfig depend on.
 | `Ctrl+F` | Frequently used commands          |
 | `Ctrl+N` | Navi cheat sheets                 |
 | `Ctrl+R` | Peco history search               |
-| `Ctrl+H` | Atuin enhanced history            |
+| `Ctrl+H` | Atuin history search              |
 
-## Secrets Management
+`justfile` (applied to `~/justfile` with the `justfile` switch) has recipes for
+updates and diagnostics; `just` lists them.
 
-Secrets are managed via [1Password CLI](https://developer.1password.com/docs/cli/):
+## Repository layout
 
-```bash
-# Create secrets (first time setup)
-op item create \
-  --category "Secure Note" \
-  --title "Dotfiles Secrets" \
-  --vault "Personal" \
-  'OPENAI_API_KEY[password]=your-api-key-here'
-
-# View secrets
-op item get "Dotfiles Secrets" --vault Personal
-
-# Update secrets
-op item edit "Dotfiles Secrets" --vault Personal 'OPENAI_API_KEY=new-value'
+```
+.
+├── dot_zshenv.tmpl, dot_zprofile.tmpl, dot_zshrc   # zsh startup files
+├── dot_zsh/                      # aliases, commands, prompt theme, widgets
+├── create_dot_gitconfig          # ~/.gitconfig, created once for local settings
+├── dot_gitignore_global
+├── dot_editorconfig
+├── private_dot_ssh/              # ~/.ssh/config
+├── private_dot_config/           # git (shared config), ghostty, mise, navi, sheldon, tmux
+├── private_Library/              # VS Code and Cursor settings (macOS)
+├── .chezmoidata/optin.toml       # opt-in switches and the paths each controls
+├── .chezmoitemplates/            # settings template shared by VS Code and Cursor
+├── run_once_before_install-tpm.sh.tmpl   # clones the tmux plugin manager (tmux switch)
+├── justfile
+└── docs/                         # per-topic notes (English and Japanese)
 ```
 
-## Common chezmoi Commands
-
-```bash
-# Show diff before applying
-chezmoi diff
-
-# Apply changes
-chezmoi apply
-
-# Open source directory
-chezmoi cd
-
-# List managed files
-chezmoi managed
-
-# Test template output
-chezmoi execute-template '{{ .chezmoi.os }}'
-
-# Edit and auto-add changes
-chezmoi edit ~/.zshrc
-```
-
-## Troubleshooting
-
-### 1Password not working
-
-```bash
-# Re-authenticate
-op signin
-
-# Check connection
-op vault list
-
-# Test template
-chezmoi execute-template '{{ (onepasswordItemFields "Dotfiles Secrets" "Personal").OPENAI_API_KEY.value }}'
-```
-
-### Shell not loading properly
-
-```bash
-# Restart shell
-exec $SHELL -l
-
-# Rebuild sheldon cache
-rm ~/.cache/sheldon.zsh
-sheldon source
-```
-
-### chezmoi apply errors
-
-```bash
-chezmoi apply --dry-run --verbose
-chezmoi diff
-```
-
-### Brewfile conflicts
-
-```bash
-# Regenerate Brewfile
-chezmoi apply --force
-
-# Or manually sync
-brew bundle dump --force --file=$(chezmoi source-path)/Brewfile
-```
+chezmoi maps the prefixes to target names: `dot_` becomes `.`, `private_`
+restricts permissions, and `.tmpl` files are Go templates.
 
 ## Documentation
 
-### English
-- [Overview](docs/en/README.md)
-- [Core Tools](docs/en/core-tools.md) - chezmoi, sheldon, atuin, zoxide, navi, fzf...
-- [Modern CLI](docs/en/modern-cli.md) - lazygit, dust, duf, procs, btm, httpie...
-- [Shell Commands](docs/en/shell-commands.md) - fcat, ts2mp4, mkcd, cdf...
-- [Git](docs/en/git.md) - Git aliases, lazygit, delta
+- [Core tools](docs/en/core-tools.md): chezmoi, sheldon, atuin, zoxide, navi, fzf
+- [Modern CLI](docs/en/modern-cli.md): lazygit, dust, duf, procs, btm
+- [Shell commands](docs/en/shell-commands.md): fcat, ts2mp4, mkcd, cdf
+- [Git](docs/en/git.md): aliases, lazygit, delta
 - [Keybindings](docs/en/keybindings.md)
 - [Aliases](docs/en/aliases.md)
+- [SSH](docs/en/ssh-setup.md)
 
-### 日本語
-- [概要](docs/ja/README.md)
-- [コアツール](docs/ja/core-tools.md)
-- [モダンCLI](docs/ja/modern-cli.md)
-- [シェルコマンド](docs/ja/shell-commands.md)
-- [Git](docs/ja/git.md)
-- [キーバインド](docs/ja/keybindings.md)
-- [エイリアス](docs/ja/aliases.md)
-
-## References
-
-- [chezmoi Documentation](https://www.chezmoi.io/)
-- [1Password CLI](https://developer.1password.com/docs/cli/)
+Japanese versions are in [docs/ja](docs/ja/README.md).

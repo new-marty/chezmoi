@@ -35,33 +35,59 @@ Files use chezmoi naming prefixes that map to target paths:
 - `executable_` → file gets executable permission
 - `.chezmoitemplates/` → reusable template partials (included via `{{ template "name" . }}`)
 
-## Template Data
+## Public Repository and Machine-Local Files
 
-Templates use variables from `~/.config/chezmoi/chezmoi.toml`:
-- `.is_personal_mac`, `.is_work_mac` — machine type flags
-- `.git_name`, `.git_email`, `.ssh_signing_key` — user identity
-- `.chezmoi.os`, `.chezmoi.hostname`, `.chezmoi.homeDir` — built-in chezmoi variables
-- Secrets come from 1Password CLI via `onepasswordItemFields "Dotfiles Secrets" "Personal"`
+The repository is public, and applying it must work for a stranger with an empty
+`chezmoi.toml` and none of the optional tools. CI (`fresh-apply`) checks this. README
+tells people to run `chezmoi init`, `chezmoi diff`, then `chezmoi apply
+--less-interactive`, because a first plain apply overwrites their existing files.
+
+- Templates use only built-in variables (`.chezmoi.os`, `.chezmoi.hostname`, ...),
+  repo data from `.chezmoidata/`, functions such as `lookPath`, and one piece of machine
+  data: the optional `optin` list, always read as `dig "optin" list .`. Do not add any
+  other `chezmoi.toml` data: chezmoi's default `missingkey=error` makes a missing key
+  fail the whole apply for a stranger.
+- App settings are opt-in. `.chezmoidata/optin.toml` (`[optin_paths.<switch>]`) lists
+  each switch's `files` (exactly what chezmoi writes; CI fails when they drift from
+  `chezmoi managed`), `dirs` (ignored so no empty dirs leak, never offered for
+  deletion because they hold app data) and `scripts`; `.chezmoiignore` ignores all three
+  for unselected switches and `fail`s on an unknown name. A new app config needs a
+  switch there, because ignored files are never deleted and an unselected stranger must
+  not get it. The core (zsh, git, ssh, editorconfig) is never behind a switch.
+- Anything that belongs to the owner (names, emails, keys, hosts, accounts, employer or
+  client names, personal tools) goes in a machine-local file whose contents the
+  repository never holds: `~/.zshenv.local`, `~/.zshrc.local` and `~/.ssh/config.local`
+  (unmanaged, read only if present; the ssh one is included first, because ssh keeps the
+  first value), and `~/.gitconfig` (always present, see the git item below).
+- git: the shared config is `private_dot_config/git/config.tmpl` (`~/.config/git/config`).
+  `~/.gitconfig` is machine-local: `create_dot_gitconfig` writes it only when absent.
+  git reads it after `~/.config/git/config`, so it wins, and `git config --global`
+  writes there instead of into a chezmoi-managed file.
+- git `core.editor` (in the git config template) and the `c` alias (`DOTFILES_GUI_EDITOR`
+  in `dot_zshenv.tmpl`, used by `dot_zsh/alias.zsh`) use the same rule: Cursor when
+  `cursor` is opted in and installed, else VS Code when installed. Change both together.
+- Guard every alias or integration for an optional tool with `command -v`, so the stock
+  command still works when the tool is missing.
+- There is no package list. A new machine is set up by hand from
+  `brew bundle dump --file=-` on the old one.
 
 ## Contexts and Machines
 
 The owner works in four contexts, and accounts, credentials, and settings must stay
 separate between them:
 
-- Main job: the employer. "Work" in this repository (`.is_work_mac`, `Brewfile.work_mac`)
-  means this context only.
+- Main job: the employer.
 - Side job: Starup. Its repositories live under `~/starup`, and Orca (a desktop app that
   runs coding agents in parallel worktrees) puts its worktrees under
   `~/orca/workspaces/archaive-pj`.
 - Sole proprietorship: new-marty.
 - Personal.
 
-There are only two kinds of Mac, personal and work, so machine type does not identify the
-context. The side job, the sole proprietorship, and personal use all share the personal
-Mac, so anything that must differ between them is switched by working directory. The one
-such switch today is in `dot_zshenv.tmpl`, which selects the Starup Claude
-Code account inside Starup directories and leaves the personal account as the default
-everywhere else.
+The side job, the sole proprietorship, and personal use share one Mac, so anything that
+must differ between them is switched by working directory. These switches are personal, so
+they live in the untracked local files, not in this repository: `~/.zshenv.local` selects
+the Starup Claude Code account inside Starup directories and leaves the personal account
+as the default everywhere else.
 
 Before changing an account, credential, or identity setting, establish which of the four
 contexts it belongs to. Do not reduce the choice to personal versus work.
@@ -78,8 +104,8 @@ managers (i.e. also available in open-source alternatives like Vaultwarden/Bitwa
   in dotfiles. If dotfiles ever need secrets, go through chezmoi's generic
   `[secret] command` abstraction so the backend stays swappable.
 
-Provider-specific paths (agent socket, signing program) should be isolated behind
-chezmoi template variables/branches so migrating means flipping one variable.
+Provider-specific paths (agent socket, signing program) live only in `~/.ssh/config.local`
+and `~/.gitconfig`, so switching providers means editing those two local files.
 
 ## Task Management & Tracking Work
 
@@ -94,17 +120,16 @@ GitHub Issues are disabled for this repository.
 
 ## Architecture
 
-**Brewfile system**: each machine has its own list — `Brewfile.tmpl` includes exactly one of `.chezmoitemplates/Brewfile.personal_mac` or `Brewfile.work_mac`, chosen by the machine type flag. There is no shared "common" list: a package installed on one machine is declared only there, and `just brew-pick <machine>` copies entries from another machine's list when setting up a new one. Each list opens with an Essentials block — the packages the dotfiles themselves need at shell startup.
+**Shell loading order**: `dot_zshenv.tmpl` (all shells, sets PATH/env, then `~/.zshenv.local`) → `dot_zprofile.tmpl` (login) → `dot_zshrc` (interactive, loads tools/plugins/keybindings, then `~/.zshrc.local`).
 
-**Shell loading order**: `dot_zprofile` (login) → `dot_zshenv.tmpl` (all shells, sets PATH/env) → `dot_zshrc` (interactive, loads tools/plugins/keybindings).
+**Sheldon caching**: Shell plugins via sheldon are cached to `~/.cache/sheldon.zsh` for fast startup. The cache auto-regenerates when `plugins.toml` changes. Without sheldon, `dot_zshrc` sources `~/.zsh/*.zsh` directly.
 
-**Sheldon caching**: Shell plugins via sheldon are cached to `~/.cache/sheldon.zsh` for fast startup. The cache auto-regenerates when `plugins.toml` changes.
-
-**Editor settings**: `.chezmoitemplates/editor-settings.tmpl` is a shared template for VS Code settings under `private_dot_Library/`.
+**Editor settings**: `.chezmoitemplates/editor-settings.tmpl` is the shared template for the VS Code and Cursor `settings.json` under `private_Library/`; each editor's file appends its own keys.
 
 ## CI
 
 GitHub Actions (`.github/workflows/lint.yml`) runs on pushes/PRs to main:
-- ShellCheck on `dot_zsh/*.zsh` and Raycast scripts
+- ShellCheck on `dot_zsh/*.zsh`
 - fcat tests on macOS runner
 - chezmoi doctor + template validation
+- `fresh-apply`: apply into an empty home three times, with paths taken from `.chezmoidata/optin.toml`: empty config (core files only, interactive zsh starts), every switch selected (every listed file exists, and the `files` lists match `chezmoi managed` under each switch's `dirs`), an unknown switch (apply fails)

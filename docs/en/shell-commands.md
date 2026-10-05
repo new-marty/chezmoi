@@ -88,30 +88,6 @@ ts2mp4 --force       # Force overwrite existing files
 
 ---
 
-## brew (wrapped)
-
-Enhanced brew command with interactive Brewfile management.
-
-```bash
-# Install ALL packages from Brewfile (no arguments)
-brew install
-# → Runs: brew bundle install --file=~/Brewfile
-
-# Install a specific package
-brew install ripgrep
-# Prompts: Add to which Brewfile?
-#   > All machines (common)
-#     Personal Mac only
-#     Work Mac only
-#     Skip
-
-# Uninstall a package
-brew uninstall ripgrep
-# Prompts: Remove from which Brewfile?
-```
-
----
-
 ## help
 
 Display all custom commands and keybindings.
@@ -134,7 +110,8 @@ keys
 
 ## docs
 
-Open documentation in VS Code editor.
+Open this documentation in the GUI editor chezmoi chose for `c` (Cursor or VS
+Code). Without either, the docs folder opens in Finder.
 
 ```bash
 docs

@@ -1,6 +1,6 @@
 # モダンCLIツール
 
-従来のUnixコマンドをより良いUXで置き換えるモダンなツール群。
+従来のUnixコマンドをより良いUXで置き換えるモダンなツール群。どれも必須ではない。`du` → `dust` のようなエイリアスはツールがインストールされているときだけ設定され、なければ元のコマンドがそのまま動く。
 
 ## lazygit（エイリアス: `lg`）
 
@@ -181,7 +181,7 @@ http --headers httpbin.org/get
 
 ## delta
 
-git diff強化ツール - `git diff`、`git log`、`git show` で自動的に使用。
+git diff強化ツール。直近の `chezmoi apply` の時点でインストールされていれば、`git diff`、`git log`、`git show` で使われる（delta を後から入れたら `chezmoi apply` をもう一度実行する）。
 
 **機能:**
 - シンタックスハイライト
@@ -193,7 +193,7 @@ git diff強化ツール - `git diff`、`git log`、`git show` で自動的に使
 git diff              # deltaは自動設定済み
 # n = 次のファイル, N = 前のファイル
 
-git diff --no-pager   # deltaを一時的に無効化
+git --no-pager diff   # deltaを一時的に無効化
 ```
 
 ---

@@ -10,32 +10,34 @@ alias gca='git commit --amend'
 alias gp='git push origin head'
 alias sw='git switch'
 
-# ls
-alias ls="eza --icons"
+# ls - use eza when installed, plain ls otherwise.
+# `--icons=auto`, not `--icons`: the bare flag takes the next word as its value,
+# so `ls some/path` failed with "invalid value for --icons".
+if command -v eza &>/dev/null; then
+    alias ls="eza --icons=auto"
+    alias lll="eza -abghHliS --git --icons=auto"
+fi
 alias ll="ls -la"
 alias la="ls -l"
 alias l1="ls -1"
-alias lll="ls -abghHliS --git"
 
-# cat - use bat for syntax highlighting (fall back to ccat if bat not available)
+# cat - use bat for syntax highlighting when installed, plain cat otherwise
 if command -v bat &>/dev/null; then
     alias cat="bat --style=plain --paging=never"
     alias catp="bat"  # bat with full features (paging, line numbers)
-else
-    alias cat="ccat"
 fi
 
 # diff
-# colordiff is not declared in the Brewfile, so fall back to plain diff when it
-# is missing. Without the guard, `diff` fails with "command not found".
 command -v colordiff >/dev/null 2>&1 && alias diff='colordiff -u' || alias diff='diff -u'
 
 # alias
 alias rs='exec zsh -l'
 alias sz='source ~/.zshrc'
 
-# code
-alias c='code'
+# c - open the GUI editor chezmoi chose in .zshenv (Cursor or VS Code); no
+# alias when neither is installed. To choose another editor, set the variable
+# in ~/.zshenv.local (read before this file) or redefine `c` in ~/.zshrc.local.
+[[ -n "$DOTFILES_GUI_EDITOR" ]] && alias c='"$DOTFILES_GUI_EDITOR"'
 
 # pnpm
 alias pp="pnpm"
@@ -50,12 +52,13 @@ alias dcud='docker compose up -d'
 alias dcu='docker compose up'
 alias dcd='docker compose down'
 
-# Modern CLI replacements
-alias du='dust'
-alias df='duf'
-alias ps='procs'
-alias top='btm'
-alias lg='lazygit'
+# Modern CLI replacements, each only when installed. Without them the
+# original command runs, so a missing tool never breaks a familiar name.
+command -v dust &>/dev/null && alias du='dust'
+command -v duf &>/dev/null && alias df='duf'
+command -v procs &>/dev/null && alias ps='procs'
+command -v btm &>/dev/null && alias top='btm'
+command -v lazygit &>/dev/null && alias lg='lazygit'
 
 # python
 alias p='python3'
@@ -79,42 +82,6 @@ alias t='tmux'
 alias ta='tmux attach -t'
 alias tl='tmux list-sessions'
 alias tn='tmux new-session -s'
-
-# OpenClaw
-alias oc='openclaw'
-alias ocg='openclaw gateway'
-alias ocgr='openclaw gateway run'
-alias ocgs='openclaw gateway status'
-alias ocgd='openclaw gateway discover'
-alias ocd='openclaw doctor'
-alias ocl='openclaw logs'
-alias oct='openclaw tui'
-alias occ='openclaw configure'
-alias ocm='openclaw message send'
-alias oca='openclaw agent'
-alias ocup='openclaw update'
-
-# remote
-# gary の Mac (mini: Mac mini, m1: M1 MacBook) を画面共有で開く
-# 同一 LAN なら mDNS で直接、外出先などで届かなければ Tailscale 経由
-# Tailscale のアドレスは ~/.ssh/config.local の Host mini / Host m1 から読む
-function _gary_vnc() {
-    local mdns=$1 host=$2
-    if nc -z -G 2 "$mdns" 5900 2>/dev/null; then
-        open "vnc://$mdns"
-        return
-    fi
-    local addr
-    addr=$(ssh -G "$host" | awk '$1 == "hostname" { print $2 }')
-    if [[ $addr == "$host" ]]; then
-        echo "$mdns に LAN で届かず、~/.ssh/config.local に Host $host もありません" >&2
-        return 1
-    fi
-    echo "LAN で届かないため Tailscale ($addr) 経由で接続します" >&2
-    open "vnc://$addr"
-}
-function mini() { _gary_vnc mac-mini.local mini; }
-function m1() { _gary_vnc m1-macbook.local m1; }
 
 # help - Show custom commands and keybindings
 alias help='show_dotfiles_help'
@@ -141,8 +108,10 @@ function show_keybindings() {
 # Open documentation in editor
 function open_dotfiles_docs() {
     local docs_dir="$(chezmoi source-path)/docs"
-    if [[ -d "$docs_dir" ]]; then
-        code "$docs_dir"
+    if [[ -d "$docs_dir" && -n "$DOTFILES_GUI_EDITOR" ]]; then
+        "$DOTFILES_GUI_EDITOR" "$docs_dir"
+    elif [[ -d "$docs_dir" ]]; then
+        open "$docs_dir"
     else
         echo "Documentation not found at: $docs_dir"
     fi
@@ -179,8 +148,6 @@ function show_dotfiles_help() {
     echo "  fcat       Display files with headers"
     echo "             -i (gitignore), -o (output), -c (clipboard), -n (pattern)"
     echo "  ts2mp4     Convert TS to MP4 (-o dir, -f force)"
-    echo "  brew       Enhanced brew with auto Brewfile updates"
-    echo "  brew install  (no args) Install all from ~/Brewfile"
     echo "  fuck       Correct previous command (thefuck)"
     echo ""
 
@@ -247,14 +214,13 @@ function show_dotfiles_help() {
     echo "────────────"
     echo "  rs         Restart shell"
     echo "  sz         Source ~/.zshrc"
-    echo "  c          VS Code editor"
+    echo "  c          Editor (Cursor or VS Code)"
     echo "  p          python3"
     echo "  tf         terraform"
     echo "  dcud       docker compose up -d"
     echo "  dcu        docker compose up"
     echo "  dcd        docker compose down"
     echo "  gh         GitHub CLI"
-    echo "  op         1Password CLI"
     echo "  yolo       Claude Code (skip permissions)"
     echo ""
     
@@ -293,7 +259,7 @@ function show_dotfiles_help() {
     echo "────────────────"
     echo "  English:   \$(chezmoi source-path)/docs/en/"
     echo "  日本語:    \$(chezmoi source-path)/docs/ja/"
-    echo "  Open docs: docs (or code \"\$(chezmoi source-path)/docs\")"
+    echo "  Open docs: docs"
     echo ""
 
     echo "💡 QUICK TIPS"
