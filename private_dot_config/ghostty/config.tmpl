@@ -23,6 +23,9 @@ scrollback-limit = 104857600
 {{ if eq .chezmoi.os "darwin" -}}
 macos-titlebar-style = tabs
 macos-non-native-fullscreen = visible-menu
+# Send the left Option key as Alt, so the tmux Opt+... shortcuts work.
+# Ghostty's default does this only with the U.S. layouts, not with ABC or JIS.
+macos-option-as-alt = left
 {{ end -}}
 window-height = 9999999
 window-width = 9999999
