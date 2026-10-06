@@ -74,7 +74,7 @@ files = [".config/karabiner"]
 
 # Oh My Zsh loads the zsh plugins instead of sheldon, for a Mac that has Oh My
 # Zsh but not sheldon and cannot run git clone. Oh My Zsh itself is installed by
-# hand from its zip into ~/.oh-my-zsh (docs/en/work-mac.md); chezmoi writes only
+# hand from its zip into ~/.oh-my-zsh (docs/en/setup.md); chezmoi writes only
 # the plugins it does not ship, vendored by scripts/vendor-omz-plugins.sh.
 [optin_paths.omz]
 files = [
@@ -103,8 +103,8 @@ dirs = [".zsh/omz-custom"]
 # them is required with those (see optin_choices below).
 #   editor-extensions  the Poimandres and catppuccin extensions, Hack Nerd Font
 #   editor-builtin     the built-in Default Dark Modern theme recoloured with
-#                      the Poimandres colours, system fonts; for a Mac that
-#                      cannot install extensions or fonts
+#                      the Poimandres colours, system fonts; for a machine that
+#                      does not have those extensions or that font
 [optin_paths.editor-extensions]
 [optin_paths.editor-builtin]
 

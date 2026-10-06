@@ -113,7 +113,7 @@ doctor:
         if [[ -r "${ZSH:-$HOME/.oh-my-zsh}/oh-my-zsh.sh" ]]; then
             echo "  ✅ Oh My Zsh ${ZSH:-$HOME/.oh-my-zsh}, plugins from ~/.zsh/omz-custom"
         else
-            echo "  ❌ Oh My Zsh not installed, ~/.zsh is sourced without plugins (docs/en/work-mac.md)"
+            echo "  ❌ Oh My Zsh not installed, ~/.zsh is sourced without plugins (docs/en/setup.md, omz)"
         fi
     elif command -v sheldon &>/dev/null; then
         echo "  ✅ sheldon (~/.config/sheldon/plugins.toml)"

@@ -26,9 +26,9 @@ only when its switch is in the `optin` list of
 | `mise`     | `.config/mise/config.toml`                                          |
 | `justfile` | `justfile`                                                          |
 | `karabiner`| `.config/karabiner` (a symlink to `karabiner/` in the source directory) |
-| `omz`      | `.zsh/omz-custom/plugins/`: zsh plugins for Oh My Zsh, which then loads them instead of sheldon ([Work Mac](work-mac.md)) |
+| `omz`      | `.zsh/omz-custom/plugins/`: zsh plugins for Oh My Zsh, which then loads them instead of sheldon ([below](#oh-my-zsh-instead-of-sheldon-omz)) |
 | `editor-extensions` | none; the VS Code and Cursor settings use the Poimandres and catppuccin extensions and Hack Nerd Font |
-| `editor-builtin` | none; the VS Code and Cursor settings colour the built-in theme with the Poimandres colours and use system fonts, for a Mac that cannot install extensions or fonts |
+| `editor-builtin` | none; the VS Code and Cursor settings colour the built-in theme with the Poimandres colours and use system fonts, for a machine without those extensions or that font |
 
 VS Code and Cursor read settings in the same format from different places, so
 both `settings.json` files come from one template and you can select either or
@@ -62,6 +62,56 @@ review, with no command. It needs [just](https://just.systems/). Without
 **Delete files only, never their directories.** A directory such as
 `~/Library/Application Support/Cursor` also holds the application's own data
 (extensions, workspace state).
+
+### Oh My Zsh instead of sheldon (`omz`)
+
+With `omz`, zsh loads its plugins with Oh My Zsh, installed by hand in
+`~/.oh-my-zsh`, instead of sheldon: `git`, plus three plugins kept in this
+repository and written to `~/.zsh/omz-custom`. Up/Down then search history for
+what is typed so far. The aliases, commands and prompt are the same `~/.zsh/*`
+files either way. Before Oh My Zsh is installed the shell still starts: it
+sources `~/.zsh/*` without plugins, as on a machine without sheldon.
+`just doctor` prints which loader is in use.
+
+Install Oh My Zsh once, from its zip:
+
+```bash
+curl -fsSL -o ~/Downloads/ohmyzsh.zip https://github.com/ohmyzsh/ohmyzsh/archive/refs/heads/master.zip
+unzip -q ~/Downloads/ohmyzsh.zip -d ~/Downloads
+mv ~/Downloads/ohmyzsh-master ~/.oh-my-zsh
+```
+
+Do not run Oh My Zsh's `install.sh`: it replaces `~/.zshrc`, which comes from
+chezmoi and already loads Oh My Zsh when `omz` is selected. chezmoi writes
+nothing into `~/.oh-my-zsh`, so updating Oh My Zsh means replacing that
+directory with a newer zip. Its own update check is turned off, because it runs
+git.
+
+The plugins that Oh My Zsh does not ship are kept in `dot_zsh/omz-custom`,
+pinned to a release, so that applying needs no clone:
+
+| Plugin                         | Version |
+| ------------------------------ | ------- |
+| zsh-autosuggestions            | v0.7.1  |
+| zsh-syntax-highlighting        | 0.8.0   |
+| zsh-history-substring-search   | v1.1.0  |
+
+To move to a newer release, change its pin in `scripts/vendor-omz-plugins.sh`,
+run the script on a machine that can clone, and commit the result.
+
+To go back to sheldon, install it, remove `omz` from the list and apply.
+chezmoi stops managing `~/.zsh/omz-custom` and leaves it on disk, so delete it,
+and `~/.oh-my-zsh` if nothing else uses it.
+
+### Terminal colours
+
+The steeef prompt uses the terminal's palette numbers, so it shows the
+Poimandres colours wherever the palette is Poimandres. Ghostty gets it from the
+`ghostty` switch, and the VS Code and Cursor terminals from `editor-builtin`.
+Other terminals, such as iTerm2, are not managed by chezmoi: import a Poimandres
+colour preset by hand (in iTerm2, Settings → Profiles → Colors → Color Presets →
+Import). The colour values are in
+`private_dot_config/ghostty/themes/poimandres.ghostty`.
 
 ## Machine-local files
 
@@ -152,3 +202,17 @@ ID per line. `just vscode-extensions` installs the ones that are missing.
 installed; review it with `git diff` before you commit it. On a machine
 without the `justfile` switch, run
 `just --justfile "$(chezmoi source-path)/justfile" vscode-extensions`.
+
+### Without `git clone`
+
+If `chezmoi init` cannot clone on a machine, put the repository's zip where
+chezmoi looks for its source instead. To update later, replace that directory
+with a newer zip; `chezmoi update` needs git and will not work. Do not select
+`tmux` there: it clones its plugin manager.
+
+```bash
+curl -fsSL -o ~/Downloads/chezmoi-src.zip https://github.com/new-marty/chezmoi/archive/refs/heads/main.zip
+unzip -q ~/Downloads/chezmoi-src.zip -d ~/Downloads
+mkdir -p ~/.local/share
+mv ~/Downloads/chezmoi-main ~/.local/share/chezmoi
+```

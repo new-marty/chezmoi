@@ -6,22 +6,33 @@
 
 ---
 
-## [Doing] 会社の Mac 用のドキュメント（`docs/{en,ja}/work-mac.md`）をなくす
-
-方針は「マシンや環境を定義せず、opt-in とローカルのファイルで運用する」。特定のマシン向けの
-ページはこの方針に反する。誰にでも使える中身（Oh My Zsh を zip から入れる手順、clone せずに
-リポジトリを置く手順）は `docs/{en,ja}/setup.md` に移し、会社の Mac 固有の移行手順は
-下の項目に移す。
-
----
-
 ## [Todo] 会社の Mac を opt-in（`omz`、`cursor`、`editor-builtin`）で chezmoi に移す
 
 リポジトリ側は対応済み。会社の Mac 用の環境は定義せず、使うものを opt-in する:
 `omz`（Oh My Zsh で同梱プラグインを読む。会社の Mac は clone できないので
 `dot_zsh/omz-custom` に同梱）と、エディタの見た目の `editor-extensions` /
 `editor-builtin`（既定なし。`vscode` か `cursor` を選んだら一方を必ず選ぶ）。
-手順は `docs/en/work-mac.md`。残りはリポジトリの外でしかできないこと:
+スイッチの選び方、Oh My Zsh の入れ方、clone できないときの手順は `docs/en/setup.md`
+にある。このマシンでは `optin = ["omz", "cursor", "editor-builtin"]` にし、`tmux` は
+選ばない（tpm を clone する）。許可リストの都合で、fzf、peco、atuin、eza、bat、zoxide、
+direnv、mise、navi、delta、Ghostty、Hack Nerd Font は今は入れられない。どれも入っていなくても
+動くので、許可されたら入れて apply し直すだけでよい。拡張機能は、許可されたものを
+ローカルで入れる（一覧は opt-in しない）。Poimandres と catppuccin の拡張、Hack Nerd Font が
+入ったら、`editor-builtin` を `editor-extensions` に替えて apply する。
+
+今は zip から作った `~/.dotfiles/` を symlink で使っている。移す手順:
+
+1. マシン固有のものをローカルのファイルへ移す。`~/.gitconfig` には `user.name`、
+   `user.email` と署名の設定だけを残す（ほかは `~/.config/git/config` から来る）。
+   秘密の値と追加の `PATH` は `~/.zshenv.local`、自分のエイリアスと関数は `~/.zshrc.local`。
+2. `~/.dotfiles/` を指す symlink だけを消す（ディレクトリはバックアップとして残す）:
+   `find ~ ~/.config ~/Library/Application\ Support/Cursor/User -maxdepth 1 -type l -lname "$HOME/.dotfiles/*"`
+3. リポジトリを用意し、スイッチを選ぶ。`chezmoi diff` で、Cursor の設定を以前の
+   `~/.dotfiles/cursor/settings.json` と比べる。
+4. `chezmoi apply --less-interactive` で apply し、新しいターミナルでプロンプト（steeef）、
+   `gst` などのエイリアス、`just doctor` を確かめる。すべて動いたら `~/.dotfiles/` を消す。
+
+残りはリポジトリの外でしかできないこと:
 
 - `vscode` か `cursor` を選んでいる手元の Mac は、次の apply の前に `optin` へ
   `editor-extensions` を足す（足さないと apply が止まる）。

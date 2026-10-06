@@ -6,7 +6,7 @@
 
 | ツール | この dotfiles での使い方 |
 | ------ | ------------------------ |
-| [sheldon](https://sheldon.cli.rs/) | `~/.config/sheldon/plugins.toml` の zsh プラグイン（シンタックスハイライト、入力候補の表示、fzf-tab など）を読み込む。結果は `~/.cache/sheldon.zsh` にキャッシュし、`plugins.toml` が変わると作り直す。sheldon がなければ `~/.zsh/` のファイルだけを読み込む。`omz` スイッチを選ぶと、代わりに Oh My Zsh で読み込む（[会社の Mac](work-mac.md)）。 |
+| [sheldon](https://sheldon.cli.rs/) | `~/.config/sheldon/plugins.toml` の zsh プラグイン（シンタックスハイライト、入力候補の表示、fzf-tab など）を読み込む。結果は `~/.cache/sheldon.zsh` にキャッシュし、`plugins.toml` が変わると作り直す。sheldon がなければ `~/.zsh/` のファイルだけを読み込む。`omz` スイッチを選ぶと、代わりに Oh My Zsh で読み込む（[導入と設定の詳細](setup.md#sheldon-の代わりに-oh-my-zsh-を使うomz)）。 |
 | [fzf](https://junegunn.github.io/fzf/) | `Ctrl+G`、`Ctrl+S`、`Ctrl+F`、`Tab` 補完、`cdf` の一覧に使う。 |
 | [peco](https://github.com/peco/peco) | `Ctrl+R` の履歴検索と、`Ctrl+U` の最近いたディレクトリに使う。 |
 | [atuin](https://docs.atuin.sh/) | `Ctrl+H` の履歴検索に使う。上矢印キーは zsh のまま。 |

@@ -131,7 +131,7 @@ GitHub Issues are disabled for this repository.
 
 **Shell loading order**: `dot_zshenv.tmpl` (all shells, sets PATH/env and `DOTFILES_OMZ`, then `~/.zshenv.local`) → `dot_zprofile.tmpl` (login; puts back the PATH order that macOS's `path_helper` in `/etc/zprofile` changed) → `dot_zshrc` (interactive, loads tools/plugins/keybindings, then `~/.zshrc.local`).
 
-**Plugin loader**: `dot_zshrc` stays a plain file (so `zsh -n` checks every branch) and picks the loader from `DOTFILES_OMZ` (1 when the `omz` opt-in is selected): Oh My Zsh when selected and `~/.oh-my-zsh` exists (plugins only; `ZSH_CUSTOM=~/.zsh/omz-custom`, vendored by `scripts/vendor-omz-plugins.sh` because the Mac that uses it cannot clone; no OMZ theme; it runs compinit; zsh-syntax-highlighting and zsh-history-substring-search are sourced at the end of `.zshrc`, after every widget), else sheldon when installed, else none. With Oh My Zsh or none, `dot_zshrc` sources `~/.zsh/*.zsh` and the theme directly.
+**Plugin loader**: `dot_zshrc` stays a plain file (so `zsh -n` checks every branch) and picks the loader from `DOTFILES_OMZ` (1 when the `omz` opt-in is selected): Oh My Zsh when selected and `~/.oh-my-zsh` exists (plugins only; `ZSH_CUSTOM=~/.zsh/omz-custom`, vendored by `scripts/vendor-omz-plugins.sh` so applying clones nothing; no OMZ theme; it runs compinit; zsh-syntax-highlighting and zsh-history-substring-search are sourced at the end of `.zshrc`, after every widget), else sheldon when installed, else none. With Oh My Zsh or none, `dot_zshrc` sources `~/.zsh/*.zsh` and the theme directly.
 
 **Sheldon caching**: Shell plugins via sheldon are cached to `~/.cache/sheldon.zsh` for fast startup. The cache auto-regenerates when `plugins.toml` changes.
 

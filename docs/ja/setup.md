@@ -52,9 +52,9 @@
 | `mise`     | `.config/mise/config.toml`                                          |
 | `justfile` | `justfile`                                                          |
 | `karabiner`| `.config/karabiner`(ソースディレクトリの `karabiner/` へのシンボリックリンク) |
-| `omz`      | `.zsh/omz-custom/plugins/`。Oh My Zsh 用の zsh プラグインで、sheldon の代わりに Oh My Zsh がこれを読み込む（[会社の Mac](work-mac.md)） |
+| `omz`      | `.zsh/omz-custom/plugins/`。Oh My Zsh 用の zsh プラグインで、sheldon の代わりに Oh My Zsh がこれを読み込む（[下記](#sheldon-の代わりに-oh-my-zsh-を使うomz)） |
 | `editor-extensions` | なし。VS Code と Cursor の設定が Poimandres と catppuccin の拡張、Hack Nerd Font を使う |
-| `editor-builtin` | なし。VS Code と Cursor の設定が標準テーマを Poimandres の色に塗り替え、システムのフォントを使う。拡張やフォントを入れられない Mac 向け |
+| `editor-builtin` | なし。VS Code と Cursor の設定が標準テーマを Poimandres の色に塗り替え、システムのフォントを使う。それらの拡張やフォントを入れないマシン向け |
 
 VS Code と Cursor は、同じ形式の設定を別々の場所から読む。そこで両方の `settings.json` を 1 つのテンプレートから生成しており、どちらか一方でも両方でも選べる。見た目には既定がない。`vscode` か `cursor` を選んだら、`editor-extensions` と `editor-builtin` のどちらか一方も必ず選ぶ。選ばないと `chezmoi apply` はそう告げて止まる（`.chezmoidata/optin.toml` の `[optin_choices.editor-look]`）。スイッチと書くファイルの対応は `.chezmoidata/optin.toml` で決めており、この表はその写しだ。そこにない名前を書くと、`chezmoi apply` は有効な名前を挙げたエラーで止まる。
 
@@ -67,6 +67,36 @@ VS Code と Cursor は、同じ形式の設定を別々の場所から読む。�
 `just optin` は、スイッチごとに「このマシンで選ばれているか」「ファイルがあるか」「chezmoi がまだ管理しているか」を表示する。chezmoi が書いたファイルのうち、もう管理しておらず、その後だれも変更していないものには、削除用の `rm` コマンドも表示する。chezmoi が書いた後に変更されたファイルは、`rm` を出さずに確認用の一覧に載せる。実行には [just](https://just.systems/) が必要だ。`~/justfile` がない場合は `just --justfile "$(chezmoi source-path)/justfile" optin` で実行する。
 
 **消すのはファイルだけにし、ディレクトリごと消してはいけない。** `~/Library/Application Support/Cursor` のようなディレクトリには、拡張機能やワークスペースの状態といったアプリ自身のデータも入っている。
+
+### sheldon の代わりに Oh My Zsh を使う（`omz`）
+
+`omz` を選ぶと、zsh のプラグインを sheldon ではなく、手で `~/.oh-my-zsh` に入れた Oh My Zsh で読み込む。読み込むのは `git` と、このリポジトリに同梱した 3 つ（`~/.zsh/omz-custom` に書かれる）。上下の矢印キーは入力中の文字列で履歴を検索する。エイリアス、コマンド、プロンプトは、どちらでも同じ `~/.zsh/*` のファイル。Oh My Zsh を入れる前でもシェルは起動する。sheldon のないマシンと同じく、プラグインなしで `~/.zsh/*` を読み込む。`just doctor` は、どの読み込み方になっているかを表示する。
+
+Oh My Zsh は zip から一度だけ入れる。
+
+```bash
+curl -fsSL -o ~/Downloads/ohmyzsh.zip https://github.com/ohmyzsh/ohmyzsh/archive/refs/heads/master.zip
+unzip -q ~/Downloads/ohmyzsh.zip -d ~/Downloads
+mv ~/Downloads/ohmyzsh-master ~/.oh-my-zsh
+```
+
+Oh My Zsh の `install.sh` は実行しない。`~/.zshrc` を置き換えてしまうが、`~/.zshrc` は chezmoi が書くもので、`omz` を選べば Oh My Zsh を読み込む。chezmoi は `~/.oh-my-zsh` の中に何も書かないので、Oh My Zsh の更新はこのディレクトリを新しい zip で置き換えればよい。Oh My Zsh 自身の更新確認は git を使うので止めてある。
+
+Oh My Zsh に入っていないプラグインは、apply で clone しなくて済むよう、リリースを固定して `dot_zsh/omz-custom` に置いている。
+
+| プラグイン                     | バージョン |
+| ------------------------------ | ---------- |
+| zsh-autosuggestions            | v0.7.1     |
+| zsh-syntax-highlighting        | 0.8.0      |
+| zsh-history-substring-search   | v1.1.0     |
+
+新しいリリースにするときは、`scripts/vendor-omz-plugins.sh` の固定を書き換え、clone できるマシンでスクリプトを実行して、結果をコミットする。
+
+sheldon に戻すときは、sheldon を入れてから一覧の `omz` を外して apply する。chezmoi は `~/.zsh/omz-custom` を管理しなくなり、ファイルは残るので、これを消し、ほかで使っていなければ `~/.oh-my-zsh` も消す。
+
+### ターミナルの配色
+
+steeef のプロンプトはターミナルのパレット番号で色を指定するので、パレットが Poimandres なら Poimandres の色になる。Ghostty は `ghostty` スイッチが、VS Code と Cursor のターミナルは `editor-builtin` がパレットを設定する。iTerm2 などほかのターミナルは chezmoi では管理しないので、Poimandres のカラープリセットを手で読み込む（iTerm2 なら Settings → Profiles → Colors → Color Presets → Import）。色の値は `private_dot_config/ghostty/themes/poimandres.ghostty` にある。
 
 ## マシン固有のファイル
 
@@ -126,3 +156,14 @@ git のページャの delta も同じで、chezmoi が git の設定を書く�
 このリポジトリにはパッケージの一覧がない。元のマシンで `brew bundle dump --file=-` を実行し、その出力から必要なものを新しいマシンに入れる。そのあと README の導入手順に従う。
 
 例外は VS Code の拡張機能で、`vscode/extensions.txt` に 1 行に 1 つずつ ID を並べてある。`just vscode-extensions` は、そのうち入っていないものを入れる。`just vscode-extensions-dump` は VS Code に今入っているものから一覧を書き直すので、`git diff` で確かめてからコミットする。`justfile` スイッチを選んでいないマシンでは `just --justfile "$(chezmoi source-path)/justfile" vscode-extensions` と打つ。
+
+### `git clone` ができないマシン
+
+`chezmoi init` が clone できないマシンでは、リポジトリの zip を chezmoi のソースの場所に置く。あとで更新するときも、このディレクトリを新しい zip で置き換える。`chezmoi update` は git を使うので動かない。`tmux` スイッチはプラグインマネージャーを clone するので選ばない。
+
+```bash
+curl -fsSL -o ~/Downloads/chezmoi-src.zip https://github.com/new-marty/chezmoi/archive/refs/heads/main.zip
+unzip -q ~/Downloads/chezmoi-src.zip -d ~/Downloads
+mkdir -p ~/.local/share
+mv ~/Downloads/chezmoi-main ~/.local/share/chezmoi
+```

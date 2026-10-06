@@ -116,20 +116,6 @@ Removing a switch later deletes nothing: chezmoi stops managing those files
 and leaves them where they are. [Setup in detail](docs/en/setup.md) lists the
 files each switch writes and how to clean up after removing one.
 
-## Work Mac
-
-A Mac whose software allow-list has Oh My Zsh but not sheldon, editor
-extensions or Nerd Fonts opts in to what it can use: `omz` loads the zsh
-plugins with Oh My Zsh (installed by hand from its zip) from copies kept in this
-repository, so applying clones nothing, and `editor-builtin` makes the Cursor
-settings use the built-in theme and system fonts. [Work Mac](docs/en/work-mac.md)
-has the allow-list, installing Oh My Zsh, and moving from a hand-made setup.
-
-```toml
-[data]
-    optin = ["omz", "cursor", "editor-builtin"]
-```
-
 ## Put your own settings in local files
 
 These files belong to the machine. The repository never holds their contents.

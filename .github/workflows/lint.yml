@@ -192,7 +192,7 @@ jobs:
           # Before Oh My Zsh is installed the shell still starts, without it.
           HOME="$home" zsh -i -c 'echo "interactive shell started"'
           # A fixed Oh My Zsh commit, so an upstream change does not turn this
-          # red for unrelated commits. Move it forward when updating the work Mac.
+          # red for unrelated commits. Move it forward from time to time.
           omz_commit=60c9a7a839b790cd905d0fd4419435124fd1bdc0
           curl -fsSL -o "$RUNNER_TEMP/omz.zip" "https://github.com/ohmyzsh/ohmyzsh/archive/$omz_commit.zip"
           unzip -q "$RUNNER_TEMP/omz.zip" -d "$RUNNER_TEMP"
