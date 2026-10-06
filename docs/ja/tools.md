@@ -13,7 +13,6 @@
 | [zoxide](https://github.com/ajeetdsouza/zoxide) | `z <パスの一部>` でよく使うディレクトリへ移動する。`zi` は一覧から選ぶ。 |
 | [navi](https://github.com/denisidoro/navi) | `Ctrl+N` でチートシートを開く。`navi` スイッチでこのリポジトリのチートシートが入る。 |
 | [Neovim](https://neovim.io/) | `nvim` スイッチがヒント用のプラグインと一緒に設定する（[tmux と Vim を覚える](tmux-vim.md)）。 |
-| [Google Chrome](https://www.google.com/chrome/) | `just cheatsheet-pdf` がチートシートの印刷に使う。 |
 | [thefuck](https://github.com/nvbn/thefuck) | `fuck` で直前のコマンドを直す。 |
 | [direnv](https://direnv.net/) | ディレクトリに入ると、その `.envrc` を読み込む。 |
 | [mise](https://mise.jdx.dev/) | ディレクトリごとにツールの版を切り替える。`mise` スイッチで全体の既定（Node の LTS、Python 3.12、最新の Go）が入る。 |

@@ -20,7 +20,7 @@
 ## [Todo] tmux と Vim のヒントを実際に使って見直す
 
 ヒント（tmux の2段目、Neovim の which-key など）、チートシート（`cheatsheet/index.html`、
-`just cheatsheet-pdf`）、VSCodeVim 用の設定は入れた。使い方は `docs/ja/tmux-vim.md`。
+`just cheatsheet`）、VSCodeVim 用の設定は入れた。使い方は `docs/ja/tmux-vim.md`。
 キーを実際に押しての確認は、まだ本人が手元でしていない。
 
 - 実機で確かめる: Ghostty の tmux で `Opt+hjkl`、英数入力で `Space`+`/`、ターミナルと

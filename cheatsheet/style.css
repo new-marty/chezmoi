@@ -1,5 +1,5 @@
-/* Layout: each page is an A4 landscape sheet; every size inside is in cqw
-   (a share of the sheet width), so the screen shows the printed page. */
+/* Layout: each panel scales with the window; every size inside is in cqw
+   (a share of the panel width). Panels grow to fit their content. */
 :root {
   --bg: #e9edf5; --paper: #ffffff; --ink: #1b1e28; --muted: #556078; --line: #cdd4e2; --soft: #f2f4f9;
   --normal: #0b7d6b; --normal-bg: #dcf3ee;
@@ -39,7 +39,7 @@ svg .mono { font-family: var(--f-key); font-weight: 700; }
 .nav a { color: var(--muted); }
 .nav p { color: var(--muted); font-size: 13px; }
 
-/* one A4 sheet */
+/* one panel */
 .scroll { max-width: 1240px; margin: 0 auto 22px; overflow-x: auto; }
 .sheet { container-type: inline-size; min-width: 880px; }
 .page { aspect-ratio: 297 / 210; background: var(--paper); border-radius: 8px; padding: 2.6cqw 2.8cqw; display: grid; grid-template-rows: auto 1fr; gap: 1.6cqw; font-size: 1.12cqw; overflow: hidden; }
@@ -160,24 +160,6 @@ code.mini { font-family: var(--f-key); font-size: 1.05cqw; background: var(--sof
 .frame figcaption { font-size: 1.05cqw; display: flex; flex-wrap: wrap; align-items: baseline; gap: .3cqw .5cqw; }
 .frame figcaption b { display: inline-grid; place-items: center; width: 1.6cqw; height: 1.6cqw; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: .9cqw; }
 
-/* paper */
-@page { size: A4 landscape; margin: 8mm; }
-@media print {
-  :root, :root[data-theme="dark"] {
-    --bg: #fff; --paper: #fff; --ink: #000; --muted: #4a5266; --line: #c3cada; --soft: #f1f3f8;
-    --normal: #0b7d6b; --normal-bg: #dcf3ee; --insert: #b8336f; --insert-bg: #fbe3ee;
-    --visual: #2a6fae; --visual-bg: #e1eefa; --command: #8f6a00; --command-bg: #fbf2d2;
-    --session: #6a4fa3; --window: #2a6fae; --pane: #0b7d6b; --del: #c0392b; --mac: #9a6500;
-    color-scheme: light;
-  }
-  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  body { padding: 0; }
-  .nav { display: none; }
-  .scroll { max-width: none; margin: 0; overflow: visible; break-after: page; }
-  .scroll:last-of-type { break-after: auto; }
-  .sheet { width: 281mm; min-width: 0; }
-  .page { aspect-ratio: auto; height: 193mm; padding: 0; border-radius: 0; }
-}
 
 .vimgrid .area-d svg { width: auto; height: 21cqw; max-width: 100%; }
 .tmuxgrid .area-a svg, .tmuxgrid .area-b svg { width: auto; height: 24cqw; max-width: 100%; }
@@ -242,3 +224,15 @@ ol.rsteps .sm { flex: 1 1 9cqw; }
 .modesgrid { grid-template-rows: auto 1fr; }
 .modesgrid .ess b { font-size: 1.7cqw; }
 .modesgrid .krows { gap: .7cqw; }
+
+/* screen only: panels grow with their content */
+.page { aspect-ratio: auto; overflow: visible; grid-template-rows: auto auto; }
+.g, .modesgrid, .movegrid, .tmuxgrid { align-content: start; grid-template-rows: none; }
+.recipes { grid-template-rows: none; }
+.krow { grid-template-columns: 7.5cqw 14cqw 1fr; }
+.scr .st { white-space: pre-wrap; text-overflow: clip; }
+.recipe { grid-template-rows: auto auto auto; }
+.movegrid .area-a svg { width: 100%; height: auto; }
+.movegrid .area-b svg { height: 24cqw; }
+.tmuxgrid .area-a svg, .tmuxgrid .area-b svg { width: 100%; height: auto; }
+ol.rsteps .sk { flex: 0 1 auto; min-width: 0; }

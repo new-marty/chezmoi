@@ -17,8 +17,8 @@ key, and those are marked "Mac": `v` and `y` in copy mode, `C-b Space`
 
 ## The cheat sheet
 
-`cheatsheet/index.html` in the source directory is the same A4 pages on screen
-and on paper. It is generated: edit `cheatsheet/build.py` or `style.css`, then
+`cheatsheet/index.html` in the source directory is one page that scales with
+the window. It is generated: edit `cheatsheet/build.py` or `style.css`, then
 run `python3 cheatsheet/build.py cheatsheet/index.html`.
 
 - Open it: `Space`+`/` (Karabiner, while typing in English), `just cheatsheet`,
@@ -27,12 +27,9 @@ run `python3 cheatsheet/build.py cheatsheet/index.html`.
 - It is drawn rather than listed: the Vim modes as a map (colour means mode
   everywhere on the page), motions on a real line and through a file, the
   verbs and ranges as a table, the tmux screen with the key for each part, and
-  a page of everyday recipes with the text before and after.
   Dashed boxes are Mac-only.
-- Print it: `just cheatsheet-pdf` writes six A4 landscape pages (Vim modes, Vim
-  moving and editing, tmux, and pages of everyday recipes, such as changing a setting or
-  keeping a job alive after logout) to `~/Downloads/tmux-vim-cheatsheet.pdf` with
-  Chrome. Pass a path to write elsewhere: `just cheatsheet-pdf ~/Desktop/sheet.pdf`.
+- It also has recipes for everyday tasks, such as changing a setting or
+  keeping a job alive after logout, with the screen before and after.
 
 Learn one or two keys a day ("Learn Vim Progressively").
 

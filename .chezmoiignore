@@ -19,7 +19,7 @@ scripts
 karabiner
 
 # The tmux and Vim cheat sheet, opened from the source directory (Karabiner's
-# Space+/ and `just cheatsheet`) and printed from there (`just cheatsheet-pdf`).
+# Space+/ and `just cheatsheet`).
 cheatsheet
 
 # The VS Code extension list, read by `just vscode-extensions` from the source

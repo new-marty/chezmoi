@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Builds cheatsheet/index.html: six A4 landscape pages, identical on screen and paper.
+"""Builds cheatsheet/index.html: the Vim and tmux sheet, for reading on screen.
 
 Edit this file or style.css, then run:  python3 cheatsheet/build.py cheatsheet/index.html
-and check the print with:  just cheatsheet-pdf
+and look at it with:  just cheatsheet
 """
 import html, sys
 
@@ -101,6 +101,8 @@ def line_svg():
         parts.append(f'<rect x="{round(X0+CW*CUR,1)}" y="{y-14}" width="{CW}" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/>')
         parts.append(f'<rect x="{round(X0+CW*t,1)}" y="{y-14}" width="{CW}" height="19" fill="var(--normal)" opacity=".45"/>')
         parts.append(f'<text x="{X0}" y="{y}" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="{round(CW*len(LINE),1)}" lengthAdjust="spacingAndGlyphs">{LINE}</text>')
+        for s in range(4):
+            parts.append(f'<circle cx="{cx(s)}" cy="{y-5}" r="1.4" fill="var(--muted)" opacity=".7"/>')
         sx, tx, top = cx(CUR), cx(t), y - 16
         parts.append(f'<path d="M{sx} {top} Q{(sx+tx)/2} {top-11} {tx} {top}" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/>')
     return f'''<svg viewBox="0 0 540 200" role="img" aria-label="Motions on one line, starting with the cursor on the n of backend_server: 0 goes to the start of the line, ^ to the first character, b to the start of the word, e to the end of the word, w to the next word, $ to the end of the line.">
@@ -189,12 +191,15 @@ def tmux_svg():
         <rect x="164" y="279" width="66" height="18" rx="3" fill="var(--window)" opacity=".18"/>
         <rect x="164" y="279" width="66" height="18" rx="3" fill="none" stroke="var(--window)" stroke-width="2"/>
         <text x="197" y="292" text-anchor="middle" font-size="12" class="mono" fill="var(--ink)">1:logs*</text>
-        <g stroke="var(--muted)" stroke-width="1" fill="none">
-          <polyline points="219,90 236,90 236,62 440,62"/>
-          <polyline points="320,145 440,145 440,120"/>
-          <polyline points="414,180 440,180"/>
-          <polyline points="230,288 440,288 440,262"/>
+        <g stroke="var(--muted)" stroke-width="1.2" fill="none">
+          <polyline points="219,80 300,80 300,52 440,52"/>
+          <polyline points="330,145 360,110 440,110"/>
+          <polyline points="414,168 440,168"/>
+          <polyline points="230,288 430,288 430,252 440,252"/>
           <polyline points="61,300 61,318 440,318"/>
+        </g>
+        <g fill="var(--ink)">
+          <circle cx="219" cy="80" r="3.2"/><circle cx="330" cy="145" r="3.2"/><circle cx="414" cy="168" r="3.2"/><circle cx="230" cy="288" r="3.2"/><circle cx="61" cy="300" r="3.2"/>
         </g>
         <g font-size="15" fill="var(--ink)">
           <text x="448" y="57"><tspan class="mono" font-size="17">%</tspan>   split left | right</text>
@@ -377,7 +382,7 @@ VIM_RECIPES = [
         (K(":42", "c") + K("Enter", "n"), "or jump there once open"),
         (K("Ctrl-g", "n"), "check where you are")],
        scr("$ nginx -t\nerror in app.conf:42\n$ " + CI(), ""),
-       scr("41  location / {\n42  " + CB("p") + "roxy_pas x;\n43  }", '"app.conf" 80 lines --52%--')),
+       scr("41  location / {\n42  " + CB("p") + "roxy_pas x;\n43  }", '"app.conf" 80L --52%--')),
     R3("Keep a copy before editing", "save app.conf.bak, then edit freely",
        [(K(":w app.conf.bak", "c") + K("Enter", "n"), "write a copy, stay in app.conf"),
         (E("edit as usual"), ""),
@@ -415,10 +420,10 @@ TMUX_RECIPES = [
     R3("Type in every pane at once", "run the same command on three servers",
        [(K("C-b :", "pre"), "open the tmux prompt"),
         (E("setw synchronize-panes on") + K("Enter"), "panes now share input"),
-        (K("uptime") + K("Enter"), "typed once, runs in all"),
+        (K("date") + K("Enter"), "typed once, runs in all"),
         (E("… synchronize-panes off"), "back to normal")],
        tscr([tbody("w1$ "), tbody("w2$ "), tbody("w3$ " + CI())], BAR0, cols="1fr 1fr 1fr"),
-       tscr([tbody("w1$ uptime"), tbody("w2$ uptime"), tbody("w3$ uptime" + CI())], BAR0, cols="1fr 1fr 1fr")),
+       tscr([tbody("w1$ date"), tbody("w2$ date"), tbody("w3$ date" + CI())], BAR0, cols="1fr 1fr 1fr")),
     R3("Name things so you find them", "a session called deploy with named windows",
        [(K("C-b $", "pre"), "rename the session"),
         (K("C-b ,", "pre"), "rename the window"),
@@ -533,9 +538,9 @@ doc = f'''<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vim and tmux map</title>
 <!--
-  Six A4 landscape pages that look the same on screen and on paper
-  (just cheatsheet-pdf): Vim modes, Vim moving and editing, tmux, two pages of Vim recipes, tmux recipes. Sizes are in
-  cqw (a share of the page width), so the screen shows the printed page scaled.
+  Six panels: Vim modes, Vim moving and editing, tmux, two of Vim recipes and
+  one of tmux recipes. Sizes are in cqw (a share of the panel width), so the
+  whole sheet scales with the window.
   Colour means mode in Vim (normal, insert, visual, command) and level in tmux
   (session, window, pane). Dashed boxes are Mac-only; everything else works on
   a bare server. "vim" marks keys that need Vim rather than a minimal vi.
@@ -547,7 +552,7 @@ doc = f'''<!doctype html>
 </style>
 </head>
 <body>
-<nav class="nav"><h1>Vim and tmux map</h1><a href="#vim">Vim modes</a><a href="#vim-move">Vim moving</a><a href="#tmux">tmux</a><a href="#vim-recipes">Vim recipes</a><a href="#vim-recipes-2">more</a><a href="#tmux-recipes">tmux recipes</a><p>Each page is one A4 landscape sheet: <kbd>just cheatsheet-pdf</kbd>.</p></nav>
+<nav class="nav"><h1>Vim and tmux map</h1><a href="#vim">Vim modes</a><a href="#vim-move">Vim moving</a><a href="#tmux">tmux</a><a href="#vim-recipes">Vim recipes</a><a href="#vim-recipes-2">more</a><a href="#tmux-recipes">tmux recipes</a><p>Dashed boxes work only on this Mac; everything else works on any server.</p></nav>
 {page("vim", "Vim: modes", "Colour shows the mode. Check you are in Normal mode (green) before you type a command.", vim_body)}
 {page("vim-move", "Vim: moving and editing", "All of these keys work in Normal mode (green).", move_body)}
 {page("tmux", "tmux", 'Colour shows the level: <span style="color:var(--session)">session</span> ⊃ <span style="color:var(--window)">window</span> ⊃ <span style="color:var(--pane)">pane</span>.', tmux_body)}

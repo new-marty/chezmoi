@@ -13,13 +13,13 @@
 
 ## チートシート
 
-ソースディレクトリの `cheatsheet/index.html` は、画面でも紙でも同じ A4 のページになる。これは生成したもので、直すときは `cheatsheet/build.py` か `style.css` を編集して `python3 cheatsheet/build.py cheatsheet/index.html` を実行する。
+ソースディレクトリの `cheatsheet/index.html` は、ウィンドウの幅に合わせて大きさが変わる1枚のページ。これは生成したもので、直すときは `cheatsheet/build.py` か `style.css` を編集して `python3 cheatsheet/build.py cheatsheet/index.html` を実行する。
 
 - 開く: `Space`+`/`（Karabiner。英数入力のとき）、`just cheatsheet`、tmux の中なら `Opt+/` で短い文字版。`justfile` スイッチを選んでいないマシンでは `just --justfile "$(chezmoi source-path)/justfile" cheatsheet` と打つ。
-- キーを並べるのではなく図で示す。Vim のモードの地図（ページ全体で色がモードを表す）、実際の1行とファイルの中での動き方、動詞と範囲の表、tmux の画面とその部分ごとのキー、変更前後のテキストを添えた実例集。点線の枠は Mac だけ。
-- 印刷: `just cheatsheet-pdf` が Chrome で A4 横の6ページ（Vim のモード、Vim の動きと編集、tmux、実例集。設定の書き換えやログアウト後も続く作業など）を `~/Downloads/tmux-vim-cheatsheet.pdf` に書く。場所を変えるときは `just cheatsheet-pdf ~/Desktop/sheet.pdf` のように渡す。
+- キーを並べるのではなく図で示す。Vim のモードの地図（ページ全体で色がモードを表す）、実際の1行とファイルの中での動き方、動詞と範囲の表、tmux の画面とその部分ごとのキー。点線の枠は Mac だけ。
+- 設定の書き換えやログアウト後も続く作業などの実例集もあり、変更前と変更後の画面を添えている。
 
-1日に覚えるのは1〜2個にする（"Learn Vim Progressively"）。手帖は英語で書いてある。
+1日に覚えるのは1〜2個にする（"Learn Vim Progressively"）。チートシートは英語で書いてある。
 
 ## 使い始める
 

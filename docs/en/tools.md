@@ -16,7 +16,6 @@ the dotfiles do with each tool; for how to use the tool itself, follow its link.
 | [zoxide](https://github.com/ajeetdsouza/zoxide) | `z <part of a path>` jumps to a directory you use often; `zi` picks one interactively. |
 | [navi](https://github.com/denisidoro/navi) | Cheat sheets on `Ctrl+N`. The `navi` switch adds this repository's sheets. |
 | [Neovim](https://neovim.io/) | The `nvim` switch sets it up with hint plugins ([Learning tmux and Vim](tmux-vim.md)). |
-| [Google Chrome](https://www.google.com/chrome/) | `just cheatsheet-pdf` prints the cheat sheet with it. |
 | [thefuck](https://github.com/nvbn/thefuck) | `fuck` corrects the previous command. |
 | [direnv](https://direnv.net/) | Loads a directory's `.envrc` when you enter it. |
 | [mise](https://mise.jdx.dev/) | Activates tool versions per directory. The `mise` switch sets global defaults (Node LTS, Python 3.12, latest Go). |
