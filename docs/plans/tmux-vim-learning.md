@@ -87,8 +87,8 @@ crontab を直す）ができるようにする。
 | サーバー＝vim がある前提 | Ubuntu/Debian の最小構成は `vim-tiny`（`vi` で起動、vi 互換モード、シンタックス無し）、Alpine やコンテナは busybox `vi`、`nano` だけのこともある | 練習の一部を `vi` で行う。`u` の挙動の違いと `:q!` での脱出を体で覚える |
 | 「持ち歩ける `.vimrc`」に `set mouse=a` | マウスに頼らない練習と矛盾する | 外す |
 | `sudoedit` を使う | `EDITOR` が nano なので nano が開く | `EDITOR` をどうするか決める（判断 D5） |
-| Neovim + kickstart.nvim | lazy.nvim が `~/.config/nvim/lazy-lock.json` を書き換える。chezmoi で管理すると毎回 diff が出る | 採るなら lock ファイルを管理対象に入れ `chezmoi re-add` で戻す運用か、管理から外す |
-| which-key.nvim | tmux の which-key と同じ発想で、学習には良い | Neovim を入れるなら採用 |
+| Neovim + kickstart.nvim | 学習用としては良いが、見た目は控えめ。lazy.nvim が `~/.config/nvim/lazy-lock.json` を書き換える | D4 で LazyVim を推奨に変更。lock ファイルの扱いは D4 に書いた |
+| which-key.nvim | tmux の which-key と同じ発想で、学習には良い | 採用（LazyVim に最初から入っている） |
 | VSCodeVim を Cursor で | 普段の作業が全部 Vim キーになり、移行コストが大きい | 最初は入れない。端末の Vim で慣れてから考える |
 
 ---
@@ -117,27 +117,83 @@ crontab を直す）ができるようにする。
   `Opt+…` は「手元だけの近道」として区別して載せる。
 - チートシートに「手元 → サーバー」の対応表と Vim の章を足す（`Opt+/` で読める）。
 
-### D4. Vim の環境
+### D4. Vim の環境 — 決定: 見た目のリッチな Neovim
 
-- **A（推奨、先にやる）: `vim` スイッチで小さな `~/.vimrc`**。キーを変えない設定だけ
-  （`showcmd` `showmode` `number` `ruler` `hlsearch` `incsearch` `syntax on`）。
-  macOS 同梱の vim は 9.0 系で、`~/.config/vim/vimrc`（XDG）を読むのは 9.1.0327 以降なので、
-  置き場所は `~/.vimrc`。サーバーにもそのまま貼れる。
-- B（後で）: `nvim` スイッチで Neovim（kickstart.nvim を元にした最小構成 + which-key.nvim）。
-  `Esc` `hjkl` と基本オペレーターは割り当て直さない。A に慣れてから。
-- 両方入れる場合も、練習は `vim --clean` と `vi` で行う。
+本人の方針（2026-10）: Vim でも Neovim でもよい。基礎が学べるなら、それ以上の機能が
+あってよい。UI がリッチでワクワクし、使う機会が増えるならむしろその方がよい。
+
+素の Vim の小さな `.vimrc` から始める案はやめ、最初から見た目と使い心地の良い Neovim に
+する。サーバーで通じる基礎は、Neovim でも同じキーで身につく（`hjkl` `ciw` `dd` `:wq` などは
+共通）。崩してはいけないのは「基本のキーを割り当て直さない」ことだけ。
+
+土台の候補:
+
+| 候補 | 見た目・使い心地 | 学びやすさ | 手間 |
+|------|-----------------|-----------|------|
+| **LazyVim（推奨）** | 最初からダッシュボード、ステータスライン、バッファのタブ、通知・コマンド欄のポップアップ（noice）、ファイルツリー、あいまい検索、which-key、LSP、lazygit 連携までそろう | which-key でキーが常に見える。`:LazyExtras` で機能を後から足せる | 少ない。更新は LazyVim 側が追う |
+| kickstart.nvim + UI プラグインを自分で足す | 足した分だけ | `init.lua` 1 つで全部読めるので、設定の中身を学ぶには一番良い | 多い。リッチにするほど自分で保守 |
+| AstroNvim / NvChad | LazyVim と同程度 | 同程度 | LazyVim と同程度。情報量で LazyVim が勝る |
+
+LazyVim を採るときに手当てすること（サーバーと指がずれる箇所）:
+
+- flash.nvim が normal / visual の `s` を「ジャンプ」に取る。vi の `s`（1 文字消して入力）が
+  手元で使えなくなるので、`s` の割り当てを外して flash は別キー（例: `<leader>j`）にするか、
+  受け入れるかを決める。推奨は外す。
+- `H` / `L` がバッファ切り替えになる（vi では画面の上端・下端へ移動）。保守作業では
+  ほとんど使わないので受け入れてよい。
+- mini.pairs が括弧や引用符を自動で閉じる。サーバーでは閉じないことだけ知っておく。
+- `<C-s>` で保存できるが、`:w` を使う習慣にする（チートシートにも `:w` だけ載せる）。
+
+学習を楽しくする追加（どれも手元だけ、キーは変えない）:
+
+- **precognition.nvim**: カーソル行の上に `w` `b` `e` `^` `$` などで飛べる位置を薄く表示する。
+  「どのキーでどこへ行くか」を見ながら覚えられる。慣れたら切る（トグルできる）。
+- **hardtime.nvim**: `jjjj` や矢印キーの連打を止め、`5j` や `}` などの良い動きを提案する。
+  最初はヒント表示だけのモードで入れる。
+- **vim-be-good**: 動きの練習ゲーム（`:VimBeGood`）。
+- Neovim 同梱の `:Tutor`（vimtutor）を最初に 1 周する。
+
+テーマ: Ghostty と VS Code は poimandres、tmux は catppuccin mocha。Neovim はどちらにも
+合わせられる（poimandres.nvim / catppuccin.nvim）ので、着手時にどちらに揃えるか決める。
+
+chezmoi での置き方:
+
+- `nvim` スイッチを作り、`private_dot_config/nvim/`（`init.lua`、`lua/config/*.lua`、
+  `lua/plugins/*.lua`）を管理する。`dirs = [".config/nvim"]`。
+- Neovim が自分で書くファイル（`lazy-lock.json`、`lazyvim.json`）は管理しない。chezmoi は
+  管理していないファイルには触らないので、置いたままでよい。版を固定したくなったら
+  `lazy-lock.json` だけ管理に入れ、更新後に `chezmoi re-add` で戻す。
+- プラグインは初回起動時に GitHub から取ってくる。CI の `fresh-apply` は nvim を起動しない
+  ので影響しない。
+- 必要なもの: Neovim（LazyVim が求める版。着手時に確認）、git、Nerd Font（Ghostty 側）、
+  ripgrep・fd・lazygit（`just doctor` の一覧にすでにある）。
+
+サーバー側: Neovim は無い前提。手元で覚えたキーを `vim --clean` と `vi` で確かめる練習は
+続ける（下の「5」）。サーバーに置く用の数行の `.vimrc`（`showcmd` `number` `hlsearch`
+`incsearch` `syntax on`）はリポジトリでは管理せず、ドキュメントに貼れる形で載せるだけにする。
 
 ### D5. `EDITOR` / `VISUAL`
 
-- **A（推奨）: リポジトリは `nano` のまま、本人の `~/.zshenv.local` で `vim` にする**。
-  知らない人の環境を変えずに済み、`sudoedit` `crontab -e` `git rebase -i` 以外の場面でも
-  毎日 Vim に触れる。
-- B: リポジトリの既定を `vim` にする（コアの変更。README の説明も要る）。
+- **A（推奨）: リポジトリは `nano` のまま、本人の `~/.zshenv.local` で `nvim` にする**。
+  知らない人の環境を変えずに済み、`sudoedit` `crontab -e` でも毎日 Neovim に触れる
+  （`sudoedit` は自分の権限でエディタを開くので、自分の Neovim 設定がそのまま効く）。
+- B: リポジトリで `nvim` があれば `nvim`、無ければ `nano` にする（`lookPath` で判定。
+  コアの変更なので README の説明も要る）。
+- git の `core.editor`（Cursor / VS Code）は今回は変えない。コミットメッセージも Neovim で
+  書きたくなったら、`~/.gitconfig` で上書きする。
 
 ### D6. vim-tmux-navigator
 
-- **推奨: 外す**。Vim 側の対になるプラグインが無く、`Ctrl+H`（atuin）と `Ctrl+L` を潰している。
-  Neovim を入れる時点（D4-B）で、両側そろえて入れ直すか決める。
+Neovim を入れるので、tmux のペインと Neovim の分割を `Ctrl+h/j/k/l` で行き来できる
+このプラグインには意味が出る。ただし `Ctrl+H`（atuin）と `Ctrl+L`（画面クリア）との
+衝突は残る。
+
+- **A（推奨）: 残し、Neovim 側にも対のプラグインを入れる**。atuin は `Ctrl+H` から別のキーへ
+  移す（例: `Ctrl+E` など空いているキー。上矢印は `omz` スイッチの history-substring-search が使う）。画面クリアは `prefix Ctrl+L` に逃がす（プラグインの
+  README にある定番の回避策）。
+- B: 外して、手元の移動は `Opt+hjkl`（tmux）と `Ctrl+w hjkl`（Neovim 既定）で行う。
+  `Ctrl+w` はサーバーの Vim でもそのまま通じる。
+- フェーズ 0 で、今の衝突が本当に起きているかを先に確かめる。
 
 ---
 
@@ -156,23 +212,24 @@ crontab を直す）ができるようにする。
 - 必要なら `private_dot_config/ghostty/config.tmpl` に `macos-option-as-alt = left`。
 - ドキュメント: `docs/{ja,en}/keybindings.md` の tmux の段落。
 
-### フェーズ 2: Vim（新しい `vim` スイッチ）
+### フェーズ 2: Neovim（新しい `nvim` スイッチ）
 
-- `dot_vimrc` を追加し、`.chezmoidata/optin.toml` に
-  `[optin_paths.vim] files = [".vimrc"]` を足す。CI の `fresh-apply` が自動で検査する。
-- チートシートに Vim の章（下の「核」）。
-- ドキュメント: `docs/{ja,en}/setup.md` のスイッチ表。
-- D5 で A を選んだら、`~/.zshenv.local` の書き方を README か setup.md に一行添える。
+- LazyVim の starter を元に `private_dot_config/nvim/` を作る。D4 の手当て（flash の `s`）、
+  学習用プラグイン（precognition、hardtime はヒントのみ、vim-be-good）、テーマを入れる。
+- `.chezmoidata/optin.toml` に `[optin_paths.nvim]` を足す（`files` は管理するファイルを全部、
+  `dirs = [".config/nvim"]`）。CI の `fresh-apply` が `files` と `chezmoi managed` の一致を
+  自動で検査する。
+- `just doctor` の一覧に `nvim` を足す。`v` などの alias を作るなら `command -v nvim` で守る。
+- D6 の A を選んだら、Neovim 側の navigator と atuin のキー移動もここで行う。
+- チートシートに Vim の章（下の「核」）と、LazyVim で手元だけ違うキーの一覧。
+- ドキュメント: `docs/{ja,en}/setup.md` のスイッチ表、`keybindings.md`。
+- D5 で A を選んだら、`~/.zshenv.local` の書き方を setup.md に一行添える。
 
 ### フェーズ 3: 練習の素材（任意）
 
 - `vim-drill` のようなシェル関数: 練習用の nginx 設定・YAML・ログ・crontab の写しを一時
   ディレクトリに作り、`vim --clean` で開く。`command -v vim` で守る。置き場所は
   `dot_zsh/commands.zsh`（コア）になるので、入れるかは別に決める。
-
-### フェーズ 4: Neovim（D4-B を選んだ場合）
-
-- `nvim` スイッチ、`private_dot_config/nvim/`、`lazy-lock.json` の扱い、D6 の再判断。
 
 ---
 
@@ -207,12 +264,15 @@ tmux ls / tmux a -t 名前
 5. 末尾に 1 行足す（`G` `o` 入力 `:wq`）
 6. root 所有のファイルを `sudoedit` で直す（`sudo vim` にしない）
 
-週 3 回 15 分程度。普段の作業は Cursor のままでよく、ssh 先での編集は必ず Vim で行う。
+週 3 回 15 分程度。普段のちょっとした編集（設定ファイル、メモ、`sudoedit`）は手元の
+Neovim で行い、使う回数を増やす。大きな開発は Cursor のままでよい。ssh 先での編集は
+必ず Vim / vi で行う。
 
 ---
 
 ## 6. 未決のまま残すこと
 
-- D1〜D6 の選択（本人が決める）。
+- D1〜D3、D5、D6 の選択（本人が決める）。D4 は決定済み（LazyVim を推奨）。
+- LazyVim の flash の `s` を外すか、Neovim のテーマを poimandres と catppuccin のどちらに
+  揃えるか。
 - フェーズ 3 の練習用関数をコアに入れるか。
-- Neovim をいつ入れるか（フェーズ 2 の後、慣れ具合で決める）。
