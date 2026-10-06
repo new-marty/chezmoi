@@ -6,17 +6,6 @@
 
 ---
 
-## [Todo] 会社の Mac を chezmoi に移す
-
-リポジトリ側の準備は済んでいる。使えるものに合わせてスイッチを選び、足りないものは
-ローカルのファイルで補う（手順は `docs/en/setup.md`）。残りはそのマシンでしかできない:
-
-- chezmoi が使えるようになったら、手作業の `~/.dotfiles/` の中身をローカルのファイルへ
-  移し、symlink を外してから apply する。プロンプトと配色を確かめる。
-- 手作業版の Cursor の設定と steeef の修正を `chezmoi diff` と比べ、取り込むものを決める。
-
----
-
 ## [Todo] tmux と Vim のヒントを実際に使って見直す
 
 ヒント（tmux の2段目、Neovim の which-key など）、チートシート（`cheatsheet/vim.html`、`cheatsheet/tmux.html`、
@@ -55,8 +44,9 @@ unraid と mini の `authorized_keys` にはこの鍵（と mini に iphone）�
 - 鍵にパスフレーズをかけ、キーチェーンに覚えさせる（本人が入力）:
   `ssh-keygen -p -f ~/.ssh/id_ed25519_macbook`、`ssh-add --apple-use-keychain ~/.ssh/id_ed25519_macbook`
 - debian は接続がタイムアウトして未確認。届くときに、この鍵で入れるか確かめる。
-- GitHub の鍵の整理: 署名をやめたので signing の鍵（Personal MacBook (Signing)、ubuntu 1Password）は
-  不要。ubuntu 1Password（認証）は ubuntu の鍵を 1Password から外すときに作り直す。
+- GitHub の認証用の鍵: ubuntu 1Password は ubuntu の鍵を 1Password から外すときに作り直す。
+  2023 年の RSA 鍵（タイトルはメールアドレス）は、どのマシンのものか分からず残してある。
+  署名用の鍵2本は 2026-10-06 に削除した。
 - 1Password の SSH 鍵の項目と、1Password の SSH エージェント設定を片付ける。
 
 ---
