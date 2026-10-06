@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vim and tmux map</title>
 <!--
-  Five A4 landscape pages that look the same on screen and on paper
-  (just cheatsheet-pdf): Vim modes, Vim moving and editing, tmux, Vim recipes, tmux recipes. Sizes are in
+  Six A4 landscape pages that look the same on screen and on paper
+  (just cheatsheet-pdf): Vim modes, Vim moving and editing, tmux, two pages of Vim recipes, tmux recipes. Sizes are in
   cqw (a share of the page width), so the screen shows the printed page scaled.
   Colour means mode in Vim (normal, insert, visual, command) and level in tmux
   (session, window, pane). Dashed boxes are Mac-only; everything else works on
@@ -205,19 +205,65 @@ code.mini { font-family: var(--f-key); font-size: 1.05cqw; background: var(--sof
 .ess.seven div { padding: .5cqw .7cqw; }
 .tmuxgrid .area-a svg, .tmuxgrid .area-b svg { height: 21.5cqw; }
 .page .cell { padding: 1cqw 1.2cqw; }
-.recipe { padding: .8cqw 1cqw; gap: .55cqw; }
-.recipes { gap: 1.1cqw 1.4cqw; }
+
+/* recipe cards: goal, numbered steps, before/after */
+.recipes { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 1.2cqw 1.6cqw; }
+.recipe { border: 1px solid var(--line); border-radius: .9cqw; padding: 1cqw 1.2cqw; display: grid; grid-template-rows: auto 1fr auto; gap: .7cqw; min-height: 0; border-top-width: 1px; }
+.recipe header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2cqw 1cqw; }
 .recipe h4 { font-size: 1.5cqw; }
-.recipe .strip { font-size: 1.2cqw; }
-.recipe .why { font-size: 1.08cqw; }
-.recipes.t3 .recipe h4 { font-size: 1.6cqw; }
-.recipes.t3 .recipe .strip { font-size: 1.35cqw; }
-.recipes.t3 .recipe .why { font-size: 1.15cqw; }
+.recipe .goal { color: var(--muted); font-size: 1.1cqw; }
+.rbody { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1.2cqw; align-items: start; min-height: 0; }
+ol.rsteps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: .55cqw; }
+ol.rsteps li { counter-increment: s; display: grid; grid-template-columns: 1.7cqw auto 1fr; gap: .6cqw; align-items: center; font-size: 1.1cqw; }
+ol.rsteps li::before { content: counter(s); display: grid; place-items: center; width: 1.6cqw; height: 1.6cqw; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: .9cqw; font-weight: 700; }
+ol.rsteps .sk { display: flex; flex-wrap: wrap; gap: .25cqw; align-items: center; }
+ol.rsteps .sm { color: var(--muted); font-size: 1.02cqw; }
+.rshots { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .4cqw .6cqw; align-items: center; }
+.rshots .lbl { color: var(--muted); font-size: .85cqw; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; }
+.recipe .scr { font-size: .92cqw; }
+.recipe .why { color: var(--muted); font-size: 1cqw; }
+
+/* fill the sheets: rows stretch, frames in a row share a height */
+.modesgrid, .movegrid, .tmuxgrid { align-content: stretch; align-items: stretch; }
+.modesgrid { grid-template-rows: 1fr 1fr; }
+.movegrid { grid-template-rows: auto 1fr auto; }
+.tmuxgrid { grid-template-rows: auto 1fr auto; }
+.krows { gap: .9cqw; }
+.kk { font-size: 1.45cqw; }
+.kwhat { font-size: 1.2cqw; }
+code.mini { font-size: 1.25cqw; }
+.ess b { font-size: 2cqw; }
+.ess span { font-size: 1.1cqw; }
+/* recipes, larger */
+ol.rsteps { gap: .8cqw; }
+ol.rsteps li { grid-template-columns: 1.8cqw minmax(0, max-content) minmax(8cqw, 1fr); font-size: 1.3cqw; }
+ol.rsteps .sm { font-size: 1.15cqw; }
+.recipe .scr { font-size: 1.05cqw; }
+.recipe h4 { font-size: 1.6cqw; }
+.recipe .goal { font-size: 1.2cqw; }
+
+ol.rsteps li { display: flex; flex-wrap: wrap; align-items: center; gap: .3cqw .6cqw; }
+ol.rsteps li::before { flex: none; }
+ol.rsteps .sm { flex: 1 1 9cqw; }
+.movegrid .area-a svg { height: auto; width: 100%; }
+.movegrid .area-b svg { height: 23cqw; }
+.tmuxgrid .area-a svg, .tmuxgrid .area-b svg { height: 23.5cqw; }
+.movegrid .area-a svg { width: auto; height: 21cqw; max-width: 100%; }
+.movegrid .area-b svg { height: 21.5cqw; }
+.tmuxgrid .area-a svg, .tmuxgrid .area-b svg { height: 22cqw; }
+.movegrid { grid-template-rows: auto auto auto; align-content: space-between; }
+.movegrid .area-a svg { height: 19.5cqw; }
+.movegrid .area-b svg { height: 20cqw; }
+.movegrid { row-gap: 1.2cqw; }
+.movegrid .area-a svg { height: 18.5cqw; }
+.modesgrid { grid-template-rows: auto 1fr; }
+.modesgrid .ess b { font-size: 1.7cqw; }
+.modesgrid .krows { gap: .7cqw; }
 
 </style>
 </head>
 <body>
-<nav class="nav"><h1>Vim and tmux map</h1><a href="#vim">Vim modes</a><a href="#vim-move">Vim moving</a><a href="#tmux">tmux</a><a href="#vim-recipes">Vim recipes</a><a href="#tmux-recipes">tmux recipes</a><p>Each page is one A4 landscape sheet: <kbd>just cheatsheet-pdf</kbd>.</p></nav>
+<nav class="nav"><h1>Vim and tmux map</h1><a href="#vim">Vim modes</a><a href="#vim-move">Vim moving</a><a href="#tmux">tmux</a><a href="#vim-recipes">Vim recipes</a><a href="#vim-recipes-2">more</a><a href="#tmux-recipes">tmux recipes</a><p>Each page is one A4 landscape sheet: <kbd>just cheatsheet-pdf</kbd>.</p></nav>
 <div class="scroll"><div class="sheet">
 <section class="page" id="vim" aria-labelledby="vim-h">
   <header class="ph"><h2 id="vim-h">Vim: modes</h2><p>Colour shows the mode. Check you are in Normal mode (green) before you type a command.</p></header>
@@ -244,7 +290,7 @@ listen <span class="vsel">44</span>3;</code></div></div>
       <p class="cap">Then act on the selection: <span class="k n">d</span> delete · <span class="k n">y</span> copy · <span class="k i">c</span> change · <span class="k n">&gt;</span> indent. <span class="k n">Esc</span> cancels.</p>
     </div>
     <div class="cell area-d"><h3>Quit and undo</h3>
-      <div class="ess">
+      <div class="ess four">
         <div class="c"><b>:wq</b><span>save and quit</span></div>
         <div class="c"><b>:q!</b><span>quit without saving</span></div>
         <div class="n"><b>u</b><span>undo</span></div>
@@ -420,59 +466,109 @@ $ <span class="paste">ERROR db timeout</span><span class="ci"></span></div></div
 </div></div>
 <div class="scroll"><div class="sheet">
 <section class="page" id="vim-recipes" aria-labelledby="vim-recipes-h">
-  <header class="ph"><h2 id="vim-recipes-h">Vim recipes</h2><p>Real tasks, key by key. Each key is coloured by the mode it leaves you in; grey means type it as shown. Start in Normal mode.</p></header>
-  <div class="g recipes r3">
-    <article class="recipe"><h4>Change a value</h4><div class="strip"><span class="k">vi redis.conf</span><span class="to">→</span><span class="k c">/maxclients</span><span class="k n">Enter</span><span class="to">→</span><span class="k n">w</span><span class="k i">cw</span><em>20000</em><span class="k n">Esc</span><span class="to">→</span><span class="k c">:wq</span></div><div class="pair"><div class="scr "><div class="body">port 6379
+  <header class="ph"><h2 id="vim-recipes-h">Vim recipes</h2><p>Each card: what you want, then the keys in order with what each does, and the screen before and after. Key colours show the mode they leave you in. Start in Normal mode.</p></header>
+  <div class="g recipes">
+    <article class="recipe"><header><h4>Change a value</h4><p class="goal">maxclients 10000 → 20000 in redis.conf</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k">vi redis.conf</span></span><span class="sm">open the file</span></li><li><span class="sk"><span class="k c">/maxclients</span><span class="k n">Enter</span></span><span class="sm">jump to the line</span></li><li><span class="sk"><span class="k n">w</span></span><span class="sm">step onto the value</span></li><li><span class="sk"><span class="k i">cw</span><em>20000</em><span class="k n">Esc</span></span><span class="sm">replace that word</span></li><li><span class="sk"><span class="k c">:wq</span></span><span class="sm">save and quit</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body">port 6379
 <span class="cb">m</span>axclients 10000
-save 900 1</div><div class="st cmd">/maxclients</div></div><span class="to big">→</span><div class="scr "><div class="body">port 6379
+save 900 1</div><div class="st cmd">/maxclients</div></div><span class="lbl">after</span><div class="scr "><div class="body">port 6379
 maxclients <ins>20000</ins>
-save 900 1</div><div class="st ">"redis.conf" written</div></div></div><p class="why">w steps from the name onto the value; cw replaces just that word.</p></article><article class="recipe"><h4>Comment out a line</h4><div class="strip"><span class="k c">/listen 80</span><span class="k n">Enter</span><span class="to">→</span><span class="k i">I</span><em>#</em><span class="k n">Esc</span><span class="to">→</span><span class="k c">:wq</span></div><div class="pair"><div class="scr "><div class="body">server {
+save 900 1</div><div class="st ">"redis.conf" written</div></div></div></div></article><article class="recipe"><header><h4>Comment out a line</h4><p class="goal">turn listen 80 off without deleting it</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k c">/listen 80</span><span class="k n">Enter</span></span><span class="sm">find the line</span></li><li><span class="sk"><span class="k i">I</span><em># </em><span class="k n">Esc</span></span><span class="sm">type at the line start</span></li><li><span class="sk"><span class="k c">:wq</span></span><span class="sm">save and quit</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body">server {
   <span class="cb">l</span>isten 80;
-}</div><div class="st cmd">/listen 80</div></div><span class="to big">→</span><div class="scr "><div class="body">server {
+}</div><div class="st cmd">/listen 80</div></div><span class="lbl">after</span><div class="scr "><div class="body">server {
   <ins># </ins>listen 80;
-}</div><div class="st ">"site.conf" written</div></div></div><p class="why">I types at the start of the line, wherever the cursor is.</p></article><article class="recipe"><h4>Comment out several lines<span class="vimtag">vim</span></h4><div class="strip"><span class="k v">Ctrl-v</span><span class="k v">jj</span><span class="to">→</span><span class="k i">I</span><em>#</em><span class="k n">Esc</span></div><div class="pair"><div class="scr "><div class="body"><span class="vsel">l</span>isten 80;
+}</div><div class="st ">"site.conf" written</div></div></div></div></article><article class="recipe"><header><h4>Comment out several lines<span class="vimtag">vim</span></h4><p class="goal">put # in front of three lines at once</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k v">Ctrl-v</span></span><span class="sm">start a column selection</span></li><li><span class="sk"><span class="k v">jj</span></span><span class="sm">extend it two lines down</span></li><li><span class="sk"><span class="k i">I</span><em>#</em></span><span class="sm">type at the left edge</span></li><li><span class="sk"><span class="k n">Esc</span></span><span class="sm"># appears on every line</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body"><span class="vsel">l</span>isten 80;
 <span class="vsel">l</span>isten 443;
-<span class="vsel">s</span>erver_name a;</div><div class="st vis">-- VISUAL BLOCK --</div></div><span class="to big">→</span><div class="scr "><div class="body"><ins>#</ins>listen 80;
+<span class="vsel">s</span>erver_name a;</div><div class="st vis">-- VISUAL BLOCK --</div></div><span class="lbl">after</span><div class="scr "><div class="body"><ins>#</ins>listen 80;
 <ins>#</ins>listen 443;
-<ins>#</ins>server_name a;</div><div class="st ">&nbsp;</div></div></div><p class="why">Ctrl-v selects a column; text typed after I lands on every line when you press Esc.</p></article><article class="recipe"><h4>Copy a line, then edit the copy</h4><div class="strip"><span class="k n">yy</span><span class="k n">p</span><span class="to">→</span><span class="k n">w</span><span class="k i">C</span><em>10.0.0.2;</em><span class="k n">Esc</span></div><div class="pair"><div class="scr "><div class="body"><span class="cb">a</span>llow 10.0.0.1;
-deny all;</div><div class="st ">&nbsp;</div></div><span class="to big">→</span><div class="scr "><div class="body">allow 10.0.0.1;
+<ins>#</ins>server_name a;</div><div class="st ">&nbsp;</div></div></div></div></article><article class="recipe"><header><h4>Copy a line, then edit the copy</h4><p class="goal">allow a second address</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k n">yy</span></span><span class="sm">copy the line</span></li><li><span class="sk"><span class="k n">p</span></span><span class="sm">paste it below</span></li><li><span class="sk"><span class="k n">w</span></span><span class="sm">step onto the address</span></li><li><span class="sk"><span class="k i">C</span><em>10.0.0.2;</em><span class="k n">Esc</span></span><span class="sm">replace to the line end</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body"><span class="cb">a</span>llow 10.0.0.1;
+deny all;</div><div class="st ">&nbsp;</div></div><span class="lbl">after</span><div class="scr "><div class="body">allow 10.0.0.1;
 allow <ins>10.0.0.2;</ins>
-deny all;</div><div class="st ">&nbsp;</div></div></div><p class="why">p pastes below (P above). C replaces to the end of the line.</p></article><article class="recipe"><h4>Delete lines</h4><div class="strip"><span class="k n">3dd</span><em>3 lines from the cursor</em><em>or</em><span class="k c">:2,4d</span></div><div class="pair"><div class="scr "><div class="body">a = 1
-<del><span class="cb">b</span> = 2</del>
-<del>c = 3</del>
-<del>d = 4</del>
-e = 5</div><div class="st ">&nbsp;</div></div><span class="to big">→</span><div class="scr "><div class="body">a = 1
-<span class="cb">e</span> = 5</div><div class="st ">3 fewer lines</div></div></div><p class="why">Vim reports how many lines went. p puts them back below.</p></article><article class="recipe"><h4>Replace everywhere, one at a time</h4><div class="strip"><span class="k c">:%s/old/new/gc</span><span class="k n">Enter</span><span class="to">→</span><em>each match:</em><span class="k n">y</span><em>or</em><span class="k n">n</span></div><div class="pair"><div class="scr "><div class="body">host = <span class="vsel">old</span>.lan
-backup = old.lan</div><div class="st cmd">replace with new (y/n)?</div></div><span class="to big">→</span><div class="scr "><div class="body">host = <ins>new</ins>.lan
-backup = <ins>new</ins>.lan</div><div class="st ">2 substitutions</div></div></div><p class="why">% every line, g every match on a line, c asks each time.</p></article><article class="recipe"><h4>Read a log from the end</h4><div class="strip"><span class="k">view app.log</span><span class="to">→</span><span class="k n">G</span><span class="k c">?ERROR</span><span class="k n">Enter</span><span class="to">→</span><span class="k n">n</span><em>older</em></div><div class="pair"><div class="scr "><div class="body">12:01 ERROR disk full
+deny all;</div><div class="st ">&nbsp;</div></div></div></div></article><article class="recipe"><header><h4>Delete lines</h4><p class="goal">remove lines b, c and d</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k n">3dd</span></span><span class="sm">delete 3 lines from the cursor</span></li><li><span class="sk"><span class="k c">:2,4d</span><span class="k n">Enter</span></span><span class="sm">or: delete lines 2 to 4</span></li><li><span class="sk"><span class="k n">p</span></span><span class="sm">wrong ones? put them back</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body">a = 1
+<span class="cb">b</span> = 2
+c = 3
+d = 4
+e = 5</div><div class="st ">&nbsp;</div></div><span class="lbl">after</span><div class="scr "><div class="body">a = 1
+<span class="cb">e</span> = 5</div><div class="st ">3 fewer lines</div></div></div></div></article><article class="recipe"><header><h4>Replace everywhere, one at a time</h4><p class="goal">old.lan → new.lan, checking each</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k c">:%s/old/new/gc</span><span class="k n">Enter</span></span><span class="sm">% every line, c ask each time</span></li><li><span class="sk"><span class="k n">y</span></span><span class="sm">replace this one</span></li><li><span class="sk"><span class="k n">n</span></span><span class="sm">skip this one</span></li><li><span class="sk"><span class="k n">a</span></span><span class="sm">replace all the rest</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body">host = <span class="vsel">old</span>.lan
+backup = old.lan</div><div class="st cmd">replace with new (y/n/a/q)?</div></div><span class="lbl">after</span><div class="scr "><div class="body">host = <ins>new</ins>.lan
+backup = <ins>new</ins>.lan</div><div class="st ">2 substitutions</div></div></div></div></article>
+  </div>
+</section>
+</div></div>
+<div class="scroll"><div class="sheet">
+<section class="page" id="vim-recipes-2" aria-labelledby="vim-recipes-2-h">
+  <header class="ph"><h2 id="vim-recipes-2-h">More Vim recipes</h2><p>Each card: what you want, then the keys in order with what each does, and the screen before and after. Key colours show the mode they leave you in. Start in Normal mode.</p></header>
+  <div class="g recipes">
+    <article class="recipe"><header><h4>Read a log from the end</h4><p class="goal">find the latest errors, newest first</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k">view app.log</span></span><span class="sm">open read-only</span></li><li><span class="sk"><span class="k n">G</span></span><span class="sm">go to the end</span></li><li><span class="sk"><span class="k c">?ERROR</span><span class="k n">Enter</span></span><span class="sm">search upwards</span></li><li><span class="sk"><span class="k n">n</span></span><span class="sm">the error before that</span></li><li><span class="sk"><span class="k c">:q</span></span><span class="sm">leave</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body">12:01 ERROR disk full
 12:05 ok
-12:09 <span class="cb">E</span>RROR timeout
-12:10 ok</div><div class="st cmd">?ERROR</div></div><span class="to big">→</span><div class="scr "><div class="body">12:01 <span class="cb">E</span>RROR disk full
+12:09 <span class="cb">E</span>RROR timeout</div><div class="st cmd">?ERROR</div></div><span class="lbl">after</span><div class="scr "><div class="body">12:01 <span class="cb">E</span>RROR disk full
 12:05 ok
-12:09 ERROR timeout
-12:10 ok</div><div class="st cmd">?ERROR</div></div></div><p class="why">view is read-only. ? searches upwards, so n goes further back. :q leaves.</p></article><article class="recipe"><h4>Saved, but no permission<span class="vimtag">vim</span></h4><div class="strip"><span class="k c">:w !sudo tee % &gt;/dev/null</span><span class="k n">Enter</span><span class="to">→</span><span class="k n">L</span></div><div class="pair"><div class="scr "><div class="body">127.0.0.1 localhost
-10.0.0.5 db</div><div class="st err">E212: Can't open file</div></div><span class="to big">→</span><div class="scr "><div class="body">127.0.0.1 localhost
-10.0.0.5 db</div><div class="st cmd">W12: changed (L)oad</div></div></div><p class="why">For a root file opened without sudo. L loads the version you just saved.</p></article><article class="recipe"><h4>Throw your changes away</h4><div class="strip"><span class="k c">:q</span><em>refused?</em><span class="to">→</span><span class="k c">:e!</span><em>or</em><span class="k c">:q!</span></div><div class="pair"><div class="scr "><div class="body">port = <ins>9999</ins>
-mode = prod</div><div class="st err">E37: No write since…</div></div><span class="to big">→</span><div class="scr "><div class="body">port = 8080
-mode = prod</div><div class="st ">:e! reloaded "app.ini"</div></div></div><p class="why">:e! goes back to the saved file; :q! leaves without saving. The disk is untouched.</p></article>
+12:09 ERROR timeout</div><div class="st cmd">?ERROR</div></div></div></div></article><article class="recipe"><header><h4>Saved, but no permission<span class="vimtag">vim</span></h4><p class="goal">a root file opened without sudo</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k c">:w</span></span><span class="sm">fails with E212</span></li><li><span class="sk"><span class="k c">:w !sudo tee % &gt;/dev/null</span><span class="k n">Enter</span></span><span class="sm">write it through sudo</span></li><li><span class="sk"><span class="k n">L</span></span><span class="sm">load the saved file when asked</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body">127.0.0.1 localhost
+10.0.0.5 <ins>db</ins></div><div class="st err">E212: Can't open file</div></div><span class="lbl">after</span><div class="scr "><div class="body">127.0.0.1 localhost
+10.0.0.5 db</div><div class="st cmd">W12: changed (L)oad</div></div></div></div></article><article class="recipe"><header><h4>Throw your changes away</h4><p class="goal">start again from the saved file</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k c">:q</span></span><span class="sm">refused: unsaved changes</span></li><li><span class="sk"><span class="k c">:e!</span></span><span class="sm">reload the saved file</span></li><li><span class="sk"><span class="k c">:q!</span></span><span class="sm">or just leave without saving</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body">port = <ins>9999</ins>
+mode = prod</div><div class="st err">E37: No write since…</div></div><span class="lbl">after</span><div class="scr "><div class="body">port = 8080
+mode = prod</div><div class="st ">:e! "app.ini" reloaded</div></div></div></div></article><article class="recipe"><header><h4>Change when a cron job runs</h4><p class="goal">run the backup at 4:00 instead of 3:00</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k">crontab -e</span></span><span class="sm">open your crontab in vi</span></li><li><span class="sk"><span class="k c">/backup</span><span class="k n">Enter</span></span><span class="sm">find the job</span></li><li><span class="sk"><span class="k n">0</span><span class="k n">w</span></span><span class="sm">start of line, then the hour</span></li><li><span class="sk"><span class="k n">r4</span></span><span class="sm">replace 3 with 4</span></li><li><span class="sk"><span class="k c">:wq</span></span><span class="sm">save; cron installs it</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body"># m h dom mon dow cmd
+0 <span class="cb">3</span> * * * backup.sh</div><div class="st ">&nbsp;</div></div><span class="lbl">after</span><div class="scr "><div class="body"># m h dom mon dow cmd
+0 <ins>4</ins> * * * backup.sh</div><div class="st ">crontab: installing new crontab</div></div></div></div></article><article class="recipe"><header><h4>Go to the line in an error</h4><p class="goal">the error says: app.conf line 42</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k">vi +42 app.conf</span></span><span class="sm">open on line 42</span></li><li><span class="sk"><span class="k c">:42</span><span class="k n">Enter</span></span><span class="sm">or jump there once open</span></li><li><span class="sk"><span class="k n">Ctrl-g</span></span><span class="sm">check where you are</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body">$ nginx -t
+error in app.conf:42
+$ <span class="ci"></span></div><div class="st ">&nbsp;</div></div><span class="lbl">after</span><div class="scr "><div class="body">41  location / {
+42  <span class="cb">p</span>roxy_pas x;
+43  }</div><div class="st ">"app.conf" 80 lines --52%--</div></div></div></div></article><article class="recipe"><header><h4>Keep a copy before editing</h4><p class="goal">save app.conf.bak, then edit freely</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k c">:w app.conf.bak</span><span class="k n">Enter</span></span><span class="sm">write a copy, stay in app.conf</span></li><li><span class="sk"><em>edit as usual</em></span><span class="sm"></span></li><li><span class="sk"><span class="k c">:wq</span></span><span class="sm">save app.conf; the copy is unchanged</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr "><div class="body">port = 8080
+mode = prod</div><div class="st cmd">"app.conf.bak" [New] written</div></div><span class="lbl">after</span><div class="scr "><div class="body">$ ls
+app.conf  <ins>app.conf.bak</ins>
+$ <span class="ci"></span></div><div class="st ">&nbsp;</div></div></div></div></article>
   </div>
 </section>
 </div></div>
 <div class="scroll"><div class="sheet">
 <section class="page" id="tmux-recipes" aria-labelledby="tmux-recipes-h">
-  <header class="ph"><h2 id="tmux-recipes-h">tmux recipes</h2><p>Real tasks, key by key. <span class="k pre">C-b …</span> means press C-b, let go, then the key.</p></header>
-  <div class="g recipes t3">
-    <article class="recipe"><h4>A job that survives logout</h4><div class="strip"><span class="k">tmux new -s deploy</span><span class="to">→</span><em>start the job</em><span class="to">→</span><span class="k">C-b d</span><span class="to">→</span><em>later</em><span class="k">tmux a -t deploy</span></div><div class="pair"><div class="scr tmx "><div class="panes"><div class="pane on">$ ./deploy.sh
-uploading… 42%</div></div><div class="tbar"><b>[deploy]</b> 0:bash*</div></div><span class="to big">→</span><div class="scr tmx "><div class="panes"><div class="pane on">$ tmux a -t deploy
-
-uploading… 87%</div></div><div class="tbar"><b>[deploy]</b> 0:bash*</div></div></div><p class="why">In between, the shell said [detached (from session deploy)] and the job kept running.</p></article><article class="recipe"><h4>Edit while watching the log</h4><div class="strip"><span class="k">C-b %</span><span class="to">→</span><span class="k">tail -f app.log</span><span class="to">→</span><span class="k">C-b o</span><span class="to">→</span><span class="k">vi app.conf</span></div><div class="pair"><div class="scr tmx "><div class="panes"><div class="pane on">$ <span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div><span class="to big">→</span><div class="scr tmx "><div class="panes"><div class="pane">12:01 GET /
+  <header class="ph"><h2 id="tmux-recipes-h">tmux recipes</h2><p>Each card: what you want, the keys in order with what each does, and the screen before and after. <span class="k pre">C-b …</span> means press C-b, let go, then the key.</p></header>
+  <div class="g recipes">
+    <article class="recipe"><header><h4>A job that survives logout</h4><p class="goal">a deploy keeps running after you disconnect</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k">tmux new -s deploy</span></span><span class="sm">start a named session</span></li><li><span class="sk"><span class="k">./deploy.sh</span></span><span class="sm">start the job</span></li><li><span class="sk"><span class="k pre">C-b d</span></span><span class="sm">detach; the job keeps going</span></li><li><span class="sk"><span class="k">tmux a -t deploy</span></span><span class="sm">later: back to it</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr tmx "><div class="panes"><div class="pane on">$ ./deploy.sh
+uploading… 42%</div></div><div class="tbar"><b>[deploy]</b> 0:bash*</div></div><span class="lbl">after</span><div class="scr tmx "><div class="panes"><div class="pane on">$ tmux a -t deploy
+uploading… 87%</div></div><div class="tbar"><b>[deploy]</b> 0:bash*</div></div></div></div></article><article class="recipe"><header><h4>Edit while watching the log</h4><p class="goal">the log on the left, the config on the right</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k pre">C-b %</span></span><span class="sm">split left | right</span></li><li><span class="sk"><span class="k">tail -f app.log</span></span><span class="sm">follow the log in the new pane</span></li><li><span class="sk"><span class="k pre">C-b o</span></span><span class="sm">move to the other pane</span></li><li><span class="sk"><span class="k">vi app.conf</span></span><span class="sm">edit there</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr tmx "><div class="panes"><div class="pane on">$ <span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div><span class="lbl">after</span><div class="scr tmx "><div class="panes"><div class="pane">12:01 GET /
 12:02 ERROR
 12:02 retry</div><div class="pane on">port = 80
-mode = prod</div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div></div><p class="why">C-b o jumps between the panes; C-b z zooms the one you are in.</p></article><article class="recipe"><h4>Copy an error from the scrollback</h4><div class="strip"><span class="k">C-b [</span><span class="k">?ERROR</span><span class="k">Enter</span><span class="to">→</span><span class="k">Space</span><span class="k">$</span><span class="k">Enter</span><span class="to">→</span><span class="k">C-b ]</span></div><div class="pair"><div class="scr tmx "><div class="panes"><div class="pane on">12:01 GET /
+mode = prod</div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div></div></div></article><article class="recipe"><header><h4>Copy an error from the scrollback</h4><p class="goal">paste a line from earlier output</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k pre">C-b [</span></span><span class="sm">enter copy mode</span></li><li><span class="sk"><span class="k">?ERROR</span><span class="k">Enter</span></span><span class="sm">find the line</span></li><li><span class="sk"><span class="k">Space</span><span class="k">$</span></span><span class="sm">select to the line end</span></li><li><span class="sk"><span class="k">Enter</span></span><span class="sm">copy it</span></li><li><span class="sk"><span class="k pre">C-b ]</span></span><span class="sm">paste at the prompt</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr tmx "><div class="panes"><div class="pane on">12:01 GET /
 12:02 <span class="sel">ERROR db timeout</span>
-$ </div></div><div class="tbar"><span class="pos">[2/120]</span></div></div><span class="to big">→</span><div class="scr tmx "><div class="panes"><div class="pane on">12:01 GET /
+$ </div></div><div class="tbar"><span class="pos">[2/120]</span></div></div><span class="lbl">after</span><div class="scr tmx "><div class="panes"><div class="pane on">12:01 GET /
 12:02 ERROR db timeout
-$ <span class="paste">ERROR db timeout</span><span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div></div><p class="why">The same steps as on the tmux page, ending at your prompt.</p></article><article class="recipe"><h4>Type in every pane at once</h4><div class="strip"><span class="k">C-b :</span><em>setw synchronize-panes on</em><span class="to">→</span><em>type once</em><span class="to">→</span><em>… off</em></div><div class="pair"><div class="scr tmx "><div class="panes" style="grid-template-columns: 1fr 1fr 1fr"><div class="pane">web1 $ </div><div class="pane">web2 $ </div><div class="pane on">web3 $ <span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div><span class="to big">→</span><div class="scr tmx "><div class="panes" style="grid-template-columns: 1fr 1fr 1fr"><div class="pane">web1 $ uptime</div><div class="pane">web2 $ uptime</div><div class="pane on">web3 $ uptime<span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div></div><p class="why">Each pane has its own ssh session; what you type goes to all of them.</p></article><article class="recipe"><h4>Name things so you find them</h4><div class="strip"><span class="k">C-b $</span><em>session</em><span class="k">C-b ,</span><em>window</em><span class="to">→</span><span class="k">C-b w</span><em>pick one</em></div><div class="pair"><div class="scr tmx "><div class="panes"><div class="pane on">$ <span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash 1:bash*</div></div><span class="to big">→</span><div class="scr tmx "><div class="panes"><div class="pane on">$ <span class="ci"></span></div></div><div class="tbar"><b>[deploy]</b> 0:api 1:logs*</div></div></div><p class="why">tmux ls and C-b s show these names, so you attach to the right one.</p></article><article class="recipe"><h4>Close what you no longer need</h4><div class="strip"><span class="k">C-b x</span><em>then</em><span class="k">y</span><em>pane</em><span class="to">→</span><span class="k">C-b &amp;</span><em>window</em></div><div class="pair"><div class="scr tmx "><div class="panes"><div class="pane">logs</div><div class="pane on">vi <span class="ci"></span></div></div><div class="tbar">kill-pane 1? (y/n)</div></div><span class="to big">→</span><div class="scr tmx "><div class="panes"><div class="pane on">logs<span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div></div><p class="why">exit in the last pane of a window closes the window too. tmux kill-session -t old ends a session.</p></article>
+$ <span class="paste">ERROR db timeout</span><span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div></div></div></article><article class="recipe"><header><h4>Type in every pane at once</h4><p class="goal">run the same command on three servers</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k pre">C-b :</span></span><span class="sm">open the tmux prompt</span></li><li><span class="sk"><em>setw synchronize-panes on</em><span class="k">Enter</span></span><span class="sm">panes now share input</span></li><li><span class="sk"><span class="k">uptime</span><span class="k">Enter</span></span><span class="sm">typed once, runs in all</span></li><li><span class="sk"><em>… synchronize-panes off</em></span><span class="sm">back to normal</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr tmx "><div class="panes" style="grid-template-columns: 1fr 1fr 1fr"><div class="pane">w1$ </div><div class="pane">w2$ </div><div class="pane on">w3$ <span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div><span class="lbl">after</span><div class="scr tmx "><div class="panes" style="grid-template-columns: 1fr 1fr 1fr"><div class="pane">w1$ uptime</div><div class="pane">w2$ uptime</div><div class="pane on">w3$ uptime<span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div></div></div></article><article class="recipe"><header><h4>Name things so you find them</h4><p class="goal">a session called deploy with named windows</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k pre">C-b $</span></span><span class="sm">rename the session</span></li><li><span class="sk"><span class="k pre">C-b ,</span></span><span class="sm">rename the window</span></li><li><span class="sk"><span class="k pre">C-b w</span></span><span class="sm">pick from the list</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr tmx "><div class="panes"><div class="pane on">$ <span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash 1:bash*</div></div><span class="lbl">after</span><div class="scr tmx "><div class="panes"><div class="pane on">$ <span class="ci"></span></div></div><div class="tbar"><b>[deploy]</b> 0:api 1:logs*</div></div></div></div></article><article class="recipe"><header><h4>Close what you no longer need</h4><p class="goal">remove a pane, a window or a session</p></header>
+      <div class="rbody"><ol class="rsteps"><li><span class="sk"><span class="k pre">C-b x</span><span class="k">y</span></span><span class="sm">close the pane</span></li><li><span class="sk"><span class="k pre">C-b &amp;</span><span class="k">y</span></span><span class="sm">close the window</span></li><li><span class="sk"><span class="k">tmux kill-session -t old</span></span><span class="sm">end a whole session</span></li></ol>
+        <div class="rshots"><span class="lbl">before</span><div class="scr tmx "><div class="panes"><div class="pane">logs</div><div class="pane on">vi <span class="ci"></span></div></div><div class="tbar">kill-pane 1? (y/n)</div></div><span class="lbl">after</span><div class="scr tmx "><div class="panes"><div class="pane on">logs<span class="ci"></span></div></div><div class="tbar"><b>[0]</b> 0:bash*</div></div></div></div></article>
   </div>
 </section>
 </div></div>

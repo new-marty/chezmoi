@@ -188,11 +188,57 @@ code.mini { font-family: var(--f-key); font-size: 1.05cqw; background: var(--sof
 .ess.seven div { padding: .5cqw .7cqw; }
 .tmuxgrid .area-a svg, .tmuxgrid .area-b svg { height: 21.5cqw; }
 .page .cell { padding: 1cqw 1.2cqw; }
-.recipe { padding: .8cqw 1cqw; gap: .55cqw; }
-.recipes { gap: 1.1cqw 1.4cqw; }
+
+/* recipe cards: goal, numbered steps, before/after */
+.recipes { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 1.2cqw 1.6cqw; }
+.recipe { border: 1px solid var(--line); border-radius: .9cqw; padding: 1cqw 1.2cqw; display: grid; grid-template-rows: auto 1fr auto; gap: .7cqw; min-height: 0; border-top-width: 1px; }
+.recipe header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2cqw 1cqw; }
 .recipe h4 { font-size: 1.5cqw; }
-.recipe .strip { font-size: 1.2cqw; }
-.recipe .why { font-size: 1.08cqw; }
-.recipes.t3 .recipe h4 { font-size: 1.6cqw; }
-.recipes.t3 .recipe .strip { font-size: 1.35cqw; }
-.recipes.t3 .recipe .why { font-size: 1.15cqw; }
+.recipe .goal { color: var(--muted); font-size: 1.1cqw; }
+.rbody { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1.2cqw; align-items: start; min-height: 0; }
+ol.rsteps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: .55cqw; }
+ol.rsteps li { counter-increment: s; display: grid; grid-template-columns: 1.7cqw auto 1fr; gap: .6cqw; align-items: center; font-size: 1.1cqw; }
+ol.rsteps li::before { content: counter(s); display: grid; place-items: center; width: 1.6cqw; height: 1.6cqw; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: .9cqw; font-weight: 700; }
+ol.rsteps .sk { display: flex; flex-wrap: wrap; gap: .25cqw; align-items: center; }
+ol.rsteps .sm { color: var(--muted); font-size: 1.02cqw; }
+.rshots { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .4cqw .6cqw; align-items: center; }
+.rshots .lbl { color: var(--muted); font-size: .85cqw; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; }
+.recipe .scr { font-size: .92cqw; }
+.recipe .why { color: var(--muted); font-size: 1cqw; }
+
+/* fill the sheets: rows stretch, frames in a row share a height */
+.modesgrid, .movegrid, .tmuxgrid { align-content: stretch; align-items: stretch; }
+.modesgrid { grid-template-rows: 1fr 1fr; }
+.movegrid { grid-template-rows: auto 1fr auto; }
+.tmuxgrid { grid-template-rows: auto 1fr auto; }
+.krows { gap: .9cqw; }
+.kk { font-size: 1.45cqw; }
+.kwhat { font-size: 1.2cqw; }
+code.mini { font-size: 1.25cqw; }
+.ess b { font-size: 2cqw; }
+.ess span { font-size: 1.1cqw; }
+/* recipes, larger */
+ol.rsteps { gap: .8cqw; }
+ol.rsteps li { grid-template-columns: 1.8cqw minmax(0, max-content) minmax(8cqw, 1fr); font-size: 1.3cqw; }
+ol.rsteps .sm { font-size: 1.15cqw; }
+.recipe .scr { font-size: 1.05cqw; }
+.recipe h4 { font-size: 1.6cqw; }
+.recipe .goal { font-size: 1.2cqw; }
+
+ol.rsteps li { display: flex; flex-wrap: wrap; align-items: center; gap: .3cqw .6cqw; }
+ol.rsteps li::before { flex: none; }
+ol.rsteps .sm { flex: 1 1 9cqw; }
+.movegrid .area-a svg { height: auto; width: 100%; }
+.movegrid .area-b svg { height: 23cqw; }
+.tmuxgrid .area-a svg, .tmuxgrid .area-b svg { height: 23.5cqw; }
+.movegrid .area-a svg { width: auto; height: 21cqw; max-width: 100%; }
+.movegrid .area-b svg { height: 21.5cqw; }
+.tmuxgrid .area-a svg, .tmuxgrid .area-b svg { height: 22cqw; }
+.movegrid { grid-template-rows: auto auto auto; align-content: space-between; }
+.movegrid .area-a svg { height: 19.5cqw; }
+.movegrid .area-b svg { height: 20cqw; }
+.movegrid { row-gap: 1.2cqw; }
+.movegrid .area-a svg { height: 18.5cqw; }
+.modesgrid { grid-template-rows: auto 1fr; }
+.modesgrid .ess b { font-size: 1.7cqw; }
+.modesgrid .krows { gap: .7cqw; }

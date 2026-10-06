@@ -29,8 +29,8 @@ run `python3 cheatsheet/build.py cheatsheet/index.html`.
   verbs and ranges as a table, the tmux screen with the key for each part, and
   a page of everyday recipes with the text before and after.
   Dashed boxes are Mac-only.
-- Print it: `just cheatsheet-pdf` writes five A4 landscape pages (Vim modes, Vim
-  moving and editing, tmux, and a page of everyday recipes for each, such as changing a setting or
+- Print it: `just cheatsheet-pdf` writes six A4 landscape pages (Vim modes, Vim
+  moving and editing, tmux, and pages of everyday recipes, such as changing a setting or
   keeping a job alive after logout) to `~/Downloads/tmux-vim-cheatsheet.pdf` with
   Chrome. Pass a path to write elsewhere: `just cheatsheet-pdf ~/Desktop/sheet.pdf`.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds cheatsheet/index.html: five A4 landscape pages, identical on screen and paper.
+"""Builds cheatsheet/index.html: six A4 landscape pages, identical on screen and paper.
 
 Edit this file or style.css, then run:  python3 cheatsheet/build.py cheatsheet/index.html
 and check the print with:  just cheatsheet-pdf
@@ -293,87 +293,144 @@ def ins(t): return f'<ins>{t}</ins>'
 def dl(t): return f'<del>{t}</del>'
 def vs(t): return f'<span class="vsel">{t}</span>'
 
+# ---------------------------------------------------------------- recipes: goal, numbered steps, before and after
+def R3(title, goal, steps, before, after, note="", vim=False):
+    v = VIMTAG if vim else ""
+    lis = "".join(f'<li><span class="sk">{keys}</span><span class="sm">{meaning}</span></li>' for keys, meaning in steps)
+    n = f'<p class="why">{note}</p>' if note else ""
+    return f'''<article class="recipe"><header><h4>{title}{v}</h4><p class="goal">{goal}</p></header>
+      <div class="rbody"><ol class="rsteps">{lis}</ol>
+        <div class="rshots"><span class="lbl">before</span>{before}<span class="lbl">after</span>{after}</div></div>{n}</article>'''
+
 VIM_RECIPES = [
-    R2("Change a value",
-       K("vi redis.conf") + A + K("/maxclients", "c") + K("Enter", "n") + A + K("w", "n") + K("cw", "i") + E("20000") + K("Esc", "n") + A + K(":wq", "c"),
-       pair(scr("port 6379\n" + CB("m") + "axclients 10000\nsave 900 1", "/maxclients", "cmd"),
-            scr("port 6379\nmaxclients " + ins("20000") + "\nsave 900 1", '"redis.conf" written')),
-       "w steps from the name onto the value; cw replaces just that word."),
-    R2("Comment out a line",
-       K("/listen 80", "c") + K("Enter", "n") + A + K("I", "i") + E("#") + K("Esc", "n") + A + K(":wq", "c"),
-       pair(scr("server {\n  " + CB("l") + "isten 80;\n}", "/listen 80", "cmd"),
-            scr("server {\n  " + ins("# ") + "listen 80;\n}", '"site.conf" written')),
-       "I types at the start of the line, wherever the cursor is."),
-    R2("Comment out several lines",
-       K("Ctrl-v", "v") + K("jj", "v") + A + K("I", "i") + E("#") + K("Esc", "n"),
-       pair(scr(vs("l") + "isten 80;\n" + vs("l") + "isten 443;\n" + vs("s") + "erver_name a;", "-- VISUAL BLOCK --", "vis"),
-            scr(ins("#") + "listen 80;\n" + ins("#") + "listen 443;\n" + ins("#") + "server_name a;", "")),
-       "Ctrl-v selects a column; text typed after I lands on every line when you press Esc.", vim=True),
-    R2("Copy a line, then edit the copy",
-       K("yy", "n") + K("p", "n") + A + K("w", "n") + K("C", "i") + E("10.0.0.2;") + K("Esc", "n"),
-       pair(scr(CB("a") + "llow 10.0.0.1;\ndeny all;", ""),
-            scr("allow 10.0.0.1;\nallow " + ins("10.0.0.2;") + "\ndeny all;", "")),
-       "p pastes below (P above). C replaces to the end of the line."),
-    R2("Delete lines",
-       K("3dd", "n") + E("3 lines from the cursor") + E("or") + K(":2,4d", "c"),
-       pair(scr("a = 1\n" + dl(CB("b") + " = 2") + "\n" + dl("c = 3") + "\n" + dl("d = 4") + "\ne = 5", ""),
-            scr("a = 1\n" + CB("e") + " = 5", "3 fewer lines")),
-       "Vim reports how many lines went. p puts them back below."),
-    R2("Replace everywhere, one at a time",
-       K(":%s/old/new/gc", "c") + K("Enter", "n") + A + E("each match:") + K("y", "n") + E("or") + K("n", "n"),
-       pair(scr("host = <span class=\"vsel\">old</span>.lan\nbackup = old.lan", "replace with new (y/n)?", "cmd"),
-            scr("host = " + ins("new") + ".lan\nbackup = " + ins("new") + ".lan", "2 substitutions")),
-       "% every line, g every match on a line, c asks each time."),
-    R2("Read a log from the end",
-       K("view app.log") + A + K("G", "n") + K("?ERROR", "c") + K("Enter", "n") + A + K("n", "n") + E("older"),
-       pair(scr("12:01 ERROR disk full\n12:05 ok\n12:09 " + CB("E") + "RROR timeout\n12:10 ok", "?ERROR", "cmd"),
-            scr("12:01 " + CB("E") + "RROR disk full\n12:05 ok\n12:09 ERROR timeout\n12:10 ok", "?ERROR", "cmd")),
-       "view is read-only. ? searches upwards, so n goes further back. :q leaves."),
-    R2("Saved, but no permission",
-       K(":w !sudo tee % &gt;/dev/null", "c") + K("Enter", "n") + A + K("L", "n"),
-       pair(scr("127.0.0.1 localhost\n10.0.0.5 db", "E212: Can't open file", "err"),
-            scr("127.0.0.1 localhost\n10.0.0.5 db", "W12: changed (L)oad", "cmd")),
-       "For a root file opened without sudo. L loads the version you just saved.", vim=True),
-    R2("Throw your changes away",
-       K(":q", "c") + E("refused?") + A + K(":e!", "c") + E("or") + K(":q!", "c"),
-       pair(scr("port = " + ins("9999") + "\nmode = prod", "E37: No write since…", "err"),
-            scr("port = 8080\nmode = prod", ':e! reloaded "app.ini"')),
-       ":e! goes back to the saved file; :q! leaves without saving. The disk is untouched."),
+    R3("Change a value", "maxclients 10000 → 20000 in redis.conf",
+       [(K("vi redis.conf"), "open the file"),
+        (K("/maxclients", "c") + K("Enter", "n"), "jump to the line"),
+        (K("w", "n"), "step onto the value"),
+        (K("cw", "i") + E("20000") + K("Esc", "n"), "replace that word"),
+        (K(":wq", "c"), "save and quit")],
+       scr("port 6379\n" + CB("m") + "axclients 10000\nsave 900 1", "/maxclients", "cmd"),
+       scr("port 6379\nmaxclients " + ins("20000") + "\nsave 900 1", '"redis.conf" written')),
+    R3("Comment out a line", "turn listen 80 off without deleting it",
+       [(K("/listen 80", "c") + K("Enter", "n"), "find the line"),
+        (K("I", "i") + E("# ") + K("Esc", "n"), "type at the line start"),
+        (K(":wq", "c"), "save and quit")],
+       scr("server {\n  " + CB("l") + "isten 80;\n}", "/listen 80", "cmd"),
+       scr("server {\n  " + ins("# ") + "listen 80;\n}", '"site.conf" written')),
+    R3("Comment out several lines", "put # in front of three lines at once",
+       [(K("Ctrl-v", "v"), "start a column selection"),
+        (K("jj", "v"), "extend it two lines down"),
+        (K("I", "i") + E("#"), "type at the left edge"),
+        (K("Esc", "n"), "# appears on every line")],
+       scr(vs("l") + "isten 80;\n" + vs("l") + "isten 443;\n" + vs("s") + "erver_name a;", "-- VISUAL BLOCK --", "vis"),
+       scr(ins("#") + "listen 80;\n" + ins("#") + "listen 443;\n" + ins("#") + "server_name a;", ""), vim=True),
+    R3("Copy a line, then edit the copy", "allow a second address",
+       [(K("yy", "n"), "copy the line"),
+        (K("p", "n"), "paste it below"),
+        (K("w", "n"), "step onto the address"),
+        (K("C", "i") + E("10.0.0.2;") + K("Esc", "n"), "replace to the line end")],
+       scr(CB("a") + "llow 10.0.0.1;\ndeny all;", ""),
+       scr("allow 10.0.0.1;\nallow " + ins("10.0.0.2;") + "\ndeny all;", "")),
+    R3("Delete lines", "remove lines b, c and d",
+       [(K("3dd", "n"), "delete 3 lines from the cursor"),
+        (K(":2,4d", "c") + K("Enter", "n"), "or: delete lines 2 to 4"),
+        (K("p", "n"), "wrong ones? put them back")],
+       scr("a = 1\n" + CB("b") + " = 2\nc = 3\nd = 4\ne = 5", ""),
+       scr("a = 1\n" + CB("e") + " = 5", "3 fewer lines")),
+    R3("Replace everywhere, one at a time", "old.lan → new.lan, checking each",
+       [(K(":%s/old/new/gc", "c") + K("Enter", "n"), "% every line, c ask each time"),
+        (K("y", "n"), "replace this one"),
+        (K("n", "n"), "skip this one"),
+        (K("a", "n"), "replace all the rest")],
+       scr("host = " + vs("old") + ".lan\nbackup = old.lan", "replace with new (y/n/a/q)?", "cmd"),
+       scr("host = " + ins("new") + ".lan\nbackup = " + ins("new") + ".lan", "2 substitutions")),
+    R3("Read a log from the end", "find the latest errors, newest first",
+       [(K("view app.log"), "open read-only"),
+        (K("G", "n"), "go to the end"),
+        (K("?ERROR", "c") + K("Enter", "n"), "search upwards"),
+        (K("n", "n"), "the error before that"),
+        (K(":q", "c"), "leave")],
+       scr("12:01 ERROR disk full\n12:05 ok\n12:09 " + CB("E") + "RROR timeout", "?ERROR", "cmd"),
+       scr("12:01 " + CB("E") + "RROR disk full\n12:05 ok\n12:09 ERROR timeout", "?ERROR", "cmd")),
+    R3("Saved, but no permission", "a root file opened without sudo",
+       [(K(":w", "c"), "fails with E212"),
+        (K(":w !sudo tee % &gt;/dev/null", "c") + K("Enter", "n"), "write it through sudo"),
+        (K("L", "n"), "load the saved file when asked")],
+       scr("127.0.0.1 localhost\n10.0.0.5 " + ins("db"), "E212: Can't open file", "err"),
+       scr("127.0.0.1 localhost\n10.0.0.5 db", "W12: changed (L)oad", "cmd"), vim=True),
+    R3("Throw your changes away", "start again from the saved file",
+       [(K(":q", "c"), "refused: unsaved changes"),
+        (K(":e!", "c"), "reload the saved file"),
+        (K(":q!", "c"), "or just leave without saving")],
+       scr("port = " + ins("9999") + "\nmode = prod", "E37: No write since…", "err"),
+       scr("port = 8080\nmode = prod", ':e! "app.ini" reloaded')),
+    R3("Change when a cron job runs", "run the backup at 4:00 instead of 3:00",
+       [(K("crontab -e"), "open your crontab in vi"),
+        (K("/backup", "c") + K("Enter", "n"), "find the job"),
+        (K("0", "n") + K("w", "n"), "start of line, then the hour"),
+        (K("r4", "n"), "replace 3 with 4"),
+        (K(":wq", "c"), "save; cron installs it")],
+       scr("# m h dom mon dow cmd\n0 " + CB("3") + " * * * backup.sh", ""),
+       scr("# m h dom mon dow cmd\n0 " + ins("4") + " * * * backup.sh", "crontab: installing new crontab")),
+    R3("Go to the line in an error", "the error says: app.conf line 42",
+       [(K("vi +42 app.conf"), "open on line 42"),
+        (K(":42", "c") + K("Enter", "n"), "or jump there once open"),
+        (K("Ctrl-g", "n"), "check where you are")],
+       scr("$ nginx -t\nerror in app.conf:42\n$ " + CI(), ""),
+       scr("41  location / {\n42  " + CB("p") + "roxy_pas x;\n43  }", '"app.conf" 80 lines --52%--')),
+    R3("Keep a copy before editing", "save app.conf.bak, then edit freely",
+       [(K(":w app.conf.bak", "c") + K("Enter", "n"), "write a copy, stay in app.conf"),
+        (E("edit as usual"), ""),
+        (K(":wq", "c"), "save app.conf; the copy is unchanged")],
+       scr("port = 8080\nmode = prod", '"app.conf.bak" [New] written', "cmd"),
+       scr("$ ls\napp.conf  " + ins("app.conf.bak") + "\n$ " + CI(), "")),
 ]
+
 
 def tbody(*lines): return "\n".join(lines)
 BAR0 = '<b>[0]</b> 0:bash*'
 TMUX_RECIPES = [
-    R2("A job that survives logout",
-       K("tmux new -s deploy") + A + E("start the job") + A + K("C-b d") + A + E("later") + K("tmux a -t deploy"),
-       pair(tscr([tbody("$ ./deploy.sh", "uploading… 42%")], '<b>[deploy]</b> 0:bash*'),
-            tscr([tbody("$ tmux a -t deploy", "", "uploading… 87%")], '<b>[deploy]</b> 0:bash*')),
-       "In between, the shell said [detached (from session deploy)] and the job kept running."),
-    R2("Edit while watching the log",
-       K("C-b %") + A + K("tail -f app.log") + A + K("C-b o") + A + K("vi app.conf"),
-       pair(tscr([tbody("$ " + CI())], BAR0),
-            tscr([tbody("12:01 GET /", "12:02 ERROR", "12:02 retry"), tbody("port = 80", "mode = prod")], BAR0)),
-       "C-b o jumps between the panes; C-b z zooms the one you are in."),
-    R2("Copy an error from the scrollback",
-       K("C-b [") + K("?ERROR") + K("Enter") + A + K("Space") + K("$") + K("Enter") + A + K("C-b ]"),
-       pair(tscr([tbody("12:01 GET /", '12:02 <span class="sel">ERROR db timeout</span>', "$ ")], '<span class="pos">[2/120]</span>'),
-            tscr([tbody("12:01 GET /", "12:02 ERROR db timeout", '$ <span class="paste">ERROR db timeout</span>' + CI())], BAR0)),
-       "The same steps as on the tmux page, ending at your prompt."),
-    R2("Type in every pane at once",
-       K("C-b :") + E("setw synchronize-panes on") + A + E("type once") + A + E("… off"),
-       pair(tscr([tbody("web1 $ "), tbody("web2 $ "), tbody("web3 $ " + CI())], BAR0, cols="1fr 1fr 1fr"),
-            tscr([tbody("web1 $ uptime"), tbody("web2 $ uptime"), tbody("web3 $ uptime" + CI())], BAR0, cols="1fr 1fr 1fr")),
-       "Each pane has its own ssh session; what you type goes to all of them."),
-    R2("Name things so you find them",
-       K("C-b $") + E("session") + K("C-b ,") + E("window") + A + K("C-b w") + E("pick one"),
-       pair(tscr([tbody("$ " + CI())], '<b>[0]</b> 0:bash 1:bash*'),
-            tscr([tbody("$ " + CI())], '<b>[deploy]</b> 0:api 1:logs*')),
-       "tmux ls and C-b s show these names, so you attach to the right one."),
-    R2("Close what you no longer need",
-       K("C-b x") + E("then") + K("y") + E("pane") + A + K("C-b &amp;") + E("window"),
-       pair(tscr([tbody("logs"), tbody("vi " + CI())], 'kill-pane 1? (y/n)'),
-            tscr([tbody("logs" + CI())], BAR0)),
-       "exit in the last pane of a window closes the window too. tmux kill-session -t old ends a session."),
+    R3("A job that survives logout", "a deploy keeps running after you disconnect",
+       [(K("tmux new -s deploy"), "start a named session"),
+        (K("./deploy.sh"), "start the job"),
+        (K("C-b d", "pre"), "detach; the job keeps going"),
+        (K("tmux a -t deploy"), "later: back to it")],
+       tscr([tbody("$ ./deploy.sh", "uploading… 42%")], '<b>[deploy]</b> 0:bash*'),
+       tscr([tbody("$ tmux a -t deploy", "uploading… 87%")], '<b>[deploy]</b> 0:bash*')),
+    R3("Edit while watching the log", "the log on the left, the config on the right",
+       [(K("C-b %", "pre"), "split left | right"),
+        (K("tail -f app.log"), "follow the log in the new pane"),
+        (K("C-b o", "pre"), "move to the other pane"),
+        (K("vi app.conf"), "edit there")],
+       tscr([tbody("$ " + CI())], BAR0),
+       tscr([tbody("12:01 GET /", "12:02 ERROR", "12:02 retry"), tbody("port = 80", "mode = prod")], BAR0)),
+    R3("Copy an error from the scrollback", "paste a line from earlier output",
+       [(K("C-b [", "pre"), "enter copy mode"),
+        (K("?ERROR") + K("Enter"), "find the line"),
+        (K("Space") + K("$"), "select to the line end"),
+        (K("Enter"), "copy it"),
+        (K("C-b ]", "pre"), "paste at the prompt")],
+       tscr([tbody("12:01 GET /", '12:02 <span class="sel">ERROR db timeout</span>', "$ ")], '<span class="pos">[2/120]</span>'),
+       tscr([tbody("12:01 GET /", "12:02 ERROR db timeout", '$ <span class="paste">ERROR db timeout</span>' + CI())], BAR0)),
+    R3("Type in every pane at once", "run the same command on three servers",
+       [(K("C-b :", "pre"), "open the tmux prompt"),
+        (E("setw synchronize-panes on") + K("Enter"), "panes now share input"),
+        (K("uptime") + K("Enter"), "typed once, runs in all"),
+        (E("… synchronize-panes off"), "back to normal")],
+       tscr([tbody("w1$ "), tbody("w2$ "), tbody("w3$ " + CI())], BAR0, cols="1fr 1fr 1fr"),
+       tscr([tbody("w1$ uptime"), tbody("w2$ uptime"), tbody("w3$ uptime" + CI())], BAR0, cols="1fr 1fr 1fr")),
+    R3("Name things so you find them", "a session called deploy with named windows",
+       [(K("C-b $", "pre"), "rename the session"),
+        (K("C-b ,", "pre"), "rename the window"),
+        (K("C-b w", "pre"), "pick from the list")],
+       tscr([tbody("$ " + CI())], '<b>[0]</b> 0:bash 1:bash*'),
+       tscr([tbody("$ " + CI())], '<b>[deploy]</b> 0:api 1:logs*')),
+    R3("Close what you no longer need", "remove a pane, a window or a session",
+       [(K("C-b x", "pre") + K("y"), "close the pane"),
+        (K("C-b &amp;", "pre") + K("y"), "close the window"),
+        (K("tmux kill-session -t old"), "end a whole session")],
+       tscr([tbody("logs"), tbody("vi " + CI())], 'kill-pane 1? (y/n)'),
+       tscr([tbody("logs" + CI())], BAR0)),
 ]
 
 # ---------------------------------------------------------------- page assembly
@@ -398,7 +455,7 @@ vim_body = f'''  <div class="g modesgrid">
       <p class="cap">Then act on the selection: <span class="k n">d</span> delete · <span class="k n">y</span> copy · <span class="k i">c</span> change · <span class="k n">&gt;</span> indent. <span class="k n">Esc</span> cancels.</p>
     </div>
     <div class="cell area-d"><h3>Quit and undo</h3>
-      <div class="ess">
+      <div class="ess four">
         <div class="c"><b>:wq</b><span>save and quit</span></div>
         <div class="c"><b>:q!</b><span>quit without saving</span></div>
         <div class="n"><b>u</b><span>undo</span></div>
@@ -457,10 +514,13 @@ tmux_body = f'''  <div class="g tmuxgrid">
     <div class="cell area-e mac"><h4>Only on this Mac: no C-b needed</h4><p><span class="k">Opt+hjkl</span> move between panes · <span class="k">Opt+1…9</span> go to a window · <span class="k">Opt+n</span> new window · <span class="k">Opt+z</span> zoom · <span class="k">Opt+/</span> short key list · <span class="k">Space</span>+<span class="k">/</span> this sheet · the bottom line of tmux lists the keys you can press next</p></div>
   </div>'''
 
-vim_recipes_body = f'''  <div class="g recipes r3">
-    {"".join(VIM_RECIPES)}
+vim_recipes_body = f'''  <div class="g recipes">
+    {"".join(VIM_RECIPES[:6])}
   </div>'''
-tmux_recipes_body = f'''  <div class="g recipes t3">
+vim_recipes_body2 = f'''  <div class="g recipes">
+    {"".join(VIM_RECIPES[6:])}
+  </div>'''
+tmux_recipes_body = f'''  <div class="g recipes">
     {"".join(TMUX_RECIPES)}
   </div>'''
 
@@ -473,8 +533,8 @@ doc = f'''<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vim and tmux map</title>
 <!--
-  Five A4 landscape pages that look the same on screen and on paper
-  (just cheatsheet-pdf): Vim modes, Vim moving and editing, tmux, Vim recipes, tmux recipes. Sizes are in
+  Six A4 landscape pages that look the same on screen and on paper
+  (just cheatsheet-pdf): Vim modes, Vim moving and editing, tmux, two pages of Vim recipes, tmux recipes. Sizes are in
   cqw (a share of the page width), so the screen shows the printed page scaled.
   Colour means mode in Vim (normal, insert, visual, command) and level in tmux
   (session, window, pane). Dashed boxes are Mac-only; everything else works on
@@ -487,12 +547,13 @@ doc = f'''<!doctype html>
 </style>
 </head>
 <body>
-<nav class="nav"><h1>Vim and tmux map</h1><a href="#vim">Vim modes</a><a href="#vim-move">Vim moving</a><a href="#tmux">tmux</a><a href="#vim-recipes">Vim recipes</a><a href="#tmux-recipes">tmux recipes</a><p>Each page is one A4 landscape sheet: <kbd>just cheatsheet-pdf</kbd>.</p></nav>
+<nav class="nav"><h1>Vim and tmux map</h1><a href="#vim">Vim modes</a><a href="#vim-move">Vim moving</a><a href="#tmux">tmux</a><a href="#vim-recipes">Vim recipes</a><a href="#vim-recipes-2">more</a><a href="#tmux-recipes">tmux recipes</a><p>Each page is one A4 landscape sheet: <kbd>just cheatsheet-pdf</kbd>.</p></nav>
 {page("vim", "Vim: modes", "Colour shows the mode. Check you are in Normal mode (green) before you type a command.", vim_body)}
 {page("vim-move", "Vim: moving and editing", "All of these keys work in Normal mode (green).", move_body)}
 {page("tmux", "tmux", 'Colour shows the level: <span style="color:var(--session)">session</span> ⊃ <span style="color:var(--window)">window</span> ⊃ <span style="color:var(--pane)">pane</span>.', tmux_body)}
-{page("vim-recipes", "Vim recipes", "Real tasks, key by key. Each key is coloured by the mode it leaves you in; grey means type it as shown. Start in Normal mode.", vim_recipes_body)}
-{page("tmux-recipes", "tmux recipes", "Real tasks, key by key. <span class=\"k pre\">C-b …</span> means press C-b, let go, then the key.", tmux_recipes_body)}
+{page("vim-recipes", "Vim recipes", "Each card: what you want, then the keys in order with what each does, and the screen before and after. Key colours show the mode they leave you in. Start in Normal mode.", vim_recipes_body)}
+{page("vim-recipes-2", "More Vim recipes", "Each card: what you want, then the keys in order with what each does, and the screen before and after. Key colours show the mode they leave you in. Start in Normal mode.", vim_recipes_body2)}
+{page("tmux-recipes", "tmux recipes", "Each card: what you want, the keys in order with what each does, and the screen before and after. <span class=\"k pre\">C-b …</span> means press C-b, let go, then the key.", tmux_recipes_body)}
 </body>
 </html>
 '''
