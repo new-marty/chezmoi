@@ -1,0 +1,133 @@
+/* Layout: each page is an A4 landscape sheet; every size inside is in cqw
+   (a share of the sheet width), so the screen shows the printed page. */
+:root {
+  --bg: #e9edf5; --paper: #ffffff; --ink: #1b1e28; --muted: #556078; --line: #cdd4e2; --soft: #f2f4f9;
+  --normal: #0b7d6b; --normal-bg: #dcf3ee;
+  --insert: #b8336f; --insert-bg: #fbe3ee;
+  --visual: #2a6fae; --visual-bg: #e1eefa;
+  --command: #8f6a00; --command-bg: #fbf2d2;
+  --session: #6a4fa3; --window: #2a6fae; --pane: #0b7d6b;
+  --del: #c0392b; --mac: #9a6500;
+  --f-ui: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+  --f-key: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14161e; --paper: #1f2230; --ink: #e4f0fb; --muted: #a6accd; --line: #353b52; --soft: #272b3b;
+    --normal: #5de4c7; --normal-bg: #1d3b37; --insert: #fcc5e9; --insert-bg: #3f2538;
+    --visual: #89ddff; --visual-bg: #1f3445; --command: #fffac2; --command-bg: #3a3826;
+    --session: #c9b6ff; --window: #89ddff; --pane: #5de4c7; --del: #ff8a80; --mac: #fffac2;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14161e; --paper: #1f2230; --ink: #e4f0fb; --muted: #a6accd; --line: #353b52; --soft: #272b3b;
+  --normal: #5de4c7; --normal-bg: #1d3b37; --insert: #fcc5e9; --insert-bg: #3f2538;
+  --visual: #89ddff; --visual-bg: #1f3445; --command: #fffac2; --command-bg: #3a3826;
+  --session: #c9b6ff; --window: #89ddff; --pane: #5de4c7; --del: #ff8a80; --mac: #fffac2;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-ui); line-height: 1.45; padding-inline: 16px; padding-block: 18px 40px; }
+h1, h2, h3, h4, p, figure { margin: 0; }
+kbd { font-family: var(--f-key); font-weight: 700; font-size: .92em; white-space: nowrap; }
+svg { display: block; width: 100%; height: auto; font-family: var(--f-ui); }
+svg .mono { font-family: var(--f-key); font-weight: 700; }
+
+.nav { max-width: 1240px; margin: 0 auto 12px; display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; font-size: 14px; }
+.nav h1 { font-size: 20px; }
+.nav a { color: var(--muted); }
+.nav p { color: var(--muted); font-size: 13px; }
+
+/* one A4 sheet */
+.scroll { max-width: 1240px; margin: 0 auto 22px; overflow-x: auto; }
+.sheet { container-type: inline-size; min-width: 880px; }
+.page { aspect-ratio: 297 / 210; background: var(--paper); border-radius: 8px; padding: 2.6cqw 2.8cqw; display: grid; grid-template-rows: auto 1fr; gap: 1.6cqw; font-size: 1.12cqw; overflow: hidden; }
+.ph { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4cqw 1.6cqw; }
+.ph h2 { font-size: 2.3cqw; letter-spacing: .01em; }
+.ph p { color: var(--muted); font-size: 1.1cqw; }
+.g { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.8cqw 2.2cqw; min-height: 0; }
+.cell { min-width: 0; display: grid; gap: .8cqw; align-content: start; }
+.cell h3 { font-size: 1.3cqw; display: flex; flex-wrap: wrap; align-items: baseline; gap: .2cqw .8cqw; }
+.cell h3 small { font-weight: 400; color: var(--muted); font-size: 1cqw; }
+.cap { color: var(--muted); font-size: 1cqw; }
+.cap b { color: var(--ink); font-family: var(--f-key); }
+
+/* keys */
+.k { font-family: var(--f-key); font-weight: 700; padding: .04em .38em; border-radius: .3em; background: var(--soft); border: 1px solid var(--line); white-space: nowrap; }
+.k.n { background: var(--normal-bg); border-color: var(--normal); }
+.k.i { background: var(--insert-bg); border-color: var(--insert); }
+.k.v { background: var(--visual-bg); border-color: var(--visual); }
+.k.c { background: var(--command-bg); border-color: var(--command); }
+.k.pre { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.vimtag { font-family: var(--f-key); font-size: .68em; font-weight: 500; color: var(--muted); border: 1px solid var(--line); border-radius: .25em; padding: 0 .3em; margin-left: .35em; vertical-align: .12em; }
+.to { color: var(--muted); }
+em { font-style: normal; color: var(--muted); }
+
+/* Vim page */
+.vimgrid { grid-template-areas: "a a a a a b b b b b b b" "c c c c c c c c d d d d"; grid-template-rows: auto 1fr; }
+.vimgrid .area-a { grid-area: a; } .vimgrid .area-b { grid-area: b; } .vimgrid .area-c { grid-area: c; } .vimgrid .area-d { grid-area: d; } .vimgrid .area-e { grid-area: e; }
+.verbs { display: grid; gap: .55cqw; }
+.vrow { display: grid; grid-template-columns: 9cqw 12.5cqw 1fr; gap: .9cqw; align-items: center; }
+.vkeys { display: flex; flex-wrap: wrap; align-items: center; gap: .3cqw; }
+.vwhat { font-size: 1cqw; color: var(--muted); }
+.vdemo { display: flex; flex-wrap: wrap; align-items: center; gap: .3cqw .6cqw; min-width: 0; }
+.vdemo code { font-family: var(--f-key); font-size: .98cqw; background: var(--soft); border-radius: .3cqw; padding: .2cqw .5cqw; white-space: pre; }
+code del { color: var(--del); text-decoration: line-through; text-decoration-thickness: 2px; background: color-mix(in srgb, var(--del) 12%, transparent); }
+code mark { background: var(--insert-bg); color: inherit; outline: 1px solid var(--insert); }
+code ins { text-decoration: none; background: var(--normal-bg); outline: 1px solid var(--normal); }
+code .cur { outline: 1.5px dashed var(--muted); }
+code .gone { font-family: var(--f-ui); color: var(--muted); }
+.ess { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7cqw; }
+.ess.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ess.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ess div { border-radius: .6cqw; padding: .7cqw .9cqw; display: grid; gap: .1cqw; background: var(--soft); }
+.ess div.c { background: var(--command-bg); }
+.ess div.n { background: var(--normal-bg); }
+.ess b { font-family: var(--f-key); font-size: 1.7cqw; }
+.ess span { font-size: 1cqw; }
+.mac { border: 1.5px dashed var(--mac); border-radius: .8cqw; padding: .8cqw 1cqw; display: grid; gap: .4cqw; font-size: 1cqw; }
+.mac h4 { color: var(--mac); font-size: 1.05cqw; }
+.mac p { line-height: 1.9; }
+
+/* tmux page */
+.tmuxgrid { grid-template-areas: "a a a a a a a a b b b b" "c c c c c c d d d d d d" "e e e e e e e e e e e e"; grid-template-rows: auto auto auto; align-content: space-between; }
+.tmuxgrid .area-a { grid-area: a; } .tmuxgrid .area-b { grid-area: b; } .tmuxgrid .area-c { grid-area: c; } .tmuxgrid .area-d { grid-area: d; } .tmuxgrid .area-e { grid-area: e; align-self: end; }
+.strip { display: flex; flex-wrap: wrap; align-items: center; gap: .45cqw .4cqw; }
+.strip.big { font-size: 1.15cqw; }
+
+/* recipe pages */
+.recipes { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.8cqw 2.4cqw; }
+.recipes.r3 { grid-template-rows: repeat(3, auto); align-content: space-between; }
+.recipes.t3 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, auto); align-content: space-between; }
+.recipes.t3 .recipe h4 { font-size: 1.8cqw; }
+.recipes.t3 .recipe .strip { font-size: 1.55cqw; }
+.recipes.t3 .recipe .why { font-size: 1.35cqw; }
+.recipe { display: grid; grid-template-rows: auto auto auto 1fr; gap: .7cqw; align-content: start; border-top: .25cqw solid var(--line); padding-top: .9cqw; min-width: 0; }
+.recipe h4 { font-size: 1.65cqw; }
+.recipe .strip { font-size: 1.35cqw; gap: .6cqw .5cqw; }
+.recipe .why { color: var(--muted); font-size: 1.2cqw; }
+.ba { display: grid; grid-template-columns: max-content 1fr; gap: .35cqw 1cqw; background: var(--soft); border-radius: .5cqw; padding: .8cqw 1cqw; font-size: 1.25cqw; align-items: baseline; }
+.ba > span { color: var(--muted); font-size: 1.05cqw; }
+.ba code { font-family: var(--f-key); white-space: pre; }
+
+/* paper */
+@page { size: A4 landscape; margin: 8mm; }
+@media print {
+  :root, :root[data-theme="dark"] {
+    --bg: #fff; --paper: #fff; --ink: #000; --muted: #4a5266; --line: #c3cada; --soft: #f1f3f8;
+    --normal: #0b7d6b; --normal-bg: #dcf3ee; --insert: #b8336f; --insert-bg: #fbe3ee;
+    --visual: #2a6fae; --visual-bg: #e1eefa; --command: #8f6a00; --command-bg: #fbf2d2;
+    --session: #6a4fa3; --window: #2a6fae; --pane: #0b7d6b; --del: #c0392b; --mac: #9a6500;
+    color-scheme: light;
+  }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { padding: 0; }
+  .nav { display: none; }
+  .scroll { max-width: none; margin: 0; overflow: visible; break-after: page; }
+  .scroll:last-of-type { break-after: auto; }
+  .sheet { width: 281mm; min-width: 0; }
+  .page { aspect-ratio: auto; height: 193mm; padding: 0; border-radius: 0; }
+}
+
+.vimgrid .area-d svg { width: auto; height: 21cqw; max-width: 100%; }

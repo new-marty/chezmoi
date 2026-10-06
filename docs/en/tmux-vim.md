@@ -17,8 +17,9 @@ key, and those are marked "Mac": `v` and `y` in copy mode, `C-b Space`
 
 ## The cheat sheet
 
-`cheatsheet/index.html` in the source directory is one page for the screen and
-for paper.
+`cheatsheet/index.html` in the source directory is the same A4 pages on screen
+and on paper. It is generated: edit `cheatsheet/build.py` or `style.css`, then
+run `python3 cheatsheet/build.py cheatsheet/index.html`.
 
 - Open it: `Space`+`/` (Karabiner, while typing in English), `just cheatsheet`,
   or `Opt+/` inside tmux for the short text version. Without the `justfile`
@@ -28,9 +29,9 @@ for paper.
   verbs and ranges as a table, the tmux screen with the key for each part, and
   a page of everyday recipes with the text before and after.
   Dashed boxes are Mac-only.
-- Print it: `just cheatsheet-pdf` writes three A4 landscape pages (Vim, tmux,
-  and everyday recipes such as changing a setting or keeping a job alive after
-  logout) to `~/Downloads/tmux-vim-cheatsheet.pdf` with
+- Print it: `just cheatsheet-pdf` writes four A4 landscape pages (Vim, tmux,
+  and a page of everyday recipes for each, such as changing a setting or
+  keeping a job alive after logout) to `~/Downloads/tmux-vim-cheatsheet.pdf` with
   Chrome. Pass a path to write elsewhere: `just cheatsheet-pdf ~/Desktop/sheet.pdf`.
 
 Learn one or two keys a day ("Learn Vim Progressively").
