@@ -17,29 +17,23 @@
 
 ---
 
-## [Todo] tmux と Vim を、サーバーでもそのまま使える形で覚える環境を作る
+## [Doing] tmux と Vim を、サーバーでもそのまま使える形で覚える環境を作る
 
-手元の Mac ではヒントやプラグインで覚えやすくし、何も入っていないサーバーでも同じキーで
-保守作業ができるようにしたい。Vim は Vim でも Neovim でもよく、基礎が学べるならリッチな
-UI や機能があってもよい（使う機会が増えるならむしろその方がよい、というのが本人の条件）。
+手元の Mac ではヒントで覚えやすくし、何も入っていないサーバーでも同じキーで保守作業が
+できるようにする。一番欲しいのはヒント（Zellij のように、押したキーに応じて出るもの）と、
+A4 横で印刷できるチートシート。調査メモは `docs/plans/tmux-vim-learning.md`。
 
-調査メモは `docs/plans/tmux-vim-learning.md` にある。事実と選択肢を並べただけで、どの案を
-採るかはまだ決めていない。実装もしていない。
+決めたこと（本人が「まず作ってみる」と了承）:
+- tmux: プレフィックスを `Ctrl-b` に戻し、`p w s r` を既定に戻す（独自モードは `P W S`）。
+  ヒントバーは素のキーを出し、プレフィックスを押すと続きのキーを出す。vim-tmux-navigator は外す。
+- Ghostty: `macos-option-as-alt = left`（この Mac の ABC 配列では Option が Alt にならなかった）。
+- Karabiner: SpaceFN の条件に ABC 配列を足す（日本語入力中は変換に Space を使うので外したまま）。
+- Vim: 新しいスイッチ `vim`（`~/.vimrc`、独自の割り当てなし）と `nvim`（which-key などヒント用の
+  プラグインだけ、vi と違うキーは入れない）。VS Code / Cursor は VSCodeVim。
+- `EDITOR` はリポジトリでは nano のまま。zsh に `bindkey -e` を足す。
+- チートシート: `cheatsheet/` に HTML 1枚。画面では自由な配置、印刷では A4 横。`just` で PDF にする。
 
-調査で分かった主なこと:
-- tmux はプレフィックスが `Ctrl+\` で、`prefix p/w/s/r` の既定の動作を独自のモードで
-  上書きしている。ヒントバーとチートシートには既定のキー（`"` `%` `c` `o` `?`）が出てこない。
-- Vim / Neovim の設定はリポジトリに無く、`EDITOR` は nano。
-- vim-tmux-navigator が `Ctrl+H`（atuin）と `Ctrl+L` を潰している疑いがある。Ghostty に
-  `macos-option-as-alt` が無いので、`Opt+…` のキーが届いているかも分からない。どちらも
-  実機で確かめる必要がある。
-- GitHub から clone できない Mac、フォントを入れられない Mac がある。プラグイン前提の
-  Neovim 構成はそのままでは動かない。
-
-### 残り
-- 調査メモの「6. 本人が決めること」を本人が決める
-- 決まったら実機確認から始めて実装する
-- 終わったら、この項目と `docs/plans/tmux-vim-learning.md` を消す（使い方は docs/{ja,en} に移す）
+終わったら、この項目と `docs/plans/tmux-vim-learning.md` を消す（使い方は docs に移す）。
 
 ---
 
