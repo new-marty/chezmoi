@@ -12,7 +12,8 @@ case "$sheet" in
   vim | tmux) ;;
   *) echo "usage: $0 vim|tmux" >&2; exit 2 ;;
 esac
-file="$(cd "$(dirname "$0")/../cheatsheet" && pwd -P)/$sheet.html"
+# -P resolves symlinks first: Karabiner calls this through ~/.config/karabiner/..
+file="$(cd -P "$(dirname "$0")" && cd -P .. && pwd -P)/cheatsheet/$sheet.html"
 
 if pgrep -f "qlmanage -p .*/$sheet.html" >/dev/null 2>&1; then
   pkill -x qlmanage
