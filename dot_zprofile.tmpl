@@ -6,3 +6,18 @@
 {{ else if eq .chezmoi.os "linux" -}}
 [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 {{ end -}}
+
+# Put back the PATH order .zshenv built. path_helper (in /etc/zprofile, which
+# runs between .zshenv and this file) moved the system directories in front of
+# ~/.local/bin, Homebrew and the entries from ~/.zshenv.local, and brew shellenv
+# above put Homebrew first. Everything that is not a system directory goes back
+# in front, in .zshenv's order; typeset -U path (set in .zshenv) drops the
+# later copies.
+if [[ -r /etc/paths ]] && (( ${+DOTFILES_ZSHENV_PATH} )); then
+  () {
+    local -a system
+    local f
+    for f in /etc/paths /etc/paths.d/*(N.); do system+=(${(f)"$(<$f)"}); done
+    path=(${DOTFILES_ZSHENV_PATH:|system} $path)
+  }
+fi

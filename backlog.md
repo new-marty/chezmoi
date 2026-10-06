@@ -67,19 +67,6 @@ UI や機能があってもよい（使う機会が増えるならむしろそ�
 
 ---
 
-## [Doing] ログインシェルで PATH の追加が後ろに回る件を直すか決める
-
-`dot_zshenv.tmpl` と `~/.zshenv.local` で足した PATH（`~/.local/bin`、pnpm、`~/go/bin`
-など）は、ログインシェルでは macOS の `/etc/zprofile` が呼ぶ `path_helper` によって
-`/usr/bin` より後ろに回される（`env -i HOME=$HOME zsh -lic 'print -l $path'` で確認）。
-macOS のターミナルはログインシェルで起動するので、システムのコマンドを同名の
-コマンドで上書きしたいときに効かない。今のところ実害は見つかっていない。
-
-直すなら、PATH の追加を `dot_zprofile.tmpl` 側へ移すか、`~/.zprofile.local` を読む口を
-足す。
-
----
-
 ## [Todo] OrbStack が `~/.ssh/config` に書き足す行への対応
 
 OrbStack は更新のたびに `~/.ssh/config` の先頭へ `Include ~/.orbstack/ssh/config` を

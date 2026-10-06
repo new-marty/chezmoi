@@ -73,3 +73,8 @@ DOTFILES_OMZ={{ if has "omz" $optin }}1{{ else }}0{{ end }}
 
 # Remove duplicate entries from PATH
 typeset -U path
+
+# On macOS, /etc/zprofile (login shells only) runs path_helper, which moves the
+# directories in /etc/paths and /etc/paths.d in front of everything added above.
+# .zprofile reads this copy to put the rest back in front.
+DOTFILES_ZSHENV_PATH=("${path[@]}")
