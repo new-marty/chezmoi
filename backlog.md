@@ -12,7 +12,7 @@
 `just cheatsheet`）、VSCodeVim 用の設定は入れた。使い方は `docs/ja/tmux-vim.md`。
 キーを実際に押しての確認は、まだ本人が手元でしていない。
 
-- 実機で確かめる: Ghostty の tmux で `Opt+hjkl`、英数入力で `Space`+`v` と `Space`+`t`、ターミナルと
+- 実機で確かめる: Ghostty の tmux で `Opt+hjkl`、`Space`+`v` と `Space`+`t`（日本語入力のときも）、ターミナルと
   VS Code での `Esc`（英数に戻るか）、tmux の2段目のヒントの幅。
 - VSCodeVim は入れた（2026-10-06）。使いにくければ、コマンドパレットの「Vim: Toggle Vim Mode」で一時的に止める。
 - 2〜3週間後に、atuin の履歴で tmux と vim / nvim を開いた回数を見る。増えていなければ、

@@ -21,7 +21,7 @@
       "complex_modifications": {
         "rules": [
           {
-            "description": "SpaceFN: hold Space for h/j/k/l arrows, v for the Vim cheat sheet and t for the tmux one (English input only: Japanese input uses Space to convert); tap Space for space",
+            "description": "SpaceFN: hold Space for h/j/k/l arrows, v for the Vim cheat sheet and t for the tmux one, in any input source; tap Space for space (and Japanese conversion)",
             "manipulators": [
               {
                 "type": "basic",
@@ -55,16 +55,6 @@
                     }
                   ]
                 },
-                "conditions": [
-                  {
-                    "type": "input_source_if",
-                    "input_sources": [
-                      {
-                        "input_source_id": "^com\\.apple\\.keylayout\\.(US|ABC)$"
-                      }
-                    ]
-                  }
-                ],
                 "parameters": {
                   "basic.to_if_alone_timeout_milliseconds": 300,
                   "basic.to_if_held_down_threshold_milliseconds": 200,

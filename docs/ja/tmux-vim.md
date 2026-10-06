@@ -15,7 +15,7 @@
 
 ソースディレクトリの `cheatsheet/vim.html` と `cheatsheet/tmux.html` は、ウィンドウの幅に合わせて大きさが変わる。これらは生成したもので、直すときは `cheatsheet/build.py` か `style.css` を編集して `python3 cheatsheet/build.py` を実行する。
 
-- 開く: Vim は `Space`+`v`、tmux は `Space`+`t`（Karabiner。英数入力のとき）。Quick Look のパネルで、ほかの窓より手前に開く。同じキーをもう一度押すか `Esc` で閉じる。シェルからは `just cheatsheet vim` か `just cheatsheet tmux`（`justfile` スイッチを選んでいないマシンでは `sh "$(chezmoi source-path)/scripts/cheatsheet.sh" vim`）。tmux の中なら `Opt+/` で短い文字版。
+- 開く: Vim は `Space`+`v`、tmux は `Space`+`t`（Karabiner。日本語入力のときも使える）。ほかのアプリの窓より常に手前に浮かぶ窓で開く。同じキーをもう一度押すか、窓の閉じるボタンで閉じる。シェルからは `just cheatsheet vim` か `just cheatsheet tmux`（`justfile` スイッチを選んでいないマシンでは `sh "$(chezmoi source-path)/scripts/cheatsheet.sh" vim`）。tmux の中なら `Opt+/` で短い文字版。
 - キーを並べるのではなく図で示す。Vim のモードの地図（ページ全体で色がモードを表す）、実際の1行とファイルの中での動き方、動詞と範囲の表、tmux の画面とその部分ごとのキー。点線の枠は Mac だけ。
 - 設定の書き換えやログアウト後も続く作業などの実例集もあり、変更前と変更後の画面を添えている。
 

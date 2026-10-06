@@ -63,7 +63,7 @@ vscode-extensions-dump:
 # Learning tmux and Vim
 # =============================================================================
 
-# Show or hide the Vim or tmux cheat sheet in Quick Look (also Space+v / Space+t)
+# Show or hide the Vim or tmux cheat sheet in a floating window (also Space+v / Space+t)
 cheatsheet sheet="vim":
     #!/usr/bin/env bash
     set -euo pipefail

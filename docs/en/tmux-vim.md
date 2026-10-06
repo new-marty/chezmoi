@@ -21,9 +21,9 @@ key, and those are marked "Mac": `v` and `y` in copy mode, `C-b Space`
 with the window. They are generated: edit `cheatsheet/build.py` or `style.css`,
 then run `python3 cheatsheet/build.py`.
 
-- Open one: `Space`+`v` for Vim or `Space`+`t` for tmux (Karabiner, while
-  typing in English). It opens in a Quick Look panel in front of everything;
-  the same keys again, or `Esc`, close it. From a shell: `just cheatsheet vim`
+- Open one: hold `Space` and press `v` for Vim or `t` for tmux (Karabiner, in
+  any input source). It opens in a window that floats above other apps;
+  the same key again, or the window's close button, closes it. From a shell: `just cheatsheet vim`
   or `just cheatsheet tmux` (without the `justfile` switch:
   `sh "$(chezmoi source-path)/scripts/cheatsheet.sh" vim`). Inside tmux,
   `Opt+/` shows a short text version.
