@@ -25,7 +25,7 @@
 
 - 実機で確かめる: Ghostty の tmux で `Opt+hjkl`、英数入力で `Space`+`v` と `Space`+`t`、ターミナルと
   VS Code での `Esc`（英数に戻るか）、tmux の2段目のヒントの幅。
-- VSCodeVim を入れて使い始める（`just vscode-extensions`、`just vim-key-repeat`）。
+- VSCodeVim は入れた（2026-10-06）。使いにくければ、コマンドパレットの「Vim: Toggle Vim Mode」で一時的に止める。
 - 2〜3週間後に、atuin の履歴で tmux と vim / nvim を開いた回数を見る。増えていなければ、
   何が止めているかを聞いて設定を直す（10か月で tmux 1回、vim 0回だったところから始めた）。
 
