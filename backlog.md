@@ -54,7 +54,7 @@ UI や機能があってもよい（使う機会が増えるならむしろそ�
 
 ---
 
-## [Todo] VS Code と Cursor の拡張機能の一覧を見直す
+## [Doing] VS Code と Cursor の拡張機能の一覧を見直す
 
 `private_Library/Application Support/Code/User/extensions.json` は VS Code が読まない
 ファイルで、一覧のメモにしかなっていない。VS Code が推奨拡張として読むのは
@@ -67,7 +67,7 @@ UI や機能があってもよい（使う機会が増えるならむしろそ�
 
 ---
 
-## [Todo] ログインシェルで PATH の追加が後ろに回る件を直すか決める
+## [Doing] ログインシェルで PATH の追加が後ろに回る件を直すか決める
 
 `dot_zshenv.tmpl` と `~/.zshenv.local` で足した PATH（`~/.local/bin`、pnpm、`~/go/bin`
 など）は、ログインシェルでは macOS の `/etc/zprofile` が呼ぶ `path_helper` によって
@@ -87,16 +87,6 @@ OrbStack は更新のたびに `~/.ssh/config` の先頭へ `Include ~/.orbstack
 に移してあるので、書き足されると `chezmoi diff` に差分が出て、次の apply で消える。
 差分が出たら、共有の `private_dot_ssh/config` にその行を入れるか（ファイルが無ければ
 ssh は無視する）、毎回 apply で戻すかを決める。
-
----
-
-## [Todo] 使わなくなったローカルの設定を片付ける
-
-コミット署名をやめたので `~/.ssh/allowed_signers` は使われていない。
-`~/.config/chezmoi/chezmoi.toml` にも、今のテンプレートが読まないデータが残っている
-（`is_personal_mac`、`is_work_mac`、`is_windows`、`is_linux`、`is_ubuntu`、`git_name`、
-`git_email`、`ssh_public_keys`、`ssh_signing_key`、`[onepassword]`）。どちらも
-リポジトリの外のファイルで、残っていても害は無い。消すかどうかは本人が決める。
 
 ---
 
@@ -599,22 +589,3 @@ Phase 8 実行前であれば完全にロールバック可能:
 - [Bitwarden Git Commit Signing](https://community.bitwarden.com/t/git-commit-signing-with-ssh-key/46495)
 - [chezmoi age 暗号化](https://www.chezmoi.io/user-guide/encryption/age/)
 - [chezmoi 暗号化 FAQ](https://www.chezmoi.io/user-guide/frequently-asked-questions/encryption/)
-
----
-
-## [Todo] M1 MacBook に Tailscale を入れて `m1` を外から使えるようにする
-
-ユーザー gary の Mac は Mac mini と M1 MacBook の 2 台ある。画面共有で開くコマンドは
-`mini` と `m1`(chezmoi 管理外の `~/.zshrc.local`)で、同一 LAN なら mDNS で直接、届かなければ
-`~/.ssh/config.local` の `Host mini` / `Host m1` に書いた Tailscale のアドレスへ繋ぐ。
-
-M1 は LAN 上では `m1-macbook.local` として見えていて、画面共有も有効になっている。
-Tailscale はまだ入れていないので、LAN の外から `m1` を打つと
-「Host m1 がない」と出て終わる。
-
-### 残り
-- M1 に Tailscale を入れ、tailnet に参加させる
-- 各 Mac の `~/.ssh/config.local` に `Host m1`(HostName に Tailscale のアドレス、
-  `User gary`)を足す。このファイルは chezmoi 管理外なので手で書く
-- 他の Mac の `~/.ssh/config.local` に残っている `Host gary` を `Host mini` に改名する
-  (このMacは改名済み)
