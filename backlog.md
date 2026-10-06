@@ -39,7 +39,7 @@ ssh は無視する）、毎回 apply で戻すかを決める。
 済み（2026-10-06）: この Mac の `~/.ssh/config.local` から 1Password の `IdentityAgent` を外し、
 `Host *` でこの鍵を使う形にした（控えは取ってある）。unraid、mini、GitHub はこの鍵で入れることを確認。
 unraid と mini の `authorized_keys` にはこの鍵（と mini に iphone）しか無く、消すものは無い。
-この鍵にはパスフレーズをかけない（本人の判断）。
+この鍵にはパスフレーズをかけ、キーチェーンに保存した（パスフレーズは 1Password にも控えてある）。
 
 残り:
 - debian は接続がタイムアウトして未確認。届くときに、この鍵で入れるか確かめる。
