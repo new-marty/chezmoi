@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tmux と Vim の手帖</title>
+<!--
+  One file for the screen and for paper. On screen: filter by stage, hide the
+  Mac-only keys, search. On paper (just cheatsheet-pdf): two A4 landscape
+  pages, Vim on the front and tmux on the back.
+  Keys marked "Mac" work only on the owner's Mac (Karabiner, Ghostty, this
+  repository's tmux.conf); every other key works on a bare server.
+  Stages follow "Learn Vim Progressively": a few commands at a time, tick one
+  off after a week of using it without looking.
+-->
+<style>
+:root {
+  --bg: #f4f6fb; --paper: #ffffff; --fg: #1b1e28; --muted: #5b6478; --line: #d5dae6;
+  --key-bg: #e9edf6; --key-fg: #1b1e28;
+  --s1: #0f7b6c; --s2: #3d6fb6; --s3: #9a4f86; --mac: #a46a00; --mac-bg: #fbf1d6;
+  --accent: #0f7b6c;
+  --f-body: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
+  --f-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1b1e28; --paper: #232634; --fg: #e4f0fb; --muted: #a6accd; --line: #343a50;
+    --key-bg: #303446; --key-fg: #e4f0fb;
+    --s1: #5de4c7; --s2: #89ddff; --s3: #fcc5e9; --mac: #fffac2; --mac-bg: #3a3826; --accent: #5de4c7;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1b1e28; --paper: #232634; --fg: #e4f0fb; --muted: #a6accd; --line: #343a50;
+  --key-bg: #303446; --key-fg: #e4f0fb;
+  --s1: #5de4c7; --s2: #89ddff; --s3: #fcc5e9; --mac: #fffac2; --mac-bg: #3a3826; --accent: #5de4c7;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 14px; line-height: 1.5; padding-inline: 16px; padding-block: 16px 40px; }
+h1, h2, h3, p { margin: 0; }
+kbd, code { font-family: var(--f-mono); }
+kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); border-radius: 4px; padding: 0 .35em; font-size: .92em; line-height: 1.45; white-space: nowrap; }
+
+/* ---------- screen controls ---------- */
+.top { max-width: 1400px; margin: 0 auto 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.top h1 { font-size: 1.25rem; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.controls button, .controls label { font: inherit; font-size: .85rem; border: 1px solid var(--line); background: var(--paper); color: var(--fg); border-radius: 999px; padding: 3px 12px; cursor: pointer; }
+.controls button[aria-pressed="true"] { background: var(--fg); color: var(--paper); border-color: var(--fg); }
+.controls input[type="search"] { font: inherit; font-size: .85rem; border: 1px solid var(--line); background: var(--paper); color: var(--fg); border-radius: 999px; padding: 3px 12px; min-width: 0; width: 12em; }
+.controls :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.legend { font-size: .8rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+
+/* ---------- sheets ---------- */
+.sheet { max-width: 1400px; margin: 0 auto 28px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 12px; }
+.sheet-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.sheet-head h2 { font-size: 1.15rem; }
+.sheet-head p { color: var(--muted); font-size: .85rem; }
+.cols { column-width: 290px; column-gap: 22px; }
+.cols > * { margin-bottom: 12px; }
+.group { display: grid; gap: 4px; min-width: 0; break-inside: avoid; }
+.group h3 { font-size: .8rem; letter-spacing: .04em; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 2px; }
+.row { display: grid; grid-template-columns: 1.1em minmax(6.5em, max-content) 1fr auto; gap: 2px 8px; align-items: baseline; font-size: .9rem; }
+.row .st { font-size: .8em; font-weight: 700; text-align: center; }
+.row[data-stage="1"] .st { color: var(--s1); }
+.row[data-stage="2"] .st { color: var(--s2); }
+.row[data-stage="3"] .st { color: var(--s3); }
+.row .k { min-width: 0; }
+.row .d { min-width: 0; }
+.row .tick { width: .9em; height: .9em; border: 1.2px solid var(--muted); border-radius: 2px; align-self: center; }
+.row[data-mac] .k kbd { background: var(--mac-bg); color: var(--mac); }
+.tag { font-size: .78em; font-weight: 700; color: var(--mac); border: 1px solid currentColor; border-radius: 3px; padding: 0 3px; margin-left: 4px; white-space: nowrap; }
+.ver { font-size: .78em; color: var(--muted); margin-left: 4px; white-space: nowrap; }
+.note { font-size: .8rem; color: var(--muted); }
+
+.box { border: 1.5px solid var(--line); border-radius: 8px; padding: 8px 10px; display: grid; gap: 4px; break-inside: avoid; min-width: 0; }
+.box h3 { border: 0; padding: 0; color: var(--fg); font-size: .85rem; }
+.box.grammar { border-color: var(--accent); }
+.formula { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: .9rem; }
+.formula .slot { border: 1px dashed var(--muted); border-radius: 5px; padding: 0 6px; }
+.formula .plus { color: var(--muted); }
+.examples { display: grid; grid-template-columns: max-content 1fr; gap: 1px 10px; font-size: .88rem; }
+.box ul, .box ol { margin: 0; padding-left: 1.2em; font-size: .86rem; display: grid; gap: 1px; }
+.recipe { font-size: .86rem; display: grid; gap: 1px; }
+.recipe b { font-weight: 700; }
+.memo { display: grid; gap: 14px; padding-top: 6px; }
+.memo span { border-bottom: 1px solid var(--line); height: 1px; }
+
+/* filters (screen only; paper always shows everything) */
+@media screen {
+  body[data-stage="1"] .row:not([data-stage="1"]) { display: none; }
+  body[data-stage="2"] .row[data-stage="3"] { display: none; }
+  body[data-hide-mac] .row[data-mac], body[data-hide-mac] .mac-only { display: none; }
+  .row.miss { display: none; }
+}
+
+@media (max-width: 480px) {
+  .row { grid-template-columns: 1.1em minmax(0, max-content) 1fr; }
+  .row .tick { display: none; }
+  kbd { white-space: normal; overflow-wrap: anywhere; }
+  .sheet { padding: 12px; }
+}
+
+/* ---------- paper: two A4 landscape pages ---------- */
+@page { size: A4 landscape; margin: 7mm; }
+@media print {
+  :root, :root[data-theme="dark"] {
+    --bg: #fff; --paper: #fff; --fg: #000; --muted: #444; --line: #b9bfcc; --key-bg: #eceff5; --key-fg: #000;
+    --s1: #0b6b5d; --s2: #2c5a9e; --s3: #874073; --mac: #7a4f00; --mac-bg: #f7ecd0; --accent: #0b6b5d;
+    color-scheme: light;
+  }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { padding: 0; font-size: 8.6pt; line-height: 1.32; }
+  .top { display: none; }
+  .row { font-size: 8.6pt; gap: 0 5px; grid-template-columns: 1em minmax(5.6em, max-content) 1fr auto; }
+  .sheet { max-width: none; margin: 0; border: 0; border-radius: 0; padding: 0; gap: 2.2mm; height: 195mm; overflow: hidden; break-after: page; }
+  .sheet:last-of-type { break-after: auto; }
+  .sheet-head h2 { font-size: 12.5pt; }
+  .sheet-head p { font-size: 8pt; }
+  .cols { display: block; column-count: 4; column-gap: 5mm; column-fill: auto; height: 183mm; }
+  #tmux .cols { column-count: 3; }
+  .group, .box { margin-bottom: 2.2mm; }
+  .group h3, .box h3 { font-size: 8.2pt; }
+  .box { padding: 1.6mm 2mm; border-radius: 2mm; }
+  .box ul, .box ol, .recipe, .examples, .formula { font-size: 8.1pt; }
+  .note { font-size: 7.4pt; }
+  .memo { gap: 4.2mm; }
+  kbd { padding: 0 .3em; border-radius: 2px; }
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>tmux と Vim の手帖</h1>
+  <div class="controls" role="group" aria-label="表示の切り替え">
+    <button type="button" data-set-stage="1" aria-pressed="false">① だけ</button>
+    <button type="button" data-set-stage="2" aria-pressed="false">①②</button>
+    <button type="button" data-set-stage="all" aria-pressed="true">すべて</button>
+    <button type="button" id="mac-toggle" aria-pressed="false">Mac の近道を隠す</button>
+    <input type="search" id="q" placeholder="キーや言葉で探す" aria-label="キーや言葉で探す">
+  </div>
+  <div class="legend"><span style="color:var(--s1)">① 最初の週</span><span style="color:var(--s2)">② 慣れてきたら</span><span style="color:var(--s3)">③ 速くする</span><span><span class="tag">Mac</span> この Mac だけ</span><span>□ 1週間見ずに使えたら印</span></div>
+</div>
+
+<!-- ======================= Vim ======================= -->
+<section class="sheet" id="vim">
+  <div class="sheet-head">
+    <h2>Vim — どのサーバーの vi でも通じるキー</h2>
+    <p>Esc で「ノーマルモード」に戻ってからキーを打つ。迷ったら Esc を2回。</p>
+  </div>
+  <div class="cols">
+
+    <div class="box grammar">
+      <h3>Vim の文法: 数 + 動詞 + 範囲</h3>
+      <div class="formula"><span class="slot">数</span><span class="plus">+</span><span class="slot">動詞 <kbd>d</kbd> <kbd>c</kbd> <kbd>y</kbd> <kbd>&gt;</kbd></span><span class="plus">+</span><span class="slot">範囲 <kbd>w</kbd> <kbd>$</kbd> <kbd>i"</kbd> <kbd>ip</kbd></span></div>
+      <div class="examples">
+        <kbd>dw</kbd><span>単語を消す</span>
+        <kbd>3dd</kbd><span>3行を消す（動詞を2回 = 行全体）</span>
+        <kbd>ci"</kbd><span>"…" の中を消して入力へ</span>
+        <kbd>y$</kbd><span>行末までコピー</span>
+        <kbd>.</kbd><span>直前の変更をもう一度</span>
+      </div>
+      <p class="note">d = delete、c = change、y = yank（コピー）。覚えた動詞と範囲は全部組み合わせられる。</p>
+    </div>
+
+    <div class="group">
+      <h3>開く・保存・終了</h3>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>vi file</kbd></span><span class="d">開く（サーバーでは vim でなく vi のことも）</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>:w</kbd></span><span class="d">保存</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>:q</kbd> <kbd>:q!</kbd></span><span class="d">閉じる / 保存せずに閉じる</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>:wq</kbd> <kbd>ZZ</kbd></span><span class="d">保存して閉じる</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>:e file</kbd></span><span class="d">別のファイルを開く</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>:sp</kbd> <kbd>:vs</kbd></span><span class="d">上下 / 左右に分割</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>Ctrl-w</kbd> <kbd>hjkl</kbd></span><span class="d">分割の間を移る</span><span class="tick"></span></div>
+    </div>
+
+    <div class="group">
+      <h3>動く</h3>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd></span><span class="d">← ↓ ↑ →</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>gg</kbd> <kbd>G</kbd></span><span class="d">先頭 / 末尾の行</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>:42</kbd></span><span class="d">42行目へ</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>w</kbd> <kbd>b</kbd> <kbd>e</kbd></span><span class="d">次の単語 / 前の単語 / 単語の終わり</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>0</kbd> <kbd>^</kbd> <kbd>$</kbd></span><span class="d">行頭 / 最初の文字 / 行末</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>Ctrl-d</kbd> <kbd>Ctrl-u</kbd></span><span class="d">半画面 下 / 上</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>f</kbd><i>x</i> <kbd>t</kbd><i>x</i></span><span class="d">行内の x へ / x の手前へ。<kbd>;</kbd> で次</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>%</kbd></span><span class="d">対応する括弧へ</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>{</kbd> <kbd>}</kbd></span><span class="d">前 / 次の空行（段落）</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>ma</kbd> <kbd>'a</kbd></span><span class="d">印 a を付ける / 印 a の行へ</span><span class="tick"></span></div>
+    </div>
+
+    <div class="group">
+      <h3>入力する</h3>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>i</kbd></span><span class="d">カーソルの前から入力</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>Esc</kbd></span><span class="d">入力をやめてノーマルモードへ</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>o</kbd> <kbd>O</kbd></span><span class="d">下 / 上に行を足して入力</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>a</kbd> <kbd>A</kbd></span><span class="d">カーソルの後 / 行末から入力</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>I</kbd></span><span class="d">行の最初の文字から入力</span><span class="tick"></span></div>
+      <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Esc</kbd><span class="tag">Mac</span></span><span class="d">日本語入力も英数に戻る（Karabiner）</span><span class="tick"></span></div>
+    </div>
+
+    <div class="group">
+      <h3>消す・直す・戻す</h3>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>x</kbd></span><span class="d">1文字消す</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>dd</kbd></span><span class="d">行を消す（消した行は <kbd>p</kbd> で貼れる）</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>u</kbd></span><span class="d">元に戻す</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>Ctrl-r</kbd></span><span class="d">やり直す（vi 互換の vi では <kbd>u</kbd> がこの役も）</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>cw</kbd> <kbd>ciw</kbd></span><span class="d">単語を書き換える</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>D</kbd> <kbd>C</kbd></span><span class="d">行末まで消す / 消して入力</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>r</kbd><i>x</i></span><span class="d">1文字を x に置き換える</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>.</kbd></span><span class="d">直前の変更を繰り返す</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>&gt;&gt;</kbd> <kbd>&lt;&lt;</kbd></span><span class="d">字下げ / 戻す</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>J</kbd></span><span class="d">下の行をつなげる</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>qa</kbd>…<kbd>q</kbd> <kbd>@a</kbd></span><span class="d">操作を a に記録 / 再生</span><span class="tick"></span></div>
+    </div>
+
+    <div class="group">
+      <h3>探す・置き換える</h3>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>/word</kbd> <kbd>Enter</kbd></span><span class="d">下へ探す</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>n</kbd> <kbd>N</kbd></span><span class="d">次 / 前の一致</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>?word</kbd></span><span class="d">上へ探す</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>*</kbd></span><span class="d">カーソルの単語を探す</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>:%s/old/new/gc</kbd></span><span class="d">全部置き換え、1件ずつ確認（y / n）</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>:10,20s/^/#/</kbd></span><span class="d">10〜20行の先頭に # を足す</span><span class="tick"></span></div>
+    </div>
+
+    <div class="group">
+      <h3>選ぶ・コピー・貼る</h3>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>yy</kbd></span><span class="d">行をコピー</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>p</kbd> <kbd>P</kbd></span><span class="d">後 / 前に貼る</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>v</kbd> <kbd>V</kbd></span><span class="d">文字 / 行を選ぶ → <kbd>d</kbd> <kbd>y</kbd> <kbd>&gt;</kbd></span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>Ctrl-v</kbd></span><span class="d">矩形で選ぶ → <kbd>I</kbd># <kbd>Esc</kbd> で行頭に一斉入力</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>"ay</kbd> <kbd>"ap</kbd></span><span class="d">置き場 a にコピー / から貼る</span><span class="tick"></span></div>
+    </div>
+
+    <div class="box">
+      <h3>保守作業の手順</h3>
+      <div class="recipe"><b>設定を1行直す</b><span><kbd>vi file</kbd> → <kbd>/key</kbd> → <kbd>cw</kbd> 新しい値 <kbd>Esc</kbd> → <kbd>:wq</kbd></span></div>
+      <div class="recipe"><b>末尾に1行足す</b><span><kbd>G</kbd> <kbd>o</kbd> 入力 <kbd>Esc</kbd> <kbd>:wq</kbd></span></div>
+      <div class="recipe"><b>ログを追う</b><span><kbd>view log</kbd>（読むだけ）→ <kbd>G</kbd> → <kbd>?ERROR</kbd> → <kbd>n</kbd> → <kbd>:q</kbd></span></div>
+      <div class="recipe"><b>crontab を直す</b><span><kbd>crontab -e</kbd> → 直して <kbd>:wq</kbd></span></div>
+      <div class="recipe"><b>root のファイル</b><span><kbd>sudoedit /etc/…</kbd>（自分の設定のまま開く）</span></div>
+    </div>
+
+    <div class="box">
+      <h3>困ったら</h3>
+      <ul>
+        <li><kbd>Esc</kbd> <kbd>Esc</kbd> → <kbd>u</kbd> で戻す → だめなら <kbd>:q!</kbd> で何も保存せず閉じる</li>
+        <li>画面の下に <code>recording</code> → <kbd>q</kbd>。<code>-- INSERT --</code> → <kbd>Esc</kbd></li>
+        <li>キーの意味を調べる: <kbd>:help dw</kbd>（閉じるのは <kbd>:q</kbd>）</li>
+        <li class="mac-only">VS Code / Cursor で詰まったら: コマンドパレットの「Vim: Toggle Vim Mode」で一時的に止める <span class="tag">Mac</span></li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h3>サーバーの vi の実情</h3>
+      <ul>
+        <li>Debian / Ubuntu の <kbd>vi</kbd> は最小版（vim-tiny）のことが多い。入力中の矢印キーで A B C D が入る → <kbd>Esc</kbd> してから <kbd>hjkl</kbd>。<kbd>vim</kbd> があればそちらを使う</li>
+        <li>Alpine やコンテナの vi は busybox 版。① の範囲はおおむね使える</li>
+        <li>nano しかなければ <kbd>EDITOR=vi</kbd> を待たず nano で直す。練習は手元で</li>
+      </ul>
+    </div>
+
+    <div class="box mac-only">
+      <h3>この Mac での助け <span class="tag">Mac</span></h3>
+      <ul>
+        <li><kbd>vimtutor</kbd>（30分の練習。① の週に1回）、Neovim なら <kbd>:Tutor</kbd></li>
+        <li>Neovim: <kbd>d</kbd> <kbd>g</kbd> <kbd>z</kbd> <kbd>"</kbd> などの後に続きのキーが出る（which-key）。<kbd>w</kbd> <kbd>e</kbd> <kbd>$</kbd> の行き先が薄く出る（<kbd>:Precognition toggle</kbd>）</li>
+        <li>Vim: 打ちかけのキーが右下に出る（showcmd）</li>
+        <li><kbd>Space</kbd>+<kbd>/</kbd> でこの手帖を開く</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= tmux ======================= -->
+<section class="sheet" id="tmux">
+  <div class="sheet-head">
+    <h2>tmux — どのサーバーの tmux でも通じるキー</h2>
+    <p><kbd>C-b</kbd> は Ctrl を押しながら b。いったん離してから次のキー。</p>
+  </div>
+  <div class="cols">
+
+    <div class="box grammar">
+      <h3>tmux の形: 外の箱と中の箱</h3>
+      <div class="formula"><span class="slot">セッション</span><span class="plus">⊃</span><span class="slot">ウィンドウ（タブ）</span><span class="plus">⊃</span><span class="slot">ペイン（分割）</span></div>
+      <p class="note">ssh が切れても、セッションはサーバーで動き続ける。つなぎ直して <kbd>tmux a</kbd> で戻る。</p>
+    </div>
+
+    <div class="group">
+      <h3>始める・抜ける・戻る（シェルで打つ）</h3>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>tmux new -s work</kbd></span><span class="d">名前を付けて始める</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>C-b d</kbd></span><span class="d">抜ける（中の作業は動き続ける）</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>tmux ls</kbd></span><span class="d">セッションの一覧</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>tmux a -t work</kbd></span><span class="d">戻る（a = attach）</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b s</kbd></span><span class="d">セッションを選ぶ</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b $</kbd></span><span class="d">セッションの名前を変える</span><span class="tick"></span></div>
+    </div>
+
+    <div class="group">
+      <h3>ウィンドウ（タブ）</h3>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>C-b c</kbd></span><span class="d">新しいウィンドウ</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>C-b n</kbd> <kbd>C-b p</kbd></span><span class="d">次 / 前のウィンドウ</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>C-b 0</kbd>…<kbd>9</kbd></span><span class="d">番号のウィンドウへ</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b ,</kbd></span><span class="d">名前を変える</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b w</kbd></span><span class="d">一覧から選ぶ</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b &amp;</kbd></span><span class="d">閉じる（確認あり）</span><span class="tick"></span></div>
+    </div>
+
+    <div class="group">
+      <h3>ペイン（分割）</h3>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>C-b %</kbd></span><span class="d">左右に分ける</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>C-b "</kbd></span><span class="d">上下に分ける</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>C-b o</kbd></span><span class="d">次のペインへ</span><span class="tick"></span></div>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>C-b x</kbd></span><span class="d">ペインを閉じる（確認あり）</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b ←↑↓→</kbd></span><span class="d">その向きのペインへ</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b z</kbd></span><span class="d">今のペインを全画面に / 戻す</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>C-b Ctrl-←↑↓→</kbd></span><span class="d">大きさを変える</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>C-b !</kbd></span><span class="d">ペインを新しいウィンドウに出す</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>C-b {</kbd> <kbd>C-b }</kbd></span><span class="d">ペインを入れ替える</span><span class="tick"></span></div>
+    </div>
+
+    <div class="group">
+      <h3>さかのぼる・コピー（コピーモード）</h3>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b [</kbd></span><span class="d">コピーモードに入る（画面をさかのぼれる）</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>q</kbd></span><span class="d">コピーモードを出る</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>/</kbd> <kbd>?</kbd> <kbd>n</kbd></span><span class="d">探す（vi キーのとき）</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>Space</kbd> … <kbd>Enter</kbd></span><span class="d">選んでコピー → <kbd>C-b ]</kbd> で貼る</span><span class="tick"></span></div>
+      <p class="note">サーバーの既定は emacs 風のキー。vi キーにするには <kbd>C-b :</kbd> <code>setw -g mode-keys vi</code></p>
+      <div class="row mac-only" data-mac data-stage="2"><span class="st">②</span><span class="k"><kbd>v</kbd> <kbd>y</kbd><span class="tag">Mac</span></span><span class="d">選ぶ / コピー（Mac のクリップボードへ）</span><span class="tick"></span></div>
+    </div>
+
+    <div class="group">
+      <h3>調べる</h3>
+      <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>C-b ?</kbd></span><span class="d">キーの一覧（<kbd>q</kbd> で閉じる）</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b /</kbd><span class="ver">3.1+</span></span><span class="d">次に押すキーの意味を出す</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b &lt;</kbd> <kbd>C-b &gt;</kbd><span class="ver">3.0+</span></span><span class="d">ウィンドウ / ペインのメニュー</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>C-b :</kbd></span><span class="d">コマンドを打つ（古い tmux でも使える）</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>tmux -V</kbd></span><span class="d">版を確かめる（3.0 未満なら上の2つは無い）</span><span class="tick"></span></div>
+    </div>
+
+    <div class="group mac-only">
+      <h3>この Mac だけの近道 <span class="tag">Mac</span></h3>
+      <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Opt+hjkl</kbd></span><span class="d">ペインを移る（サーバー: <kbd>C-b o</kbd>）</span><span class="tick"></span></div>
+      <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Opt+1…9</kbd></span><span class="d">ウィンドウへ（サーバー: <kbd>C-b 1</kbd>）</span><span class="tick"></span></div>
+      <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Opt+n</kbd> <kbd>Opt+z</kbd></span><span class="d">新しいウィンドウ / 全画面</span><span class="tick"></span></div>
+      <div class="row" data-mac data-stage="2"><span class="st">②</span><span class="k"><kbd>Opt+t</kbd></span><span class="d">浮かぶ作業用の端末</span><span class="tick"></span></div>
+      <div class="row" data-mac data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b P W S R</kbd></span><span class="d">ペイン / ウィンドウ / セッション / 大きさのモード。下の段にヒント</span><span class="tick"></span></div>
+      <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Opt+/</kbd></span><span class="d">tmux の中で早見表</span><span class="tick"></span></div>
+      <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Space</kbd>+<kbd>/</kbd></span><span class="d">この手帖を開く（英数入力のとき）</span><span class="tick"></span></div>
+      <p class="note">手元の tmux の中でサーバーの tmux を開いたら、<kbd>C-b C-b</kbd> で内側に送る。</p>
+    </div>
+
+    <div class="box">
+      <h3>困ったら</h3>
+      <ul>
+        <li>何も効かない → <kbd>Esc</kbd> か <kbd>q</kbd>（コピーモードやメニューの中かもしれない）</li>
+        <li>画面が固まった → <kbd>Ctrl-q</kbd>（<kbd>Ctrl-s</kbd> で止めた出力を再開）</li>
+        <li>迷ったら <kbd>C-b d</kbd> で抜ける。作業は消えない。<kbd>tmux a</kbd> で戻る</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h3>続けるための約束</h3>
+      <ol>
+        <li>① の週: <kbd>vimtutor</kbd> を1回。ssh したら必ず <kbd>tmux new -s</kbd> から</li>
+        <li>1日に覚えるのは1〜2個。1週間見ずに使えたら □ に印</li>
+        <li>VS Code / Cursor の Vim は止めずに使う。詰まったら一時停止して、翌日また入れる</li>
+        <li>印が ① で全部付いたら ② の行を増やす</li>
+      </ol>
+    </div>
+
+    <div class="box">
+      <h3>自分で足すキー</h3>
+      <div class="memo"><span></span><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var body = document.body;
+  var store = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+  var stageButtons = document.querySelectorAll('[data-set-stage]');
+  function setStage(v) {
+    if (v === 'all') body.removeAttribute('data-stage'); else body.setAttribute('data-stage', v);
+    stageButtons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.setStage === v)); });
+    store.set('stage', v);
+  }
+  stageButtons.forEach(function (b) { b.addEventListener('click', function () { setStage(b.dataset.setStage); }); });
+  var mac = document.getElementById('mac-toggle');
+  function setMac(hide) {
+    if (hide) body.setAttribute('data-hide-mac', ''); else body.removeAttribute('data-hide-mac');
+    mac.setAttribute('aria-pressed', String(hide));
+    store.set('hideMac', hide ? '1' : '0');
+  }
+  mac.addEventListener('click', function () { setMac(!body.hasAttribute('data-hide-mac')); });
+  var q = document.getElementById('q');
+  q.addEventListener('input', function () {
+    var t = q.value.trim().toLowerCase();
+    document.querySelectorAll('.row').forEach(function (r) {
+      r.classList.toggle('miss', t !== '' && r.textContent.toLowerCase().indexOf(t) === -1);
+    });
+  });
+  setStage(store.get('stage') || 'all');
+  setMac(store.get('hideMac') === '1');
+})();
+</script>
+</body>
+</html>

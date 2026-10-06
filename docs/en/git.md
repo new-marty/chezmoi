@@ -53,5 +53,5 @@ later, run `chezmoi apply` again.
 ## lazygit
 
 `lg` opens [lazygit](https://github.com/jesseduffield/lazygit) when it is
-installed. Press `?` inside it for the keys. With the `tmux` switch, `Ctrl+\`
+installed. Press `?` inside it for the keys. With the `tmux` switch, `Ctrl+b`
 then `g` opens it in a tmux popup.

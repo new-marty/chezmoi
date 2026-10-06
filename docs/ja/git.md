@@ -44,4 +44,4 @@ chezmoi が git の設定を書くときに [delta](https://dandavison.github.io
 
 ## lazygit
 
-[lazygit](https://github.com/jesseduffield/lazygit) が入っていれば `lg` で開く。中のキーは `?` で確認できる。`tmux` スイッチを入れていれば、`Ctrl+\` のあと `g` で tmux のポップアップに開く。
+[lazygit](https://github.com/jesseduffield/lazygit) が入っていれば `lg` で開く。中のキーは `?` で確認できる。`tmux` スイッチを入れていれば、`Ctrl+b` のあと `g` で tmux のポップアップに開く。

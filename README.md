@@ -2,7 +2,7 @@
 
 macOS dotfiles managed with [chezmoi](https://www.chezmoi.io/). The core
 (zsh, git, SSH and editorconfig) applies to any machine with no configuration.
-Settings for VS Code, Cursor, Ghostty, tmux, navi, mise, Karabiner-Elements and a `justfile` apply
+Settings for VS Code, Cursor, Ghostty, tmux, Vim, Neovim, navi, mise, Karabiner-Elements and a `justfile` apply
 only on machines that opt in to them. Nothing in the repository identifies a
 person: names, email addresses, keys and hosts go in local files that chezmoi
 never touches.
@@ -105,6 +105,8 @@ chezmoi apply --less-interactive
 | `mise`     | mise global tool versions                                   |
 | `justfile` | `~/justfile` with update and diagnostic recipes             |
 | `karabiner`| Karabiner-Elements rules (`~/.config/karabiner` links into the repository) |
+| `vim`      | `~/.vimrc` with no remapped keys, for learning keys that work on servers |
+| `nvim`     | Neovim with hint plugins only (which-key, precognition, hardtime) |
 | `omz`      | zsh plugins loaded with Oh My Zsh instead of sheldon        |
 | `editor-extensions` | VS Code and Cursor look: Poimandres and catppuccin extensions, Hack Nerd Font |
 | `editor-builtin` | VS Code and Cursor look: built-in theme in the Poimandres colours, system fonts |

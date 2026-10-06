@@ -18,6 +18,10 @@ scripts
 # private_dot_config/symlink_karabiner.tmpl), so it is not copied to ~/karabiner.
 karabiner
 
+# The tmux and Vim cheat sheet, opened from the source directory (Karabiner's
+# Space+/ and `just cheatsheet`) and printed from there (`just cheatsheet-pdf`).
+cheatsheet
+
 # The VS Code extension list, read by `just vscode-extensions` from the source
 # directory. VS Code itself reads no such file.
 vscode

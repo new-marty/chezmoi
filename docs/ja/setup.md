@@ -52,6 +52,8 @@
 | `mise`     | `.config/mise/config.toml`                                          |
 | `justfile` | `justfile`                                                          |
 | `karabiner`| `.config/karabiner`(ソースディレクトリの `karabiner/` へのシンボリックリンク) |
+| `vim`      | `.vimrc`（[tmux と Vim を覚える](tmux-vim.md)） |
+| `nvim`     | `.config/nvim/init.lua`。プラグインは Neovim が最初の起動で入れる（[tmux と Vim を覚える](tmux-vim.md)） |
 | `omz`      | `.zsh/omz-custom/plugins/`。Oh My Zsh 用の zsh プラグインで、sheldon の代わりに Oh My Zsh がこれを読み込む（[下記](#sheldon-の代わりに-oh-my-zsh-を使うomz)） |
 | `editor-extensions` | なし。VS Code と Cursor の設定が Poimandres と catppuccin の拡張、Hack Nerd Font を使う |
 | `editor-builtin` | なし。VS Code と Cursor の設定が標準テーマを Poimandres の色に塗り替え、システムのフォントを使う。それらの拡張やフォントを入れないマシン向け |

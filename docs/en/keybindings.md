@@ -59,6 +59,7 @@ atuin does not take it over.
 
 ## Other keybindings
 
-tmux (with the `tmux` switch) uses `Ctrl+\` as its prefix and has its own
-shortcuts; press `Opt+/` inside tmux to see them. For keys inside lazygit and
+tmux (with the `tmux` switch) uses the stock prefix `Ctrl+b` and shows the keys
+for the current state on its second status line; press `Opt+/` inside tmux for
+a short list. [Learning tmux and Vim](tmux-vim.md) has the cheat sheet. For keys inside lazygit and
 btm, press `?` in the program.

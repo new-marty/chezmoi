@@ -17,23 +17,17 @@
 
 ---
 
-## [Doing] tmux と Vim を、サーバーでもそのまま使える形で覚える環境を作る
+## [Todo] tmux と Vim のヒントを実際に使って見直す
 
-手元の Mac ではヒントで覚えやすくし、何も入っていないサーバーでも同じキーで保守作業が
-できるようにする。一番欲しいのはヒント（Zellij のように、押したキーに応じて出るもの）と、
-A4 横で印刷できるチートシート。調査メモは `docs/plans/tmux-vim-learning.md`。
+ヒント（tmux の2段目、Neovim の which-key など）、チートシート（`cheatsheet/index.html`、
+`just cheatsheet-pdf`）、VSCodeVim 用の設定は入れた。使い方は `docs/ja/tmux-vim.md`。
+キーを実際に押しての確認は、まだ本人が手元でしていない。
 
-決めたこと（本人が「まず作ってみる」と了承）:
-- tmux: プレフィックスを `Ctrl-b` に戻し、`p w s r` を既定に戻す（独自モードは `P W S`）。
-  ヒントバーは素のキーを出し、プレフィックスを押すと続きのキーを出す。vim-tmux-navigator は外す。
-- Ghostty: `macos-option-as-alt = left`（この Mac の ABC 配列では Option が Alt にならなかった）。
-- Karabiner: SpaceFN の条件に ABC 配列を足す（日本語入力中は変換に Space を使うので外したまま）。
-- Vim: 新しいスイッチ `vim`（`~/.vimrc`、独自の割り当てなし）と `nvim`（which-key などヒント用の
-  プラグインだけ、vi と違うキーは入れない）。VS Code / Cursor は VSCodeVim。
-- `EDITOR` はリポジトリでは nano のまま。zsh に `bindkey -e` を足す。
-- チートシート: `cheatsheet/` に HTML 1枚。画面では自由な配置、印刷では A4 横。`just` で PDF にする。
-
-終わったら、この項目と `docs/plans/tmux-vim-learning.md` を消す（使い方は docs に移す）。
+- 実機で確かめる: Ghostty の tmux で `Opt+hjkl`、英数入力で `Space`+`/`、ターミナルと
+  VS Code での `Esc`（英数に戻るか）、tmux の2段目のヒントの幅。
+- VSCodeVim を入れて使い始める（`just vscode-extensions`、`just vim-key-repeat`）。
+- 2〜3週間後に、atuin の履歴で tmux と vim / nvim を開いた回数を見る。増えていなければ、
+  何が止めているかを聞いて設定を直す（10か月で tmux 1回、vim 0回だったところから始めた）。
 
 ---
 

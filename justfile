@@ -60,6 +60,39 @@ vscode-extensions-dump:
     echo "Review the list with git diff in $(pwd), then commit it"
 
 # =============================================================================
+# Learning tmux and Vim
+# =============================================================================
+
+# Open the tmux and Vim cheat sheet in the browser (also Space+/ with Karabiner)
+cheatsheet:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [ -f cheatsheet/index.html ] || cd "$(chezmoi source-path)"
+    open cheatsheet/index.html
+
+# Print the cheat sheet to an A4 landscape PDF with Chrome (path printed at the end)
+cheatsheet-pdf out="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [ -f cheatsheet/index.html ] || cd "$(chezmoi source-path)"
+    chrome="${GOOGLE_CHROME_PATH:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
+    [[ -x "$chrome" ]] || { echo "❌ Google Chrome not found: $chrome"; exit 1; }
+    out="{{ out }}"
+    [[ -n "$out" ]] || out="$HOME/Downloads/tmux-vim-cheatsheet.pdf"
+    "$chrome" --headless --disable-gpu --no-pdf-header-footer \
+        --print-to-pdf="$out" "file://$(pwd)/cheatsheet/index.html" 2>/dev/null
+    echo "✅ $out"
+
+# macOS shows an accent menu instead of repeating a held key; VSCodeVim's README
+# turns that off per app. Quit and reopen the editors afterwards.
+
+# Let held keys repeat in VS Code and Cursor (hold j to keep moving with Vim keys)
+vim-key-repeat:
+    defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
+    defaults write com.todesktop.230313mzl4w4u92 ApplePressAndHoldEnabled -bool false
+    @echo "✅ Key repeat on for VS Code and Cursor; quit and reopen them"
+
+# =============================================================================
 # Plugin & Runtime Management
 # =============================================================================
 
@@ -125,7 +158,7 @@ doctor:
     echo "📦 Tools the dotfiles use (all optional except chezmoi and git):"
     # The shell and gitconfig check for each of these and fall back to the
     # stock command when one is missing, so ❌ means a feature is off, not broken.
-    for cmd in chezmoi git delta mise sheldon just tmux fzf peco navi atuin zoxide direnv thefuck bat eza dust duf procs btm lazygit colordiff code cursor fd rg jq gh; do
+    for cmd in chezmoi git delta mise sheldon just tmux vim nvim fzf peco navi atuin zoxide direnv thefuck bat eza dust duf procs btm lazygit colordiff code cursor fd rg jq gh; do
         if command -v $cmd &>/dev/null; then
             printf "  ✅ %-12s %s\n" "$cmd" "$(command -v $cmd)"
         else

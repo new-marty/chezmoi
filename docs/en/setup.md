@@ -26,6 +26,8 @@ only when its switch is in the `optin` list of
 | `mise`     | `.config/mise/config.toml`                                          |
 | `justfile` | `justfile`                                                          |
 | `karabiner`| `.config/karabiner` (a symlink to `karabiner/` in the source directory) |
+| `vim`      | `.vimrc` ([Learning tmux and Vim](tmux-vim.md)) |
+| `nvim`     | `.config/nvim/init.lua`; Neovim installs its plugins on the first start ([Learning tmux and Vim](tmux-vim.md)) |
 | `omz`      | `.zsh/omz-custom/plugins/`: zsh plugins for Oh My Zsh, which then loads them instead of sheldon ([below](#oh-my-zsh-instead-of-sheldon-omz)) |
 | `editor-extensions` | none; the VS Code and Cursor settings use the Poimandres and catppuccin extensions and Hack Nerd Font |
 | `editor-builtin` | none; the VS Code and Cursor settings colour the built-in theme with the Poimandres colours and use system fonts, for a machine without those extensions or that font |
