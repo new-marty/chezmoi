@@ -33,7 +33,6 @@
 files = [
     "Library/Application Support/Code/User/settings.json",
     "Library/Application Support/Code/User/keybindings.json",
-    "Library/Application Support/Code/User/extensions.json",
 ]
 dirs = ["Library/Application Support/Code"]
 

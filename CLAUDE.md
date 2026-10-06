@@ -76,8 +76,9 @@ tells people to run `chezmoi init`, `chezmoi diff`, then `chezmoi apply
   `cursor` is opted in and installed, else VS Code when installed. Change both together.
 - Guard every alias or integration for an optional tool with `command -v`, so the stock
   command still works when the tool is missing.
-- There is no package list. A new machine is set up by hand from
-  `brew bundle dump --file=-` on the old one.
+- There is no package list, apart from the VS Code extensions in `vscode/extensions.txt`
+  (`just vscode-extensions` installs them, `just vscode-extensions-dump` rewrites the
+  list). A new machine is set up by hand from `brew bundle dump --file=-` on the old one.
 
 ## Contexts and Machines
 

@@ -44,7 +44,7 @@
 
 | スイッチ   | chezmoi が書くファイル（`~` 以下）                                  |
 | ---------- | ------------------------------------------------------------------- |
-| `vscode`   | `Library/Application Support/Code/User/` の `settings.json`、`keybindings.json`、`extensions.json` |
+| `vscode`   | `Library/Application Support/Code/User/` の `settings.json`、`keybindings.json` |
 | `cursor`   | `Library/Application Support/Cursor/User/settings.json`             |
 | `ghostty`  | `.config/ghostty/config`、`.config/ghostty/themes/poimandres.ghostty` |
 | `tmux`     | `.config/tmux/tmux.conf`、`.config/tmux/cheatsheet.md`。加えて tmux プラグインマネージャー（tpm）を `~/.tmux/plugins/tpm` に一度だけ clone する |
@@ -124,3 +124,5 @@ git のページャの delta も同じで、chezmoi が git の設定を書く�
 ## 新しいマシンを用意する
 
 このリポジトリにはパッケージの一覧がない。元のマシンで `brew bundle dump --file=-` を実行し、その出力から必要なものを新しいマシンに入れる。そのあと README の導入手順に従う。
+
+例外は VS Code の拡張機能で、`vscode/extensions.txt` に 1 行に 1 つずつ ID を並べてある。`just vscode-extensions` は、そのうち入っていないものを入れる。`just vscode-extensions-dump` は VS Code に今入っているものから一覧を書き直すので、`git diff` で確かめてからコミットする。`justfile` スイッチを選んでいないマシンでは `just --justfile "$(chezmoi source-path)/justfile" vscode-extensions` と打つ。

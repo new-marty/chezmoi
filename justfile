@@ -31,6 +31,34 @@ brew-cleanup:
     brew autoremove
     @echo "✅ Homebrew cleaned up"
 
+# Install the VS Code extensions in vscode/extensions.txt that are missing
+vscode-extensions:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    # Run from ~/justfile (the opt-in copy), this file sits outside the source tree.
+    [ -f vscode/extensions.txt ] || cd "$(chezmoi source-path)"
+    command -v code &>/dev/null || { echo "❌ code not found: install VS Code and its code command"; exit 1; }
+    # Extension IDs ignore case, and --list-extensions may print them differently.
+    missing="$(comm -23 <(grep . vscode/extensions.txt | tr '[:upper:]' '[:lower:]' | sort -u) \
+        <(code --list-extensions | tr '[:upper:]' '[:lower:]' | sort -u))"
+    if [[ -z "$missing" ]]; then
+        echo "✅ Every extension in vscode/extensions.txt is installed"
+        exit 0
+    fi
+    args=()
+    while read -r id; do args+=(--install-extension "$id"); done <<<"$missing"
+    code "${args[@]}"
+    echo "✅ VS Code extensions installed"
+
+# Rewrite vscode/extensions.txt from the extensions VS Code has installed
+vscode-extensions-dump:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [ -f vscode/extensions.txt ] || cd "$(chezmoi source-path)"
+    code --list-extensions | sort -f > vscode/extensions.txt
+    git diff --stat -- vscode/extensions.txt
+    echo "Review the list with git diff in $(pwd), then commit it"
+
 # =============================================================================
 # Plugin & Runtime Management
 # =============================================================================

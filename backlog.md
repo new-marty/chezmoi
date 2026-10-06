@@ -54,19 +54,6 @@ UI や機能があってもよい（使う機会が増えるならむしろそ�
 
 ---
 
-## [Doing] VS Code と Cursor の拡張機能の一覧を見直す
-
-`private_Library/Application Support/Code/User/extensions.json` は VS Code が読まない
-ファイルで、一覧のメモにしかなっていない。VS Code が推奨拡張として読むのは
-ワークスペースの `.vscode/extensions.json` だけ。Cursor は拡張を Open VSX から入れ、
-一部は別の ID（Anysphere 版）に置き換わる。
-
-案: エディタごとに一覧を持ち、`code --install-extension` / `cursor --install-extension`
-で入れる `just` レシピにする。opt-in の対応表（`.chezmoidata/optin.toml`）の `vscode` の
-`files` から `extensions.json` を外すなら、CI の同期チェックも合わせて直す。
-
----
-
 ## [Todo] OrbStack が `~/.ssh/config` に書き足す行への対応
 
 OrbStack は更新のたびに `~/.ssh/config` の先頭へ `Include ~/.orbstack/ssh/config` を

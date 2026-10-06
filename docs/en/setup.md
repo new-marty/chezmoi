@@ -18,7 +18,7 @@ only when its switch is in the `optin` list of
 
 | Switch     | Files chezmoi writes (under `~`)                                    |
 | ---------- | ------------------------------------------------------------------- |
-| `vscode`   | `Library/Application Support/Code/User/settings.json`, `keybindings.json`, `extensions.json` |
+| `vscode`   | `Library/Application Support/Code/User/settings.json`, `keybindings.json` |
 | `cursor`   | `Library/Application Support/Cursor/User/settings.json`             |
 | `ghostty`  | `.config/ghostty/config`, `.config/ghostty/themes/poimandres.ghostty` |
 | `tmux`     | `.config/tmux/tmux.conf`, `.config/tmux/cheatsheet.md`; also clones the tmux plugin manager (tpm) into `~/.tmux/plugins/tpm` once |
@@ -145,3 +145,10 @@ set `DOTFILES_GUI_EDITOR` in `~/.zshenv.local` (or redefine `c` in
 There is no package list in this repository. On the old machine, run
 `brew bundle dump --file=-` and install what you want from its output on the
 new one. Then follow the install steps in the README.
+
+VS Code extensions are the exception: `vscode/extensions.txt` lists them, one
+ID per line. `just vscode-extensions` installs the ones that are missing.
+`just vscode-extensions-dump` rewrites the list from what VS Code has
+installed; review it with `git diff` before you commit it. On a machine
+without the `justfile` switch, run
+`just --justfile "$(chezmoi source-path)/justfile" vscode-extensions`.

@@ -97,7 +97,7 @@ chezmoi apply --less-interactive
 
 | Switch     | Configures                                                  |
 | ---------- | ----------------------------------------------------------- |
-| `vscode`   | VS Code settings, keybindings and extension list            |
+| `vscode`   | VS Code settings and keybindings                            |
 | `cursor`   | Cursor settings (same template as VS Code)                  |
 | `ghostty`  | Ghostty terminal config and theme                           |
 | `tmux`     | tmux config, plus a one-time install of its plugin manager  |
