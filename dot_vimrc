@@ -1,0 +1,19 @@
+" ~/.vimrc (the "vim" opt-in switch)
+"
+" For learning Vim keys that also work in vi on a bare server. Nothing here maps
+" a key: every key does what it does in stock Vim. The settings only make the
+" editor's state easier to see.
+
+" The settings Vim uses when there is no vimrc (`vim --clean`): incsearch,
+" scrolloff, syntax highlighting, the last cursor position, ...
+unlet! skip_defaults_vim
+source $VIMRUNTIME/defaults.vim
+
+set showcmd             " show a half-typed command (d, 2d, "a) in the bottom right
+set showmode            " show -- INSERT -- and the other modes
+set laststatus=2        " always show the status line with the file name
+set number              " line numbers, for :42 and 42G
+set hlsearch            " highlight every match of the last search; :noh clears it
+set ignorecase smartcase " search ignores case unless the pattern has a capital
+set wildmenu            " list completions for : commands
+set belloff=all

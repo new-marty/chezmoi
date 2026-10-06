@@ -58,6 +58,7 @@ upstash.context7-mcp
 usernamehw.errorlens
 vincaslt.highlight-matching-tag
 vscodeshift.material-ui-snippets
+vscodevim.vim
 xabikos.javascriptsnippets
 xadillax.viml
 yoavbls.pretty-ts-errors

@@ -72,6 +72,17 @@ files = ["justfile"]
 [optin_paths.karabiner]
 files = [".config/karabiner"]
 
+# Vim and Neovim for learning keys that also work in vi on a bare server: no
+# key is remapped, the Neovim plugins only show hints. Neovim installs its
+# plugins from GitHub on the first start and writes lazy-lock.json next to
+# init.lua; chezmoi leaves that file alone.
+[optin_paths.vim]
+files = [".vimrc"]
+
+[optin_paths.nvim]
+files = [".config/nvim/init.lua"]
+dirs = [".config/nvim"]
+
 # Oh My Zsh loads the zsh plugins instead of sheldon, for a Mac that has Oh My
 # Zsh but not sheldon and cannot run git clone. Oh My Zsh itself is installed by
 # hand from its zip into ~/.oh-my-zsh (docs/en/setup.md); chezmoi writes only

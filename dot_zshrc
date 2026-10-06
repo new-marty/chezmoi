@@ -3,6 +3,11 @@ unsetopt correct correctall
 DISABLE_CORRECTION="true"
 setopt auto_pushd auto_cd
 
+# Emacs-style line editing (Ctrl+A, Ctrl+E, ...), which the key bindings below
+# assume. zsh picks vi mode by itself when $EDITOR or $VISUAL contains "vi", so
+# setting EDITOR=vim would otherwise change the prompt's keys.
+bindkey -e
+
 # Plugin loader: Oh My Zsh when the "omz" opt-in is selected (DOTFILES_OMZ,
 # set in .zshenv), otherwise sheldon. When the loader is not installed, the
 # ~/.zsh files are sourced directly further down.
