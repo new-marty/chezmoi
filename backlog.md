@@ -14,8 +14,8 @@
 `editor-builtin`（既定なし。`vscode` か `cursor` を選んだら一方を必ず選ぶ）。
 手順は `docs/en/work-mac.md`。残りはリポジトリの外でしかできないこと:
 
-- この変更が main に入ったら、`vscode` か `cursor` を選んでいる手元の Mac は、
-  次の apply の前に `optin` へ `editor-extensions` を足す（足さないと apply が止まる）。
+- `vscode` か `cursor` を選んでいる手元の Mac は、次の apply の前に `optin` へ
+  `editor-extensions` を足す（足さないと apply が止まる）。
 - 手作業版の `~/.dotfiles/zsh/steeef.zsh-theme` と `~/.dotfiles/cursor/settings.json` は
   リポジトリに無いまま、説明をもとに Cursor の設定（`editor-builtin`）を作り直した。
   持ち帰って `chezmoi diff` と比べ、足りないものを取り込む。手作業版の steeef の修正
@@ -25,6 +25,25 @@
   時計が本当に出ないかは会社の Mac で確かめ、出ないならそのときに考える。
 - chezmoi の許可が下りたら、移行手順どおりに apply し、iTerm2 と Cursor でプロンプトと
   配色を確かめる。`chezmoi init` が clone できるかもここで分かる（できなければ zip）。
+
+---
+
+## [Todo] tmux と Vim を、サーバーでもそのまま使える形で覚える環境を作る
+
+手元の Mac ではヒントやプラグインで覚えやすくし、何も入っていないサーバーでも同じキーで
+保守作業ができるようにしたい。調査と計画は `docs/plans/tmux-vim-learning.md` にある
+（実装はまだ）。
+
+調査で分かったこと: 今の tmux 設定はプレフィックスが `Ctrl+\` で、`prefix p/w/s/r` の既定の
+動作を独自のモードで上書きし、ヒントバーとチートシートには既定のキー（`"` `%` `c` `o` `?`）
+が出てこない。Vim / Neovim の設定はリポジトリに無く、`EDITOR` は nano。
+vim-tmux-navigator が `Ctrl+H`（atuin）と `Ctrl+L` を潰している疑いがあり、Ghostty に
+`macos-option-as-alt` が無いので `Opt+…` のキーが届いているかも要確認。
+
+### 残り
+- 計画の「3. 決めること」（D1〜D6）を本人が決める
+- フェーズ 0（実機確認）から順に実装する。Vim の設定は新しい `vim` スイッチにする
+- 終わったら、この項目と `docs/plans/tmux-vim-learning.md` を消す（中身は docs/{ja,en} に移す）
 
 ---
 
