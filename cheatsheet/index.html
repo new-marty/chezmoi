@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>tmux と Vim の地図</title>
+<title>Vim and tmux map</title>
 <!--
   One page for the screen and for paper (just cheatsheet-pdf: two A4 landscape
   pages, Vim on the front, tmux on the back).
@@ -13,7 +13,7 @@
   "vim" marks keys that need Vim rather than a minimal vi.
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
 :root {
   --bg: #eef1f7; --paper: #ffffff; --ink: #1b1e28; --muted: #586179; --line: #cdd4e2; --soft: #f3f5fa;
@@ -23,7 +23,7 @@
   --command: #8f6a00; --command-bg: #fbf2d2;
   --session: #6a4fa3; --window: #2a6fae; --pane: #0b7d6b;
   --mac: #9a6500;
-  --f-ui: "BIZ UDPGothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --f-ui: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
   --f-key: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
@@ -92,7 +92,7 @@ table.gram td.hot { background: var(--normal-bg); outline: 1.5px solid var(--nor
 /* step strips */
 .steps { display: grid; gap: 7px; }
 .strip { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 5px; font-size: .9rem; }
-.strip > b { width: 7.6em; flex: none; font-size: .86rem; }
+.strip > b { width: 10.5em; flex: none; font-size: .86rem; }
 .strip .to { color: var(--muted); }
 .strip em { font-style: normal; color: var(--muted); font-size: .85rem; }
 
@@ -138,7 +138,7 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body { padding: 0; font-size: 9pt; line-height: 1.4; }
   .nav { display: none; }
-  .page { max-width: none; margin: 0; padding: 0; border-radius: 0; height: 193mm; overflow: hidden; break-after: page; gap: 3mm; }
+  .page { align-content: start; max-width: none; margin: 0; padding: 0; border-radius: 0; height: 193mm; overflow: hidden; break-after: page; gap: 3mm; }
   .page:last-of-type { break-after: auto; }
   .page-head h2 { font-size: 15pt; }
   .grid { gap: 3mm 5mm; }
@@ -157,90 +157,87 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
 <body>
 
 <div class="nav">
-  <h1>tmux と Vim の地図</h1>
+  <h1>Vim and tmux map</h1>
   <a href="#vim">Vim</a><a href="#tmux">tmux</a>
-  <p>点線の枠はこの Mac だけ。ほかはサーバーでも同じ。印刷は <kbd>just cheatsheet-pdf</kbd>（A4 横）。</p>
+  <p>Dashed boxes work only on this Mac; everything else works on any server. Print with <kbd>just cheatsheet-pdf</kbd> (A4 landscape).</p>
 </div>
 
 <!-- ============================ Vim ============================ -->
 <section class="page" id="vim" aria-labelledby="vim-h">
   <div class="page-head">
     <h2 id="vim-h">Vim</h2>
-    <p>色はモード。キーを打つ前に、ノーマルモード（緑）に戻っているかを見る。</p>
+    <p>Colour shows the mode. Before you type a command, make sure you are in Normal mode (green).</p>
   </div>
   <div class="grid">
 
     <figure class="cell w4 m-mode">
-      <h3>モードの地図 <small>迷ったら Esc を2回</small></h3>
-      <svg viewBox="0 0 480 330" role="img" aria-label="Vim のモードの地図。開くとノーマルモード。i a o で挿入モード、v V でビジュアルモード、コロンでコマンドモードへ。どこからでも Esc でノーマルに戻る。">
-        <defs>
-          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="context-stroke"/></marker>
-        </defs>
-        <text x="14" y="150" font-size="12" fill="var(--muted)">vi file で</text>
-        <text x="14" y="166" font-size="12" fill="var(--muted)">開くとここ</text>
-        <line x1="78" y1="170" x2="150" y2="170" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
-        <!-- normal -->
-        <rect x="155" y="130" width="150" height="80" rx="14" fill="var(--normal-bg)" stroke="var(--normal)" stroke-width="2.5"/>
-        <text x="230" y="163" text-anchor="middle" font-size="19" font-weight="700" fill="var(--ink)">ノーマル</text>
-        <text x="230" y="187" text-anchor="middle" font-size="12" fill="var(--ink)">動く・消す・コピー</text>
-        <!-- insert -->
-        <rect x="370" y="130" width="100" height="80" rx="14" fill="var(--insert-bg)" stroke="var(--insert)" stroke-width="2"/>
-        <text x="420" y="163" text-anchor="middle" font-size="17" font-weight="700" fill="var(--ink)">挿入</text>
-        <text x="420" y="187" text-anchor="middle" font-size="12" fill="var(--ink)">文字を打つ</text>
-        <!-- command -->
-        <rect x="155" y="10" width="150" height="62" rx="12" fill="var(--command-bg)" stroke="var(--command)" stroke-width="2"/>
-        <text x="230" y="37" text-anchor="middle" font-size="16" font-weight="700" fill="var(--ink)">コマンド</text>
-        <text x="230" y="58" text-anchor="middle" font-size="12" fill="var(--ink)" class="mono">: で始まる命令</text>
-        <!-- visual -->
-        <rect x="155" y="262" width="150" height="62" rx="12" fill="var(--visual-bg)" stroke="var(--visual)" stroke-width="2"/>
-        <text x="230" y="289" text-anchor="middle" font-size="16" font-weight="700" fill="var(--ink)">ビジュアル</text>
-        <text x="230" y="310" text-anchor="middle" font-size="12" fill="var(--ink)">範囲を選ぶ</text>
-        <!-- arrows -->
-        <line x1="307" y1="152" x2="366" y2="152" stroke="var(--insert)" stroke-width="2" marker-end="url(#ah)"/>
-        <text x="337" y="144" text-anchor="middle" font-size="14" class="mono" fill="var(--ink)">i a o</text>
-        <line x1="368" y1="190" x2="309" y2="190" stroke="var(--normal)" stroke-width="2" marker-end="url(#ah)"/>
-        <text x="337" y="207" text-anchor="middle" font-size="14" class="mono" fill="var(--ink)">Esc</text>
-        <line x1="205" y1="128" x2="205" y2="76" stroke="var(--command)" stroke-width="2" marker-end="url(#ah)"/>
-        <text x="196" y="107" text-anchor="end" class="mono" fill="var(--ink)" font-size="17">:</text>
-        <line x1="255" y1="76" x2="255" y2="126" stroke="var(--normal)" stroke-width="2" marker-end="url(#ah)"/>
-        <text x="263" y="99" fill="var(--ink)" font-size="12"><tspan class="mono">Enter</tspan> で実行</text>
-        <text x="263" y="114" fill="var(--ink)" font-size="12"><tspan class="mono">Esc</tspan> でやめる</text>
-        <line x1="205" y1="212" x2="205" y2="258" stroke="var(--visual)" stroke-width="2" marker-end="url(#ah)"/>
-        <text x="196" y="241" text-anchor="end" class="mono" fill="var(--ink)" font-size="14">v V</text>
-        <line x1="255" y1="260" x2="255" y2="214" stroke="var(--normal)" stroke-width="2" marker-end="url(#ah)"/>
-        <text x="263" y="232" fill="var(--ink)" font-size="12"><tspan class="mono">Esc</tspan>、または選んで</text>
-        <text x="263" y="247" fill="var(--ink)" font-size="12"><tspan class="mono">d</tspan> 消す <tspan class="mono">y</tspan> コピー</text>
-        <g fill="var(--muted)" font-size="12">
-          <text x="320" y="28"><tspan class="mono" fill="var(--ink)">:w</tspan> 保存</text>
-          <text x="320" y="45"><tspan class="mono" fill="var(--ink)">:q</tspan> 閉じる</text>
-          <text x="320" y="62"><tspan class="mono" fill="var(--ink)">:wq</tspan> 保存して閉じる</text>
-          <text x="384" y="28"><tspan class="mono" fill="var(--ink)">:q!</tspan> 捨てて閉じる</text>
-          <text x="370" y="234"><tspan class="mono" fill="var(--ink)">i</tspan> カーソルの前から</text>
-          <text x="370" y="251"><tspan class="mono" fill="var(--ink)">a</tspan> カーソルの後から</text>
-          <text x="370" y="268"><tspan class="mono" fill="var(--ink)">o</tspan> 下に行を足して</text>
-        </g>
+      <h3>The modes <small>Lost? Press Esc twice.</small></h3>
+      <svg viewBox="0 0 470 300" role="img" aria-label="Vim's modes. A file opens in Normal mode. i, a or o goes to Insert, v or V to Visual, a colon to Command. Esc goes back to Normal from any of them.">
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="context-stroke"/></marker></defs>
+        <text x="10" y="142" font-size="13" fill="var(--muted)">open a file</text>
+        <line x1="22" y1="156" x2="142" y2="156" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+        <rect x="148" y="112" width="160" height="82" rx="14" fill="var(--normal-bg)" stroke="var(--normal)" stroke-width="2.5"/>
+        <text x="228" y="148" text-anchor="middle" font-size="21" font-weight="700" fill="var(--ink)">NORMAL</text>
+        <text x="228" y="173" text-anchor="middle" font-size="13.5" fill="var(--ink)">move, delete, copy</text>
+        <rect x="358" y="112" width="104" height="82" rx="14" fill="var(--insert-bg)" stroke="var(--insert)" stroke-width="2"/>
+        <text x="410" y="148" text-anchor="middle" font-size="18" font-weight="700" fill="var(--ink)">INSERT</text>
+        <text x="410" y="173" text-anchor="middle" font-size="13.5" fill="var(--ink)">type text</text>
+        <rect x="148" y="6" width="160" height="58" rx="12" fill="var(--command-bg)" stroke="var(--command)" stroke-width="2"/>
+        <text x="228" y="31" text-anchor="middle" font-size="17" font-weight="700" fill="var(--ink)">COMMAND</text>
+        <text x="228" y="52" text-anchor="middle" font-size="13" class="mono" fill="var(--ink)">:w  :q  :42</text>
+        <rect x="148" y="240" width="160" height="56" rx="12" fill="var(--visual-bg)" stroke="var(--visual)" stroke-width="2"/>
+        <text x="228" y="265" text-anchor="middle" font-size="17" font-weight="700" fill="var(--ink)">VISUAL</text>
+        <text x="228" y="285" text-anchor="middle" font-size="13.5" fill="var(--ink)">select text</text>
+        <line x1="310" y1="134" x2="354" y2="134" stroke="var(--insert)" stroke-width="2.2" marker-end="url(#ah)"/>
+        <text x="332" y="126" text-anchor="middle" font-size="15" class="mono" fill="var(--ink)">i a o</text>
+        <line x1="356" y1="172" x2="312" y2="172" stroke="var(--normal)" stroke-width="2.2" marker-end="url(#ah)"/>
+        <text x="334" y="190" text-anchor="middle" font-size="15" class="mono" fill="var(--ink)">Esc</text>
+        <line x1="200" y1="110" x2="200" y2="68" stroke="var(--command)" stroke-width="2.2" marker-end="url(#ah)"/>
+        <text x="190" y="95" text-anchor="end" font-size="18" class="mono" fill="var(--ink)">:</text>
+        <line x1="256" y1="68" x2="256" y2="108" stroke="var(--normal)" stroke-width="2.2" marker-end="url(#ah)"/>
+        <text x="266" y="86" font-size="13" fill="var(--ink)"><tspan class="mono">Enter</tspan> runs it</text>
+        <text x="266" y="103" font-size="13" fill="var(--ink)"><tspan class="mono">Esc</tspan> cancels</text>
+        <line x1="200" y1="196" x2="200" y2="236" stroke="var(--visual)" stroke-width="2.2" marker-end="url(#ah)"/>
+        <text x="190" y="222" text-anchor="end" font-size="15" class="mono" fill="var(--ink)">v V</text>
+        <line x1="256" y1="236" x2="256" y2="198" stroke="var(--normal)" stroke-width="2.2" marker-end="url(#ah)"/>
+        <text x="266" y="214" font-size="13" fill="var(--ink)"><tspan class="mono">Esc</tspan>, or act on the</text>
+        <text x="266" y="231" font-size="13" fill="var(--ink)">selection: <tspan class="mono">d</tspan> <tspan class="mono">y</tspan> <tspan class="mono">&gt;</tspan></text>
       </svg>
+      <p class="cap"><span class="k i">i</span> types before the cursor, <span class="k i">a</span> after it, <span class="k i">o</span> on a new line below.</p>
     </figure>
 
     <figure class="cell w5 m-line">
-      <h3>1行の中を動く <small>カーソルが api の p にあるとき</small></h3>
-      <svg viewBox="0 0 520 176" role="img" aria-label="1行の中の移動。0 は行頭、^ は最初の文字、b は単語の頭、e は単語の終わり、w は次の単語、$ は行末へ動く。">
-        <text x="345.3" y="14" text-anchor="middle" font-size="11.5" fill="var(--muted)">カーソル</text>
-        <line x1="345.3" y1="18" x2="345.3" y2="30" stroke="var(--muted)" stroke-width="1.2"/>
-        <rect x="20" y="34" width="474" height="40" rx="5" fill="var(--soft)"/>
-        <rect x="339.0" y="36" width="12.6" height="36" fill="var(--normal)" opacity=".35"/>
-        <text x="24" y="61" font-size="20" class="mono" fill="var(--ink)" xml:space="preserve" textLength="466.2" lengthAdjust="spacingAndGlyphs">    server_name example api internal;</text>
-        <line x1="30.3" y1="74" x2="30.3" y2="86" stroke="var(--normal)" stroke-width="1.4"/><line x1="80.7" y1="74" x2="80.7" y2="86" stroke="var(--normal)" stroke-width="1.4"/><line x1="332.7" y1="74" x2="332.7" y2="86" stroke="var(--normal)" stroke-width="1.4"/><line x1="357.9" y1="74" x2="357.9" y2="86" stroke="var(--normal)" stroke-width="1.4"/><line x1="383.1" y1="74" x2="383.1" y2="86" stroke="var(--normal)" stroke-width="1.4"/><line x1="483.9" y1="74" x2="483.9" y2="86" stroke="var(--normal)" stroke-width="1.4"/>
-        <text x="30.3" y="102" text-anchor="middle" font-size="16" class="mono" fill="var(--normal)">0</text><text x="80.7" y="102" text-anchor="middle" font-size="16" class="mono" fill="var(--normal)">^</text><text x="332.7" y="102" text-anchor="middle" font-size="16" class="mono" fill="var(--normal)">b</text><text x="357.9" y="102" text-anchor="middle" font-size="16" class="mono" fill="var(--normal)">e</text><text x="383.1" y="102" text-anchor="middle" font-size="16" class="mono" fill="var(--normal)">w</text><text x="483.9" y="102" text-anchor="middle" font-size="16" class="mono" fill="var(--normal)">$</text>
-        <text x="24" y="130" font-size="13"><tspan class="mono" fill="var(--normal)">0</tspan><tspan fill="var(--ink)" dx="8">行頭</tspan></text><text x="194" y="130" font-size="13"><tspan class="mono" fill="var(--normal)">^</tspan><tspan fill="var(--ink)" dx="8">最初の文字</tspan></text><text x="364" y="130" font-size="13"><tspan class="mono" fill="var(--normal)">b</tspan><tspan fill="var(--ink)" dx="8">単語の頭</tspan></text><text x="24" y="150" font-size="13"><tspan class="mono" fill="var(--normal)">e</tspan><tspan fill="var(--ink)" dx="8">単語の終わり</tspan></text><text x="194" y="150" font-size="13"><tspan class="mono" fill="var(--normal)">w</tspan><tspan fill="var(--ink)" dx="8">次の単語</tspan></text><text x="364" y="150" font-size="13"><tspan class="mono" fill="var(--normal)">$</tspan><tspan fill="var(--ink)" dx="8">行末</tspan></text>
-        <text x="24" y="172" font-size="12" fill="var(--muted)"><tspan class="mono" fill="var(--ink)">h j k l</tspan> は ← ↓ ↑ → に1つずつ。<tspan class="mono" fill="var(--ink)">3w</tspan> のように数を前に付けると繰り返す</text>
+      <h3>Moving along a line <small>cursor on the n of backend_server</small></h3>
+      <svg viewBox="0 0 530 160" role="img" aria-label="Motions on one line, with the cursor on the n of backend_server: 0 goes to the start of the line, ^ to the first non-blank character, b to the start of the word, e to the end of the word, w to the next word, $ to the end of the line.">
+        <text x="282.3" y="13" text-anchor="middle" font-size="12" fill="var(--muted)">cursor</text>
+        <line x1="282.3" y1="17" x2="282.3" y2="30" stroke="var(--muted)" stroke-width="1.2"/>
+        <rect x="18" y="33" width="494" height="40" rx="5" fill="var(--soft)"/>
+        <rect x="276.0" y="35" width="12.6" height="36" fill="var(--normal)" opacity=".35"/>
+        <text x="24" y="60" font-size="20" class="mono" fill="var(--ink)" xml:space="preserve" textLength="478.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text>
+        <g stroke="var(--normal)" stroke-width="1.4">
+          <line x1="80.7" y1="75" x2="80.7" y2="88"/>
+          <line x1="219.3" y1="75" x2="219.3" y2="88"/>
+          <line x1="408.3" y1="75" x2="408.3" y2="88"/>
+          <line x1="30.3" y1="75" x2="30.3" y2="110"/>
+          <line x1="383.1" y1="75" x2="383.1" y2="110"/>
+          <line x1="496.5" y1="75" x2="496.5" y2="132"/>
+        </g>
+        <g font-size="13" fill="var(--ink)">
+          <text x="74.7" y="102"><tspan class="mono" fill="var(--normal)" font-size="16">^</tspan> first character</text>
+          <text x="213.3" y="102"><tspan class="mono" fill="var(--normal)" font-size="16">b</tspan> start of word</text>
+          <text x="402.3" y="102"><tspan class="mono" fill="var(--normal)" font-size="16">w</tspan> next word</text>
+          <text x="24.3" y="124"><tspan class="mono" fill="var(--normal)" font-size="16">0</tspan> start of line</text>
+          <text x="389.1" y="124" text-anchor="end">end of word <tspan class="mono" fill="var(--normal)" font-size="16">e</tspan></text>
+          <text x="502.5" y="146" text-anchor="end">end of line <tspan class="mono" fill="var(--normal)" font-size="16">$</tspan></text>
+        </g>
+        <text x="24" y="146" font-size="12.5" fill="var(--muted)"><tspan class="mono" fill="var(--ink)">h j k l</tspan> move one step ← ↓ ↑ →</text>
       </svg>
-      <p class="cap"><span class="k n">f</span><kbd>x</kbd> で行の中の次の x へ、<span class="k n">;</span> でもう一度。</p>
+      <p class="cap"><span class="k n">f</span><kbd>x</kbd> jumps to the next x on the line, <span class="k n">;</span> repeats it. A number in front repeats a motion: <span class="k n">3w</span> is three words on.</p>
     </figure>
 
     <figure class="cell w3 m-file">
-      <h3>ファイルの中を動く</h3>
-      <svg viewBox="0 0 300 236" role="img" aria-label="ファイルの中の移動。gg で先頭、G で末尾、:42 で42行目、Ctrl-u と Ctrl-d で半画面ずつ、/word で探して n で次、N で前。">
+      <h3>Moving through a file</h3>
+      <svg viewBox="0 0 300 236" role="img" aria-label="Moving through a file: gg to the first line, G to the last, :42 to line 42, Ctrl-u and Ctrl-d half a screen up and down, /word to search, then n for the next match and N for the previous one.">
         <rect x="10" y="8" width="118" height="220" rx="6" fill="var(--soft)" stroke="var(--line)"/>
         <g stroke="var(--line)" stroke-width="3" stroke-linecap="round">
           <line x1="22" y1="22" x2="100" y2="22"/><line x1="22" y1="40" x2="88" y2="40"/><line x1="30" y1="58" x2="110" y2="58"/><line x1="30" y1="76" x2="96" y2="76"/>
@@ -250,89 +247,82 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
         <rect x="14" y="104" width="110" height="16" rx="3" fill="var(--normal-bg)" stroke="var(--normal)"/>
         <rect x="58" y="161" width="28" height="10" rx="2" fill="var(--command-bg)" stroke="var(--command)"/>
         <g stroke="var(--muted)" stroke-width="1" stroke-dasharray="2 3">
-          <line x1="128" y1="22" x2="136" y2="22"/><line x1="128" y1="112" x2="136" y2="112"/><line x1="90" y1="166" x2="136" y2="172"/><line x1="128" y1="218" x2="136" y2="218"/>
+          <line x1="128" y1="22" x2="136" y2="22"/><line x1="128" y1="112" x2="136" y2="112"/><line x1="88" y1="166" x2="136" y2="168"/><line x1="128" y1="218" x2="136" y2="218"/>
         </g>
-        <g font-size="13" fill="var(--ink)">
-          <text x="140" y="26" class="mono">gg</text>
-          <text x="140" y="70" class="mono">Ctrl-u</text>
-          <text x="140" y="117" class="mono">:42</text>
-          <text x="140" y="152" class="mono">Ctrl-d</text>
-          <text x="140" y="176" class="mono">/word</text>
-          <text x="140" y="222" class="mono">G</text>
+        <g font-size="14" class="mono" fill="var(--ink)">
+          <text x="140" y="27">gg</text><text x="140" y="67">Ctrl-u</text><text x="140" y="117">:42</text>
+          <text x="140" y="149">Ctrl-d</text><text x="140" y="173">/word</text><text x="140" y="223">G</text>
         </g>
-        <g font-size="11.5" fill="var(--muted)">
-          <text x="166" y="26">先頭の行</text>
-          <text x="194" y="70">半画面上</text>
-          <text x="170" y="117">42行目へ</text>
-          <text x="194" y="152">半画面下</text>
-          <text x="184" y="176">探す</text>
-          <text x="184" y="192"><tspan class="mono" fill="var(--ink)">n</tspan> 次 <tspan class="mono" fill="var(--ink)">N</tspan> 前</text>
-          <text x="156" y="222">末尾の行</text>
+        <g font-size="12.5" fill="var(--muted)">
+          <text x="166" y="27">first line</text><text x="196" y="67">half a screen up</text><text x="172" y="117">line 42</text>
+          <text x="196" y="149">half a screen down</text><text x="190" y="173">search</text>
+          <text x="140" y="191"><tspan class="mono" fill="var(--ink)">n</tspan> next  <tspan class="mono" fill="var(--ink)">N</tspan> previous</text>
+          <text x="156" y="223">last line</text>
         </g>
       </svg>
     </figure>
 
     <div class="cell w5 m-gram">
-      <h3>動詞 × 範囲 <small>続けて打つ。<span class="k n">.</span> で同じ変更をもう一度</small></h3>
+      <h3>Verb + where <small>type the two keys in a row</small></h3>
       <div class="tablewrap">
       <table class="gram">
-        <thead><tr><th></th><th><span class="k">w</span><br>次の語まで</th><th><span class="k">$</span><br>行末まで</th><th><span class="k">iw</span><span class="vim">vim</span><br>語全体</th><th><span class="k">i"</span><span class="vim">vim</span><br>"…"の中</th><th>2回で<br>行全体</th></tr></thead>
+        <thead><tr><th></th><th><span class="k">w</span><br>next word</th><th><span class="k">$</span><br>line end</th><th><span class="k">iw</span><span class="vim">vim</span><br>word</th><th><span class="k">i"</span><span class="vim">vim</span><br>in "…"</th><th>twice<br>= line</th></tr></thead>
         <tbody>
-          <tr><th class="row"><span class="k">d</span> 消す</th><td>dw</td><td>d$</td><td>diw</td><td>di"</td><td class="hot">dd</td></tr>
-          <tr><th class="row"><span class="k">c</span> 書き換え</th><td>cw</td><td>c$</td><td>ciw</td><td class="hot">ci"</td><td>cc</td></tr>
-          <tr><th class="row"><span class="k">y</span> コピー</th><td>yw</td><td>y$</td><td>yiw</td><td>yi"</td><td class="hot">yy</td></tr>
+          <tr><th class="row"><span class="k">d</span> delete</th><td>dw</td><td>d$</td><td>diw</td><td>di"</td><td class="hot">dd</td></tr>
+          <tr><th class="row"><span class="k">c</span> change</th><td>cw</td><td>c$</td><td>ciw</td><td class="hot">ci"</td><td>cc</td></tr>
+          <tr><th class="row"><span class="k">y</span> copy</th><td>yw</td><td>y$</td><td>yiw</td><td>yi"</td><td class="hot">yy</td></tr>
         </tbody>
       </table>
       </div>
-      <p class="cap">c は消したあと挿入モードになる。消した・コピーしたものは <span class="k n">p</span> で貼る。<span class="k n">x</span> は1文字だけ消す。</p>
+      <p class="cap">Read <span class="k n">dw</span> as d + w: delete to the next word. <span class="k">c</span> deletes and leaves you in Insert mode. <span class="k n">p</span> pastes what you deleted or copied, <span class="k n">x</span> deletes one character, <span class="k n">.</span> repeats the last change.</p>
     </div>
 
     <div class="cell w3 m-ess">
-      <h3>終わる・戻す</h3>
+      <h3>Quit and undo</h3>
       <div class="ess two">
-        <div class="c"><b>:wq</b><span>保存して閉じる</span></div>
-        <div class="c"><b>:q!</b><span>保存せず閉じる</span></div>
-        <div class="n"><b>u</b><span>元に戻す</span></div>
-        <div class="n"><b>Ctrl-r</b><span>やり直す</span></div>
+        <div class="c"><b>:wq</b><span>save and quit</span></div>
+        <div class="c"><b>:q!</b><span>quit, don't save</span></div>
+        <div class="n"><b>u</b><span>undo</span></div>
+        <div class="n"><b>Ctrl-r</b><span>redo</span></div>
       </div>
-      <p class="cap">古い vi では <span class="k n">u</span> をもう1回押すとやり直しになる。</p>
+      <p class="cap">In an old vi, press <span class="k n">u</span> again to redo.</p>
     </div>
 
     <div class="cell w4 m-notes" style="gap: 10px">
       <ul class="tight">
-        <li>サーバーの <kbd>vi</kbd> は最小版のことが多い。挿入モードで矢印キーを押すと A B C D が入るので、<span class="k n">Esc</span> してから h j k l で動く。<kbd>vim</kbd> があればそちらを開く。</li>
-        <li><span class="vim">vim</span> の付いたキーは、Alpine などの busybox 版 vi には無い。</li>
+        <li>On a bare server <kbd>vi</kbd> is often a minimal build: arrow keys type A B C D in Insert mode, so press <span class="k n">Esc</span> and move with h j k l. Open <kbd>vim</kbd> instead if it is there.</li>
+        <li>Keys marked <span class="vim">vim</span> are missing from busybox vi (Alpine and many containers).</li>
       </ul>
       <div class="mac">
-      <h3>この Mac だけ</h3>
-      <div class="row"><span><span class="k">Esc</span> で英数入力に戻る</span><span><span class="k">Space</span>+<span class="k">/</span> でこの地図</span><span><kbd>vimtutor</kbd> 30分の練習</span><span>Neovim は押しかけたキーの続きが出る</span></div>
-    </div>
-    </div>
-      <div class="cell w12">
-      <h3>保守作業の手順 <small>キーの色は、押したあとのモード</small></h3>
-      <div class="steps">
-        <div class="strip"><b>設定を1行直す</b><span class="k">vi file</span><span class="to">→</span><span class="k c">/listen</span><span class="k n">Enter</span><span class="to">→</span><span class="k i">cw</span><em>新しい値</em><span class="k n">Esc</span><span class="to">→</span><span class="k c">:wq</span></div>
-        <div class="strip"><b>末尾に1行足す</b><span class="k n">G</span><span class="k i">o</span><em>打つ</em><span class="k n">Esc</span><span class="to">→</span><span class="k c">:wq</span></div>
-        <div class="strip"><b>ログを読む</b><span class="k">view log</span><em>（書き換えずに開く）</em><span class="to">→</span><span class="k n">G</span><span class="k c">?ERROR</span><span class="k n">Enter</span><span class="k n">n</span><em>前の一致へ</em><span class="to">→</span><span class="k c">:q</span></div>
-        <div class="strip"><b>何かおかしい</b><span class="k n">Esc</span><span class="k n">Esc</span><span class="to">→</span><span class="k n">u</span><em>を何回か</em><span class="to">→</span><em>だめなら</em><span class="k c">:q!</span><em>で何も保存せず閉じる</em></div>
-        <div class="strip"><b>root のファイル</b><span class="k">sudoedit /etc/…</span><em>自分の設定のまま開ける。crontab は</em><span class="k">crontab -e</span></div>
+        <h3>Only on this Mac</h3>
+        <div class="row"><span><span class="k">Esc</span> also switches to English input</span><span><span class="k">Space</span>+<span class="k">/</span> opens this sheet</span><span><kbd>vimtutor</kbd> a 30-minute lesson</span><span>Neovim shows what can follow a half-typed key</span></div>
       </div>
     </div>
 
-</div>
+    <div class="cell w12">
+      <h3>Everyday tasks <small>each key is coloured by the mode it leaves you in</small></h3>
+      <div class="steps">
+        <div class="strip"><b>Change one setting</b><span class="k">vi file</span><span class="to">→</span><span class="k c">/listen</span><span class="k n">Enter</span><span class="to">→</span><span class="k i">cw</span><em>new value</em><span class="k n">Esc</span><span class="to">→</span><span class="k c">:wq</span></div>
+        <div class="strip"><b>Add a line at the end</b><span class="k n">G</span><span class="k i">o</span><em>type it</em><span class="k n">Esc</span><span class="to">→</span><span class="k c">:wq</span></div>
+        <div class="strip"><b>Read a log</b><span class="k">view app.log</span><em>(read-only)</em><span class="to">→</span><span class="k n">G</span><span class="k c">?ERROR</span><span class="k n">Enter</span><span class="k n">n</span><em>earlier match</em><span class="to">→</span><span class="k c">:q</span></div>
+        <div class="strip"><b>Undo a mistake</b><span class="k n">Esc</span><span class="k n">Esc</span><span class="to">→</span><span class="k n">u</span><em>a few times</em><span class="to">→</span><em>or</em><span class="k c">:q!</span><em>to leave without saving</em></div>
+        <div class="strip"><b>A file owned by root</b><span class="k">sudoedit /etc/…</span><em>opens with your own settings; for cron use</em><span class="k">crontab -e</span></div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ============================ tmux ============================ -->
 <section class="page" id="tmux" aria-labelledby="tmux-h">
   <div class="page-head">
     <h2 id="tmux-h">tmux</h2>
-    <p><kbd>C-b</kbd> は Ctrl を押しながら b。離してから次のキー。色は箱の大きさ（<span style="color:var(--session)">セッション</span> ⊃ <span style="color:var(--window)">ウィンドウ</span> ⊃ <span style="color:var(--pane)">ペイン</span>）。</p>
+    <p><kbd>C-b</kbd> means hold Ctrl, press b, let go, then press the next key. Colour shows the level: <span style="color:var(--session)">session</span> ⊃ <span style="color:var(--window)">window</span> ⊃ <span style="color:var(--pane)">pane</span>.</p>
   </div>
   <div class="grid">
 
     <figure class="cell w8">
-      <h3>画面のどこを、どのキーで</h3>
-      <svg viewBox="0 0 720 330" role="img" aria-label="tmux の画面。ペインを左右に分けるのは C-b パーセント、上下は C-b ダブルクォート。C-b o で次のペイン、C-b z で全画面、C-b x で閉じる。下のステータス行にウィンドウが並び、C-b c で新しく作り、C-b n と p で移る。左端はセッション名で、C-b d で抜ける。">
+      <h3>What each key does on screen</h3>
+      <svg viewBox="0 0 720 330" role="img" aria-label="The tmux screen. C-b percent splits a pane left and right, C-b double quote top and bottom. C-b o moves to the next pane, C-b z zooms, C-b x closes. The status line lists windows: C-b c makes one, C-b n and p move between them. The session name is on the left: C-b d detaches.">
         <rect x="20" y="16" width="400" height="290" rx="8" fill="var(--soft)" stroke="var(--line)" stroke-width="1.5"/>
         <rect x="26" y="22" width="190" height="248" rx="4" fill="var(--paper)" stroke="var(--line)"/>
         <rect x="222" y="22" width="192" height="120" rx="4" fill="var(--paper)" stroke="var(--line)"/>
@@ -342,7 +332,7 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
           <text x="232" y="44">$ vi nginx.conf</text>
           <text x="232" y="170" fill="var(--ink)">$ ▌</text>
         </g>
-        <text x="318" y="236" text-anchor="middle" font-size="12" fill="var(--pane)">いまのペイン</text>
+        <text x="318" y="236" text-anchor="middle" font-size="13" fill="var(--pane)">current pane</text>
         <rect x="26" y="276" width="388" height="24" rx="3" fill="var(--paper)" stroke="var(--line)"/>
         <rect x="30" y="279" width="62" height="18" rx="3" fill="none" stroke="var(--session)" stroke-width="2"/>
         <text x="61" y="292" text-anchor="middle" font-size="12" class="mono" fill="var(--session)">[work]</text>
@@ -358,71 +348,65 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
           <polyline points="230,288 440,288 440,262"/>
           <polyline points="61,300 61,318 440,318"/>
         </g>
-        <g font-size="14" fill="var(--ink)">
-          <text x="446" y="56"><tspan class="mono">C-b %</tspan>　左右に分ける</text>
-          <text x="446" y="114"><tspan class="mono">C-b "</tspan>　上下に分ける</text>
-          <text x="446" y="172"><tspan class="mono" fill="var(--pane)">C-b o</tspan>　次のペインへ</text>
-          <text x="446" y="191" font-size="12.5"><tspan class="mono">C-b ←↑↓→</tspan> その向きへ</text>
-          <text x="446" y="209" font-size="12.5"><tspan class="mono">C-b z</tspan> 全画面 ⇄ 戻す</text>
-          <text x="446" y="227" font-size="12.5"><tspan class="mono">C-b x</tspan> 閉じる</text>
-          <text x="446" y="256"><tspan class="mono" fill="var(--window)">C-b c</tspan>　新しいウィンドウ</text>
-          <text x="446" y="275" font-size="12.5"><tspan class="mono">C-b n</tspan> 次 <tspan class="mono">C-b p</tspan> 前 <tspan class="mono">C-b 0…9</tspan></text>
-          <text x="446" y="314"><tspan class="mono" fill="var(--session)">C-b d</tspan>　抜ける（中は動き続ける）</text>
+        <g font-size="14.5" fill="var(--ink)">
+          <text x="446" y="56"><tspan class="mono">C-b %</tspan>  split left | right</text>
+          <text x="446" y="114"><tspan class="mono">C-b "</tspan>  split top / bottom</text>
+          <text x="446" y="172"><tspan class="mono" fill="var(--pane)">C-b o</tspan>  next pane</text>
+          <text x="446" y="191" font-size="13"><tspan class="mono">C-b ←↑↓→</tspan> pane in that direction</text>
+          <text x="446" y="209" font-size="13"><tspan class="mono">C-b z</tspan> zoom in / out</text>
+          <text x="446" y="227" font-size="13"><tspan class="mono">C-b x</tspan> close the pane</text>
+          <text x="446" y="256"><tspan class="mono" fill="var(--window)">C-b c</tspan>  new window</text>
+          <text x="446" y="275" font-size="13"><tspan class="mono">C-b n</tspan> next <tspan class="mono">C-b p</tspan> previous <tspan class="mono">C-b 0…9</tspan></text>
+          <text x="446" y="314"><tspan class="mono" fill="var(--session)">C-b d</tspan>  detach (it keeps running)</text>
         </g>
       </svg>
     </figure>
 
     <figure class="cell w4">
-      <h3>ssh が切れても続きから</h3>
-      <svg viewBox="0 0 300 300" role="img" aria-label="ssh でつないで tmux new -s work で始める。C-b d で抜けても回線が切れても、作業はサーバーで続く。もう一度 ssh して tmux a -t work で戻る。">
+      <h3>When ssh drops, nothing is lost</h3>
+      <svg viewBox="0 0 300 300" role="img" aria-label="ssh in, start tmux with tmux new -s work. Detach with C-b d or lose the connection: the work keeps running on the server. ssh in again and tmux a -t work brings it back.">
         <defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker></defs>
         <rect x="10" y="6" width="280" height="40" rx="8" fill="var(--soft)"/>
-        <text x="22" y="31" font-size="13" class="mono" fill="var(--ink)">ssh server</text>
+        <text x="22" y="31" font-size="14" class="mono" fill="var(--ink)">ssh server</text>
         <rect x="10" y="68" width="280" height="40" rx="8" fill="var(--soft)" stroke="var(--session)" stroke-width="2"/>
-        <text x="22" y="93" font-size="13" class="mono" fill="var(--ink)">tmux new -s work</text><text x="182" y="93" font-size="11.5" fill="var(--muted)">名前を付けて始める</text>
+        <text x="22" y="93" font-size="14" class="mono" fill="var(--ink)">tmux new -s work</text><text x="184" y="93" font-size="12.5" fill="var(--muted)">start, named work</text>
         <rect x="10" y="130" width="280" height="40" rx="8" fill="var(--soft)"/>
-        <text x="22" y="148" font-size="13" class="mono" fill="var(--session)">C-b d</text><text x="70" y="148" font-size="11.5" fill="var(--muted)">で抜ける、または回線が切れる</text>
-        <text x="22" y="164" font-size="11.5" fill="var(--muted)">作業はサーバーの上で続いている</text>
+        <text x="22" y="148" font-size="12.5" fill="var(--muted)"><tspan class="mono" font-size="14" fill="var(--session)">C-b d</tspan>  or the connection drops</text>
+        <text x="22" y="164" font-size="12.5" fill="var(--muted)">the work keeps running on the server</text>
         <rect x="10" y="192" width="280" height="40" rx="8" fill="var(--soft)"/>
-        <text x="22" y="210" font-size="11.5" fill="var(--muted)">もう一度 ssh して</text>
-        <text x="22" y="226" font-size="13" class="mono" fill="var(--ink)">tmux ls</text><text x="90" y="226" font-size="11.5" fill="var(--muted)">名前を忘れたら一覧</text>
+        <text x="22" y="210" font-size="12.5" fill="var(--muted)">ssh in again, then</text>
+        <text x="22" y="226" font-size="14" class="mono" fill="var(--ink)">tmux ls</text><text x="96" y="226" font-size="12.5" fill="var(--muted)">list the sessions</text>
         <rect x="10" y="254" width="280" height="40" rx="8" fill="var(--soft)" stroke="var(--session)" stroke-width="2"/>
-        <text x="22" y="279" font-size="13" class="mono" fill="var(--ink)">tmux a -t work</text><text x="172" y="279" font-size="11.5" fill="var(--muted)">続きの画面に戻る</text>
+        <text x="22" y="279" font-size="14" class="mono" fill="var(--ink)">tmux a -t work</text><text x="170" y="279" font-size="12.5" fill="var(--muted)">back where you were</text>
         <g stroke="var(--muted)" stroke-width="1.5">
-          <line x1="150" y1="46" x2="150" y2="66" marker-end="url(#ah3)"/>
-          <line x1="150" y1="108" x2="150" y2="128" marker-end="url(#ah3)"/>
-          <line x1="150" y1="170" x2="150" y2="190" marker-end="url(#ah3)"/>
-          <line x1="150" y1="232" x2="150" y2="252" marker-end="url(#ah3)"/>
+          <line x1="150" y1="46" x2="150" y2="66" marker-end="url(#ah3)"/><line x1="150" y1="108" x2="150" y2="128" marker-end="url(#ah3)"/>
+          <line x1="150" y1="170" x2="150" y2="190" marker-end="url(#ah3)"/><line x1="150" y1="232" x2="150" y2="252" marker-end="url(#ah3)"/>
         </g>
       </svg>
     </figure>
 
     <div class="cell w6">
-      <h3>さかのぼる・コピーする</h3>
+      <h3>Scroll back and copy</h3>
       <div class="steps">
-        <div class="strip"><span class="k">C-b [</span><span class="to">→</span><em>動く</em><span class="k">Ctrl-u</span><span class="k">Ctrl-d</span><span class="k">/word</span><span class="to">→</span><span class="k">Space</span><em>選び始め</em><span class="to">→</span><span class="k">Enter</span><em>コピー</em><span class="to">→</span><span class="k">C-b ]</span><em>貼る</em></div>
-        <div class="strip"><em>途中でやめるときは</em><span class="k">q</span></div>
+        <div class="strip"><span class="k">C-b [</span><span class="to">→</span><em>move</em><span class="k">Ctrl-u</span><span class="k">Ctrl-d</span><span class="k">/word</span><span class="to">→</span><span class="k">Space</span><em>start selecting</em><span class="to">→</span><span class="k">Enter</span><em>copy</em><span class="to">→</span><span class="k">C-b ]</span><em>paste</em></div>
+        <div class="strip"><em>To stop without copying, press</em><span class="k">q</span></div>
       </div>
-      <p class="cap">サーバーの tmux は、起動したときの EDITOR か VISUAL に vi が入っていないと emacs 風のキーになる。<kbd>C-b :</kbd> <kbd>setw -g mode-keys vi</kbd> で切り替えられる。</p>
+      <p class="cap">A server's tmux uses these vi keys only if EDITOR or VISUAL contained vi when it started; otherwise it uses emacs keys. Switch with <kbd>C-b :</kbd> <kbd>setw -g mode-keys vi</kbd>.</p>
     </div>
 
     <div class="cell w6">
-      <h3>わからなくなったら</h3>
+      <h3>When you are stuck</h3>
       <div class="ess">
-        <div><b>C-b ?</b><span>キーの一覧（q で閉じる）</span></div>
-        <div><b>C-b /</b><span>次のキーの意味（3.1 以降）</span></div>
-        <div><b>C-b :</b><span>コマンドを打つ</span></div>
+        <div><b>C-b ?</b><span>every key (q closes)</span></div>
+        <div><b>C-b /</b><span>what the next key does (3.1+)</span></div>
+        <div><b>C-b :</b><span>type a tmux command</span></div>
       </div>
-      <p class="cap">何も効かないときは、コピーモードかメニューの中にいる。<span class="k">q</span> か <span class="k">Esc</span> で出る。中で開いた別の tmux に送るときは <span class="k">C-b C-b</span>。</p>
+      <p class="cap">If nothing responds, you are probably in copy mode or a menu: press <span class="k">q</span> or <span class="k">Esc</span>. To reach a tmux opened inside this one, press <span class="k">C-b C-b</span>.</p>
     </div>
 
-    <div class="mac cell w8">
-      <h3>この Mac だけ（サーバーでは上のキーを使う）</h3>
-      <div class="row"><span><span class="k">Opt+hjkl</span> ペインを移る</span><span><span class="k">Opt+1…9</span> ウィンドウへ</span><span><span class="k">Opt+n</span> 新しいウィンドウ</span><span><span class="k">Opt+z</span> 全画面</span><span><span class="k">Opt+/</span> 早見表</span><span><span class="k">Space</span>+<span class="k">/</span> この地図</span><span>画面の下の段に、押せるキーが出る</span></div>
-    </div>
-    <div class="write cell w4">
-      <h3>今週覚える3つ</h3>
-      <span></span><span></span><span></span>
+    <div class="mac cell w12">
+      <h3>Only on this Mac (on a server, use the keys above)</h3>
+      <div class="row"><span><span class="k">Opt+hjkl</span> move between panes</span><span><span class="k">Opt+1…9</span> go to a window</span><span><span class="k">Opt+n</span> new window</span><span><span class="k">Opt+z</span> zoom</span><span><span class="k">Opt+/</span> short key list</span><span><span class="k">Space</span>+<span class="k">/</span> this sheet</span><span>The bottom line of tmux lists the keys you can press next</span></div>
     </div>
   </div>
 </section>

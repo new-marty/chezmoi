@@ -19,7 +19,7 @@
 - キーを並べるのではなく図で示す。Vim のモードの地図（ページ全体で色がモードを表す）、実際の1行とファイルの中での動き方、動詞と範囲の表、tmux の画面とその部分ごとのキー。点線の枠は Mac だけ。
 - 印刷: `just cheatsheet-pdf` が Chrome で A4 横の2ページ（表が Vim、裏が tmux）を `~/Downloads/tmux-vim-cheatsheet.pdf` に書く。場所を変えるときは `just cheatsheet-pdf ~/Desktop/sheet.pdf` のように渡す。
 
-1日に覚えるのは1〜2個にする（"Learn Vim Progressively"）。裏面に、今週覚える3つを書く欄がある。
+1日に覚えるのは1〜2個にする（"Learn Vim Progressively"）。手帖は英語で書いてある。
 
 ## 使い始める
 

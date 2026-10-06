@@ -31,8 +31,7 @@ for paper.
   front, tmux on the back) to `~/Downloads/tmux-vim-cheatsheet.pdf` with
   Chrome. Pass a path to write elsewhere: `just cheatsheet-pdf ~/Desktop/sheet.pdf`.
 
-Learn one or two keys a day ("Learn Vim Progressively"); the back page has room
-to write down the three for this week.
+Learn one or two keys a day ("Learn Vim Progressively").
 
 ## Setting up
 
