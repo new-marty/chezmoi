@@ -45,7 +45,8 @@ unraid と mini の `authorized_keys` にはこの鍵（と mini に iphone）�
 - debian は接続がタイムアウトして未確認。届くときに、この鍵で入れるか確かめる。
 - GitHub の認証用の鍵: ubuntu 1Password は ubuntu の鍵を 1Password から外すときに作り直す。
   署名用の鍵2本と、2025-12 から使われていなかった RSA 鍵は 2026-10-06 に削除した。
-- 1Password の SSH 鍵の項目と、1Password の SSH エージェント設定を片付ける。
+- 1Password の SSH 鍵の項目を消す。ubuntu がまだ 1Password の鍵を使っているので、ubuntu の鍵を作り直してから
+  （1Password の SSH エージェントは 2026-10-06 に止めた）。
 
 ---
 
