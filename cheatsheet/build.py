@@ -18,31 +18,71 @@ def E(t): return f"<em>{t}</em>"
 VIMTAG = '<span class="vimtag">vim</span>'
 
 # ---------------------------------------------------------------- Vim page: modes as round trips
+# ---------------------------------------------------------------- mini screens (HTML)
+def scr(body, status="", kind="", cls=""):
+    """A small terminal screen: body lines (HTML, white-space: pre) and Vim's bottom line."""
+    st = f'<div class="st {kind}">{status or "&nbsp;"}</div>'
+    return f'<div class="scr {cls}"><div class="body">{body}</div>{st}</div>'
+
+def tscr(panes, bar, cls="", cols=""):
+    """A small tmux screen: panes (list of HTML bodies) and the green status bar."""
+    style = f' style="grid-template-columns: {cols}"' if cols else ""
+    inner = "".join(f'<div class="pane{" on" if i == len(panes) - 1 else ""}">{p}</div>' for i, p in enumerate(panes))
+    return f'<div class="scr tmx {cls}"><div class="panes"{style}>{inner}</div><div class="tbar">{bar}</div></div>'
+
+def pair(a, b):
+    return f'<div class="pair">{a}<span class="to big">→</span>{b}</div>'
+
+def CB(ch): return f'<span class="cb">{ch}</span>'   # block cursor (Normal)
+def CI(): return '<span class="ci"></span>'          # bar cursor (Insert)
+
 def modes_svg():
+    def screen(x, y, w, h, lines, status, scolor, sbg="none"):
+        out = [f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="6" fill="var(--soft)" stroke="var(--line)"/>']
+        for i, ln in enumerate(lines):
+            out.append(f'<text x="{x+8}" y="{y+18+i*16}" font-size="12.5" class="mono" fill="var(--ink)" xml:space="preserve">{ln}</text>')
+        out.append(f'<rect x="{x+1}" y="{y+h-19}" width="{w-2}" height="18" fill="{sbg}"/>')
+        out.append(f'<line x1="{x}" y1="{y+h-19}" x2="{x+w}" y2="{y+h-19}" stroke="var(--line)"/>')
+        out.append(f'<text x="{x+8}" y="{y+h-6}" font-size="12" class="mono" fill="{scolor}" font-weight="700" xml:space="preserve">{status}</text>')
+        return "".join(out)
+    o = []
+    # Normal: one tall screen on the left
+    o.append(f'<rect x="2" y="2" width="168" height="256" rx="10" fill="var(--normal-bg)" stroke="var(--normal)" stroke-width="2.5"/>')
+    o.append('<text x="86" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="var(--ink)">NORMAL</text>')
+    o.append('<text x="86" y="44" text-anchor="middle" font-size="12" fill="var(--ink)">move, delete, copy</text>')
+    o.append(screen(14, 56, 144, 70, ["server {", "  listen 80;", "}"], " ", "var(--muted)"))
+    o.append('<rect x="37" y="79" width="7.5" height="15" fill="var(--ink)"/><text x="37" y="90" font-size="12.5" class="mono" fill="var(--paper)">l</text>')
+    o.append('<text x="86" y="146" text-anchor="middle" font-size="11.5" fill="var(--muted)">block cursor</text>')
+    o.append('<text x="86" y="161" text-anchor="middle" font-size="11.5" fill="var(--muted)">bottom line is empty</text>')
+    o.append('<text x="86" y="200" text-anchor="middle" font-size="12" fill="var(--ink)">Lost? press</text>')
+    o.append('<text x="86" y="220" text-anchor="middle" font-size="16" class="mono" fill="var(--ink)">Esc  Esc</text>')
+    o.append('<text x="86" y="238" text-anchor="middle" font-size="12" fill="var(--ink)">to come back here</text>')
     rows = [
-        ("i  a  o", "INSERT", "type text", "Esc", "insert", "i before the cursor, a after it, o on a new line below"),
-        ("v  V", "VISUAL", "select text", "Esc  or  d / y", "visual", "v selects characters, V whole lines; d deletes them, y copies"),
-        (":", "COMMAND", ":w  :q  :42", "Enter / Esc", "command", "Enter runs the command, Esc cancels it"),
+        ("i  a  o", "Esc", "insert", "INSERT", "type text",
+         ["server {", '  listen 8080;', "}"], "-- INSERT --", "var(--insert)", "none"),
+        ("v  V", "Esc  d  y", "visual", "VISUAL", "select text",
+         ["server {", '  listen 80;', "}"], "-- VISUAL --", "var(--visual)", "none"),
+        (":", "Enter  Esc", "command", "COMMAND", "run a command",
+         ["server {", '  listen 80;', "}"], ":wq", "var(--ink)", "var(--command-bg)"),
     ]
-    out = []
-    for r, (enter, name, inside, leave, cls, note) in enumerate(rows):
-        y = 8 + r * 78
-        cy = y + 21
-        out.append(f'<rect x="2" y="{y}" width="78" height="42" rx="10" fill="var(--normal-bg)" stroke="var(--normal)" stroke-width="2"/>')
-        out.append(f'<text x="41" y="{cy+5}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--ink)">NORMAL</text>')
-        out.append(f'<line x1="82" y1="{cy}" x2="182" y2="{cy}" stroke="var(--{cls})" stroke-width="2.4" marker-end="url(#mh)"/>')
-        out.append(f'<text x="131" y="{cy-8}" text-anchor="middle" font-size="16" class="mono" fill="var(--ink)">{html.escape(enter)}</text>')
-        out.append(f'<rect x="186" y="{y}" width="128" height="42" rx="10" fill="var(--{cls}-bg)" stroke="var(--{cls})" stroke-width="2"/>')
-        out.append(f'<text x="250" y="{cy-2}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink)">{name}</text>')
-        out.append(f'<text x="250" y="{cy+14}" text-anchor="middle" font-size="12" class="{"mono" if cls=="command" else ""}" fill="var(--ink)">{html.escape(inside)}</text>')
-        out.append(f'<line x1="316" y1="{cy}" x2="434" y2="{cy}" stroke="var(--normal)" stroke-width="2.4" marker-end="url(#mh)"/>')
-        out.append(f'<text x="375" y="{cy-8}" text-anchor="middle" font-size="14" class="mono" fill="var(--ink)">{html.escape(leave)}</text>')
-        out.append(f'<rect x="438" y="{y}" width="78" height="42" rx="10" fill="var(--normal-bg)" stroke="var(--normal)" stroke-width="2"/>')
-        out.append(f'<text x="477" y="{cy+5}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--ink)">NORMAL</text>')
-        out.append(f'<text x="2" y="{y+60}" font-size="12.5" fill="var(--muted)">{html.escape(note)}</text>')
-    return f'''<svg viewBox="0 0 520 236" role="img" aria-label="Vim starts in Normal mode. i, a or o goes to Insert mode and Esc comes back. v or V goes to Visual mode; Esc, d or y comes back. A colon goes to Command mode; Enter runs the command and Esc cancels, both come back to Normal.">
+    for r, (enter, leave, cls, name, what, lines, status, scol, sbg) in enumerate(rows):
+        y = 2 + r * 88
+        cy = y + 40
+        o.append(f'<line x1="174" y1="{cy-10}" x2="300" y2="{cy-10}" stroke="var(--{cls})" stroke-width="2.4" marker-end="url(#mh)"/>')
+        o.append(f'<text x="237" y="{cy-17}" text-anchor="middle" font-size="15" class="mono" fill="var(--ink)">{enter}</text>')
+        o.append(f'<line x1="300" y1="{cy+10}" x2="176" y2="{cy+10}" stroke="var(--normal)" stroke-width="2.4" marker-end="url(#mh)"/>')
+        o.append(f'<text x="237" y="{cy+29}" text-anchor="middle" font-size="13" class="mono" fill="var(--ink)">{leave}</text>')
+        o.append(f'<rect x="304" y="{y}" width="214" height="80" rx="10" fill="var(--{cls}-bg)" stroke="var(--{cls})" stroke-width="2"/>')
+        o.append(f'<text x="314" y="{y+18}" font-size="13.5" font-weight="700" fill="var(--ink)">{name}</text>')
+        o.append(f'<text x="{314 + len(name)*10 + 8}" y="{y+18}" font-size="11.5" fill="var(--ink)">{what}</text>')
+        o.append(screen(314, y + 25, 194, 50, lines[1:2], status, scol, sbg))
+        if cls == "insert":
+            o.append(f'<line x1="{322+13*7.5}" y1="{y+30}" x2="{322+13*7.5}" y2="{y+46}" stroke="var(--insert)" stroke-width="2"/>')
+        if cls == "visual":
+            o.append(f'<rect x="{322+9*7.5}" y="{y+31}" width="{15.5}" height="15" fill="var(--visual)" opacity=".35"/>')
+    return f'''<svg viewBox="0 0 520 262" role="img" aria-label="Vim starts in Normal mode, with a block cursor and an empty bottom line. i, a or o goes to Insert mode, where the bottom line shows -- INSERT -- and you type text; Esc comes back. v or V goes to Visual mode, -- VISUAL --, to select text; Esc, d or y comes back. A colon goes to Command mode, where you type the command on the bottom line; Enter or Esc comes back.">
         <defs><marker id="mh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="context-stroke"/></marker></defs>
-        {"".join(out)}
+        {"".join(o)}
       </svg>'''
 
 # ---------------------------------------------------------------- Vim page: motions on one line (kept from the version the owner liked)
@@ -197,44 +237,120 @@ def R(title, steps, why, ba="", vim=False):
     v = VIMTAG if vim else ""
     return f'<article class="recipe"><h4>{title}{v}</h4><div class="strip">{steps}</div>{ba}<p class="why">{why}</p></article>'
 
+# ---------------------------------------------------------------- tmux page: copy storyboard
+LOG = ["12:01 GET /health 200", "12:02 ERROR db timeout", "12:02 retry 1", "12:03 GET /api 200"]
+def copy_story():
+    def body(cursor_line=None, sel=False, prompt=False):
+        lines = []
+        for i, ln in enumerate(LOG):
+            if sel and i == 1:
+                ln = '12:02 <span class="sel">ERROR db timeout</span>'
+            elif cursor_line == i:
+                ln = ln[:6] + CB(ln[6]) + ln[7:]
+            lines.append(ln)
+        lines.append("$ " + ('<span class="paste">ERROR db timeout</span>' if prompt else "") + CI() if prompt else "$ ")
+        return "\n".join(lines)
+    frames = [
+        ("C-b [", "enter copy mode", tscr([body() ], '<span class="pos">[0/120]</span>', cls="copy"), "top right shows where you are"),
+        ("k  /ERROR", "move to the text", tscr([body(cursor_line=1)], '<span class="pos">[2/120]</span>', cls="copy"), "Ctrl-u Ctrl-d page, / searches"),
+        ("Space  $", "select it", tscr([body(sel=True)], '<span class="pos">[2/120]</span>', cls="copy"), "Space starts, motions extend"),
+        ("Enter  C-b ]", "copy, then paste", tscr([body(prompt=True)], "<b>[0]</b> 0:bash*"), "Enter copies and leaves; C-b ] pastes"),
+    ]
+    out = []
+    for n, (keys, what, frame, note) in enumerate(frames, 1):
+        out.append(f'<figure class="frame"><figcaption><b>{n}</b> <span class="k">{keys}</span> {what}</figcaption>{frame}<p class="cap">{note}</p></figure>')
+    return '<div class="story">' + "".join(out) + '</div>'
+
+# ---------------------------------------------------------------- recipes with screens
+def R2(title, steps, visual, why, vim=False):
+    v = VIMTAG if vim else ""
+    return f'<article class="recipe"><h4>{title}{v}</h4><div class="strip">{steps}</div>{visual}<p class="why">{why}</p></article>'
+
+def ins(t): return f'<ins>{t}</ins>'
+def dl(t): return f'<del>{t}</del>'
+def vs(t): return f'<span class="vsel">{t}</span>'
+
 VIM_RECIPES = [
-    R("Change a value", K("vi nginx.conf") + A + K("/worker_conn", "c") + K("Enter", "n") + A + K("w", "n") + K("cw", "i") + E("2048") + K("Esc", "n") + A + K(":wq", "c"),
-      "w steps from the name onto the value; cw replaces just that word.",
-      BA('worker_connections <mark>1024</mark>;', 'worker_connections <ins>2048</ins>;')),
-    R("Comment out a line", K("/listen 80", "c") + K("Enter", "n") + A + K("I", "i") + E("#") + K("Esc", "n") + A + K(":wq", "c"),
-      "I types at the start of the line, wherever the cursor is.",
-      BA('    listen 80;', '    <ins>#</ins> listen 80;')),
-    R("Comment out several lines", K("Ctrl-v", "v") + K("jjj", "v") + A + K("I", "i") + E("#") + K("Esc", "n"),
-      "Ctrl-v selects a column. What you type after I appears on every line when you press Esc.",
-      BA('listen 80;<br>listen 443;<br>server_name old;', '<ins>#</ins>listen 80;<br><ins>#</ins>listen 443;<br><ins>#</ins>server_name old;'), vim=True),
-    R("Copy a line, then edit the copy", K("yy", "n") + K("p", "n") + A + K("w", "n") + K("C", "i") + E("10.0.0.2;") + K("Esc", "n"),
-      "p pastes below the cursor, P above. C replaces everything to the end of the line.",
-      BA('allow 10.0.0.1;', 'allow 10.0.0.1;<br>allow <ins>10.0.0.2;</ins>')),
-    R("Delete lines", K("5dd", "n") + E("5 lines from here") + E("or") + K(":10,20d", "c") + E("lines 10–20"),
-      "Line numbers help here: :set nu shows them."),
-    R("Replace everywhere, one at a time", K(":%s/old/new/gc", "c") + K("Enter", "n") + A + E("answer") + K("y", "n") + E("or") + K("n", "n"),
-      "% means every line, g every match on a line, c asks each time. Without c, all are replaced at once."),
-    R("Read a log from the end", K("view app.log") + A + K("G", "n") + K("?ERROR", "c") + K("Enter", "n") + A + K("n", "n") + E("older") + K("N", "n") + E("newer"),
-      "view opens read-only. ? searches upwards, so n keeps going back in time. Leave with :q."),
-    R("Saved, but no permission", K(":w !sudo tee % &gt;/dev/null", "c") + K("Enter", "n") + A + K("L", "n"),
-      "For a root file opened without sudo. Vim then warns that the file changed: L loads the saved version.", vim=True),
-    R("Throw your changes away", K(":e!", "c") + E("back to the saved file") + E("or") + K(":q!", "c") + E("just leave"),
-      "Nothing reaches the disk until :w, so the file is untouched either way."),
+    R2("Change a value",
+       K("vi redis.conf") + A + K("/maxclients", "c") + K("Enter", "n") + A + K("w", "n") + K("cw", "i") + E("20000") + K("Esc", "n") + A + K(":wq", "c"),
+       pair(scr("port 6379\n" + CB("m") + "axclients 10000\nsave 900 1", "/maxclients", "cmd"),
+            scr("port 6379\nmaxclients " + ins("20000") + "\nsave 900 1", '"redis.conf" written')),
+       "w steps from the name onto the value; cw replaces just that word."),
+    R2("Comment out a line",
+       K("/listen 80", "c") + K("Enter", "n") + A + K("I", "i") + E("#") + K("Esc", "n") + A + K(":wq", "c"),
+       pair(scr("server {\n  " + CB("l") + "isten 80;\n}", "/listen 80", "cmd"),
+            scr("server {\n  " + ins("# ") + "listen 80;\n}", '"site.conf" written')),
+       "I types at the start of the line, wherever the cursor is."),
+    R2("Comment out several lines",
+       K("Ctrl-v", "v") + K("jj", "v") + A + K("I", "i") + E("#") + K("Esc", "n"),
+       pair(scr(vs("l") + "isten 80;\n" + vs("l") + "isten 443;\n" + vs("s") + "erver_name a;", "-- VISUAL BLOCK --", "vis"),
+            scr(ins("#") + "listen 80;\n" + ins("#") + "listen 443;\n" + ins("#") + "server_name a;", "")),
+       "Ctrl-v selects a column; text typed after I lands on every line when you press Esc.", vim=True),
+    R2("Copy a line, then edit the copy",
+       K("yy", "n") + K("p", "n") + A + K("w", "n") + K("C", "i") + E("10.0.0.2;") + K("Esc", "n"),
+       pair(scr(CB("a") + "llow 10.0.0.1;\ndeny all;", ""),
+            scr("allow 10.0.0.1;\nallow " + ins("10.0.0.2;") + "\ndeny all;", "")),
+       "p pastes below (P above). C replaces to the end of the line."),
+    R2("Delete lines",
+       K("3dd", "n") + E("3 lines from the cursor") + E("or") + K(":2,4d", "c"),
+       pair(scr("a = 1\n" + dl(CB("b") + " = 2") + "\n" + dl("c = 3") + "\n" + dl("d = 4") + "\ne = 5", ""),
+            scr("a = 1\n" + CB("e") + " = 5", "3 fewer lines")),
+       "Vim reports how many lines went. p puts them back below."),
+    R2("Replace everywhere, one at a time",
+       K(":%s/old/new/gc", "c") + K("Enter", "n") + A + E("each match:") + K("y", "n") + E("or") + K("n", "n"),
+       pair(scr("host = <span class=\"vsel\">old</span>.lan\nbackup = old.lan", "replace with new (y/n)?", "cmd"),
+            scr("host = " + ins("new") + ".lan\nbackup = " + ins("new") + ".lan", "2 substitutions")),
+       "% every line, g every match on a line, c asks each time."),
+    R2("Read a log from the end",
+       K("view app.log") + A + K("G", "n") + K("?ERROR", "c") + K("Enter", "n") + A + K("n", "n") + E("older"),
+       pair(scr("12:01 ERROR disk full\n12:05 ok\n12:09 " + CB("E") + "RROR timeout\n12:10 ok", "?ERROR", "cmd"),
+            scr("12:01 " + CB("E") + "RROR disk full\n12:05 ok\n12:09 ERROR timeout\n12:10 ok", "?ERROR", "cmd")),
+       "view is read-only. ? searches upwards, so n goes further back. :q leaves."),
+    R2("Saved, but no permission",
+       K(":w !sudo tee % &gt;/dev/null", "c") + K("Enter", "n") + A + K("L", "n"),
+       pair(scr("127.0.0.1 localhost\n10.0.0.5 db", "E212: Can't open file", "err"),
+            scr("127.0.0.1 localhost\n10.0.0.5 db", "W12: changed (L)oad", "cmd")),
+       "For a root file opened without sudo. L loads the version you just saved.", vim=True),
+    R2("Throw your changes away",
+       K(":q", "c") + E("refused?") + A + K(":e!", "c") + E("or") + K(":q!", "c"),
+       pair(scr("port = " + ins("9999") + "\nmode = prod", "E37: No write since…", "err"),
+            scr("port = 8080\nmode = prod", ':e! reloaded "app.ini"')),
+       ":e! goes back to the saved file; :q! leaves without saving. The disk is untouched."),
 ]
 
+def tbody(*lines): return "\n".join(lines)
+BAR0 = '<b>[0]</b> 0:bash*'
 TMUX_RECIPES = [
-    R("A job that survives logout", K("tmux new -s deploy") + A + E("start the job") + A + K("C-b d") + A + E("later") + K("tmux a -t deploy"),
-      "The job keeps running on the server after you detach or the connection drops."),
-    R("Edit while watching the log", K("C-b %") + A + K("tail -f app.log") + A + K("C-b o") + A + K("vi app.conf"),
-      "C-b o switches between the two panes; C-b z zooms the one you are in."),
-    R("Copy an error from the scrollback", K("C-b [") + K("?error") + K("Enter") + A + K("Space") + K("$") + K("Enter") + A + K("C-b ]"),
-      "With vi keys: Space starts the selection, $ extends it to the line end, Enter copies, C-b ] pastes."),
-    R("Type in every pane at once", K("C-b :") + E("setw synchronize-panes on") + A + E("type") + A + E("… off"),
-      "Runs the same command on several servers, each ssh-ed in its own pane."),
-    R("Name things so you find them", K("C-b ,") + E("window") + K("C-b $") + E("session") + A + K("C-b w") + E("pick one"),
-      "tmux ls and C-b s show the names too."),
-    R("Close what you no longer need", K("C-b x") + E("pane") + K("C-b &amp;") + E("window") + E("then") + K("y") + A + K("tmux kill-session -t old"),
-      "Typing exit in the last pane of a window closes the window as well."),
+    R2("A job that survives logout",
+       K("tmux new -s deploy") + A + E("start the job") + A + K("C-b d") + A + E("later") + K("tmux a -t deploy"),
+       pair(tscr([tbody("$ ./deploy.sh", "uploading… 42%")], '<b>[deploy]</b> 0:bash*'),
+            tscr([tbody("$ tmux a -t deploy", "", "uploading… 87%")], '<b>[deploy]</b> 0:bash*')),
+       "In between, the shell said [detached (from session deploy)] and the job kept running."),
+    R2("Edit while watching the log",
+       K("C-b %") + A + K("tail -f app.log") + A + K("C-b o") + A + K("vi app.conf"),
+       pair(tscr([tbody("$ " + CI())], BAR0),
+            tscr([tbody("12:01 GET /", "12:02 ERROR", "12:02 retry"), tbody("port = 80", "mode = prod")], BAR0)),
+       "C-b o jumps between the panes; C-b z zooms the one you are in."),
+    R2("Copy an error from the scrollback",
+       K("C-b [") + K("?ERROR") + K("Enter") + A + K("Space") + K("$") + K("Enter") + A + K("C-b ]"),
+       pair(tscr([tbody("12:01 GET /", '12:02 <span class="sel">ERROR db timeout</span>', "$ ")], '<span class="pos">[2/120]</span>'),
+            tscr([tbody("12:01 GET /", "12:02 ERROR db timeout", '$ <span class="paste">ERROR db timeout</span>' + CI())], BAR0)),
+       "The same steps as on the tmux page, ending at your prompt."),
+    R2("Type in every pane at once",
+       K("C-b :") + E("setw synchronize-panes on") + A + E("type once") + A + E("… off"),
+       pair(tscr([tbody("web1 $ "), tbody("web2 $ "), tbody("web3 $ " + CI())], BAR0, cols="1fr 1fr 1fr"),
+            tscr([tbody("web1 $ uptime"), tbody("web2 $ uptime"), tbody("web3 $ uptime" + CI())], BAR0, cols="1fr 1fr 1fr")),
+       "Each pane has its own ssh session; what you type goes to all of them."),
+    R2("Name things so you find them",
+       K("C-b $") + E("session") + K("C-b ,") + E("window") + A + K("C-b w") + E("pick one"),
+       pair(tscr([tbody("$ " + CI())], '<b>[0]</b> 0:bash 1:bash*'),
+            tscr([tbody("$ " + CI())], '<b>[deploy]</b> 0:api 1:logs*')),
+       "tmux ls and C-b s show these names, so you attach to the right one."),
+    R2("Close what you no longer need",
+       K("C-b x") + E("then") + K("y") + E("pane") + A + K("C-b &amp;") + E("window"),
+       pair(tscr([tbody("logs"), tbody("vi " + CI())], 'kill-pane 1? (y/n)'),
+            tscr([tbody("logs" + CI())], BAR0)),
+       "exit in the last pane of a window closes the window too. tmux kill-session -t old ends a session."),
 ]
 
 # ---------------------------------------------------------------- page assembly
@@ -281,9 +397,8 @@ tmux_body = f'''  <div class="g tmuxgrid">
     <figure class="cell area-b"><h3>When ssh drops, nothing is lost</h3>
       {ssh_svg()}
     </figure>
-    <div class="cell area-c"><h3>Scroll back and copy</h3>
-      <div class="strip big">{K("C-b [", "pre")}{A}{E("move")}{K("Ctrl-u")}{K("Ctrl-d")}{K("/word")}{A}{K("Space")}{E("start selecting")}{A}{K("Enter")}{E("copy")}{A}{K("C-b ]", "pre")}{E("paste")}</div>
-      <p class="cap">Press <span class="k">q</span> to leave without copying. A server's tmux uses these vi keys only if EDITOR or VISUAL contained vi when it started; switch with <kbd>C-b :</kbd> <kbd>setw -g mode-keys vi</kbd>.</p>
+    <div class="cell area-c"><h3>Scroll back and copy <small>q leaves copy mode without copying</small></h3>
+      {copy_story()}
     </div>
     <div class="cell area-d"><h3>When you are stuck <small>after <span class="k pre">C-b</span></small></h3>
       <div class="ess three">
