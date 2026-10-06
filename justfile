@@ -63,12 +63,12 @@ vscode-extensions-dump:
 # Learning tmux and Vim
 # =============================================================================
 
-# Open the tmux and Vim cheat sheet in the browser (also Space+/ with Karabiner)
-cheatsheet:
+# Show or hide the Vim or tmux cheat sheet in Quick Look (also Space+v / Space+t)
+cheatsheet sheet="vim":
     #!/usr/bin/env bash
     set -euo pipefail
-    [ -f cheatsheet/index.html ] || cd "$(chezmoi source-path)"
-    open cheatsheet/index.html
+    [ -f scripts/cheatsheet.sh ] || cd "$(chezmoi source-path)"
+    sh scripts/cheatsheet.sh {{ sheet }}
 
 # macOS shows an accent menu instead of repeating a held key; VSCodeVim's README
 # turns that off per app. Quit and reopen the editors afterwards.

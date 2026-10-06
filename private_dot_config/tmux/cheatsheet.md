@@ -2,7 +2,7 @@
 
 Keys outside "Mac only" work on any server's tmux (C-b / needs 3.1+,
 the menus 3.0+). Windows there are numbered from 0.
-The full sheet with Vim: Space+/ (Karabiner) or `just cheatsheet`.
+The full sheet: Space+t (Karabiner) or `just cheatsheet tmux`.
 
 ## Start, leave, come back (type in the shell)
   tmux new -s work   Start a session named work

@@ -19,11 +19,11 @@
 
 ## [Todo] tmux と Vim のヒントを実際に使って見直す
 
-ヒント（tmux の2段目、Neovim の which-key など）、チートシート（`cheatsheet/index.html`、
+ヒント（tmux の2段目、Neovim の which-key など）、チートシート（`cheatsheet/vim.html`、`cheatsheet/tmux.html`、
 `just cheatsheet`）、VSCodeVim 用の設定は入れた。使い方は `docs/ja/tmux-vim.md`。
 キーを実際に押しての確認は、まだ本人が手元でしていない。
 
-- 実機で確かめる: Ghostty の tmux で `Opt+hjkl`、英数入力で `Space`+`/`、ターミナルと
+- 実機で確かめる: Ghostty の tmux で `Opt+hjkl`、英数入力で `Space`+`v` と `Space`+`t`、ターミナルと
   VS Code での `Esc`（英数に戻るか）、tmux の2段目のヒントの幅。
 - VSCodeVim を入れて使い始める（`just vscode-extensions`、`just vim-key-repeat`）。
 - 2〜3週間後に、atuin の履歴で tmux と vim / nvim を開いた回数を見る。増えていなければ、

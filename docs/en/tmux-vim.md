@@ -17,13 +17,16 @@ key, and those are marked "Mac": `v` and `y` in copy mode, `C-b Space`
 
 ## The cheat sheet
 
-`cheatsheet/index.html` in the source directory is one page that scales with
-the window. It is generated: edit `cheatsheet/build.py` or `style.css`, then
-run `python3 cheatsheet/build.py cheatsheet/index.html`.
+`cheatsheet/vim.html` and `cheatsheet/tmux.html` in the source directory scale
+with the window. They are generated: edit `cheatsheet/build.py` or `style.css`,
+then run `python3 cheatsheet/build.py`.
 
-- Open it: `Space`+`/` (Karabiner, while typing in English), `just cheatsheet`,
-  or `Opt+/` inside tmux for the short text version. Without the `justfile`
-  switch, run the recipes as `just --justfile "$(chezmoi source-path)/justfile" cheatsheet`.
+- Open one: `Space`+`v` for Vim or `Space`+`t` for tmux (Karabiner, while
+  typing in English). It opens in a Quick Look panel in front of everything;
+  the same keys again, or `Esc`, close it. From a shell: `just cheatsheet vim`
+  or `just cheatsheet tmux` (without the `justfile` switch:
+  `sh "$(chezmoi source-path)/scripts/cheatsheet.sh" vim`). Inside tmux,
+  `Opt+/` shows a short text version.
 - It is drawn rather than listed: the Vim modes as a map (colour means mode
   everywhere on the page), motions on a real line and through a file, the
   verbs and ranges as a table, the tmux screen with the key for each part, and

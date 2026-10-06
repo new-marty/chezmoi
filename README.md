@@ -157,7 +157,7 @@ in, where to keep API keys, and what to do if this repository wrote an older
 ├── private_dot_config/           # git (shared config), ghostty, mise, navi, nvim, sheldon, tmux
 ├── private_Library/              # VS Code and Cursor settings (macOS)
 ├── karabiner/                    # Karabiner-Elements config, linked from ~/.config/karabiner
-├── cheatsheet/                   # tmux and Vim cheat sheet, opened with Space+/
+├── cheatsheet/                   # Vim and tmux cheat sheets (Space+v, Space+t)
 ├── vscode/                       # VS Code extension list (just vscode-extensions)
 ├── .chezmoidata/optin.toml       # opt-in switches, the files each one writes, required choices
 ├── .chezmoitemplates/            # settings template shared by VS Code and Cursor

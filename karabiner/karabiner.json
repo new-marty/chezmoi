@@ -21,7 +21,7 @@
       "complex_modifications": {
         "rules": [
           {
-            "description": "SpaceFN: hold Space for h/j/k/l arrows and / for the tmux and Vim cheat sheet (English input only: Japanese input uses Space to convert); tap Space for space",
+            "description": "SpaceFN: hold Space for h/j/k/l arrows, v for the Vim cheat sheet and t for the tmux one (English input only: Japanese input uses Space to convert); tap Space for space",
             "manipulators": [
               {
                 "type": "basic",
@@ -166,7 +166,7 @@
               {
                 "type": "basic",
                 "from": {
-                  "key_code": "slash",
+                  "key_code": "v",
                   "modifiers": {
                     "optional": [
                       "any"
@@ -175,7 +175,30 @@
                 },
                 "to": [
                   {
-                    "shell_command": "open ~/.config/karabiner/../cheatsheet/index.html"
+                    "shell_command": "/bin/sh ~/.config/karabiner/../scripts/cheatsheet.sh vim"
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "variable_if",
+                    "name": "spacefn_layer",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "t",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "/bin/sh ~/.config/karabiner/../scripts/cheatsheet.sh tmux"
                   }
                 ],
                 "conditions": [
