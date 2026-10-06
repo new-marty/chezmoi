@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vim and tmux map</title>
 <!--
-  One page for the screen and for paper (just cheatsheet-pdf: two A4 landscape
-  pages, Vim on the front, tmux on the back).
+  One page for the screen and for paper (just cheatsheet-pdf: three A4
+  landscape pages: Vim, tmux, and everyday recipes).
   Colour means mode in Vim (normal, insert, visual, command) and level in tmux
   (session, window, pane). Dashed boxes are Mac-only (Karabiner, Ghostty, this
   repository's tmux.conf); everything else works on a bare server.
@@ -125,6 +125,22 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
   table.gram td { font-size: .85rem; padding: 4px 3px; }
 }
 
+
+/* recipes page */
+.recipes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 18px; align-items: start; }
+.recipe { display: grid; gap: 5px; min-width: 0; border-top: 2px solid var(--line); padding-top: 6px; }
+.recipe h4 { margin: 0; font-size: .95rem; }
+.recipe h4 .vim { font-weight: 500; }
+.recipe .why { color: var(--muted); font-size: .82rem; }
+.ba { display: grid; grid-template-columns: max-content 1fr; gap: 1px 8px; font-family: var(--f-key); font-size: .8rem; background: var(--soft); border-radius: 6px; padding: 4px 8px; min-width: 0; }
+.ba span:nth-child(odd) { color: var(--muted); font-family: var(--f-ui); font-size: .78rem; }
+.ba span:nth-child(even) { white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.ba .hl { background: var(--normal-bg); border-radius: 3px; }
+.recipes-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-top: 4px; }
+.recipes-head h3 { font-size: 1.05rem; margin: 0; }
+.recipes-head p { color: var(--muted); font-size: .85rem; margin: 0; }
+@media screen and (max-width: 860px) { .recipes { grid-template-columns: minmax(0, 1fr); } }
+
 /* ---------- paper ---------- */
 @page { size: A4 landscape; margin: 8mm; }
 @media print {
@@ -151,6 +167,14 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
   .ess span, .strip { font-size: 8.4pt; }
   .strip > b { font-size: 8.2pt; }
   .mac .row { font-size: 8.2pt; }
+  .recipes { gap: 2.4mm 5mm; }
+  .recipe { gap: 1.1mm; padding-top: 1.2mm; }
+  .recipe h4 { font-size: 9pt; }
+  .recipe .why { font-size: 7.6pt; }
+  .ba { font-size: 7.6pt; padding: 1mm 2mm; }
+  .ba span:nth-child(odd) { font-size: 7.2pt; }
+  .recipes-head h3 { font-size: 10.5pt; }
+  .recipes-head p { font-size: 8pt; }
 }
 </style>
 </head>
@@ -158,7 +182,7 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
 
 <div class="nav">
   <h1>Vim and tmux map</h1>
-  <a href="#vim">Vim</a><a href="#tmux">tmux</a>
+  <a href="#vim">Vim</a><a href="#tmux">tmux</a><a href="#recipes">Recipes</a>
   <p>Dashed boxes work only on this Mac; everything else works on any server. Print with <kbd>just cheatsheet-pdf</kbd> (A4 landscape).</p>
 </div>
 
@@ -179,19 +203,19 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
         <rect x="148" y="112" width="160" height="82" rx="14" fill="var(--normal-bg)" stroke="var(--normal)" stroke-width="2.5"/>
         <text x="228" y="148" text-anchor="middle" font-size="21" font-weight="700" fill="var(--ink)">NORMAL</text>
         <text x="228" y="173" text-anchor="middle" font-size="13.5" fill="var(--ink)">move, delete, copy</text>
-        <rect x="358" y="112" width="104" height="82" rx="14" fill="var(--insert-bg)" stroke="var(--insert)" stroke-width="2"/>
-        <text x="410" y="148" text-anchor="middle" font-size="18" font-weight="700" fill="var(--ink)">INSERT</text>
-        <text x="410" y="173" text-anchor="middle" font-size="13.5" fill="var(--ink)">type text</text>
+        <rect x="370" y="112" width="94" height="82" rx="14" fill="var(--insert-bg)" stroke="var(--insert)" stroke-width="2"/>
+        <text x="417" y="148" text-anchor="middle" font-size="18" font-weight="700" fill="var(--ink)">INSERT</text>
+        <text x="417" y="173" text-anchor="middle" font-size="13.5" fill="var(--ink)">type text</text>
         <rect x="148" y="6" width="160" height="58" rx="12" fill="var(--command-bg)" stroke="var(--command)" stroke-width="2"/>
         <text x="228" y="31" text-anchor="middle" font-size="17" font-weight="700" fill="var(--ink)">COMMAND</text>
         <text x="228" y="52" text-anchor="middle" font-size="13" class="mono" fill="var(--ink)">:w  :q  :42</text>
         <rect x="148" y="240" width="160" height="56" rx="12" fill="var(--visual-bg)" stroke="var(--visual)" stroke-width="2"/>
         <text x="228" y="265" text-anchor="middle" font-size="17" font-weight="700" fill="var(--ink)">VISUAL</text>
         <text x="228" y="285" text-anchor="middle" font-size="13.5" fill="var(--ink)">select text</text>
-        <line x1="310" y1="134" x2="354" y2="134" stroke="var(--insert)" stroke-width="2.2" marker-end="url(#ah)"/>
-        <text x="332" y="126" text-anchor="middle" font-size="15" class="mono" fill="var(--ink)">i a o</text>
-        <line x1="356" y1="172" x2="312" y2="172" stroke="var(--normal)" stroke-width="2.2" marker-end="url(#ah)"/>
-        <text x="334" y="190" text-anchor="middle" font-size="15" class="mono" fill="var(--ink)">Esc</text>
+        <line x1="311" y1="134" x2="366" y2="134" stroke="var(--insert)" stroke-width="2.2" marker-end="url(#ah)"/>
+        <text x="339" y="124" text-anchor="middle" font-size="15" class="mono" fill="var(--ink)">i a o</text>
+        <line x1="368" y1="172" x2="313" y2="172" stroke="var(--normal)" stroke-width="2.2" marker-end="url(#ah)"/>
+        <text x="340" y="191" text-anchor="middle" font-size="15" class="mono" fill="var(--ink)">Esc</text>
         <line x1="200" y1="110" x2="200" y2="68" stroke="var(--command)" stroke-width="2.2" marker-end="url(#ah)"/>
         <text x="190" y="95" text-anchor="end" font-size="18" class="mono" fill="var(--ink)">:</text>
         <line x1="256" y1="68" x2="256" y2="108" stroke="var(--normal)" stroke-width="2.2" marker-end="url(#ah)"/>
@@ -200,39 +224,19 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
         <line x1="200" y1="196" x2="200" y2="236" stroke="var(--visual)" stroke-width="2.2" marker-end="url(#ah)"/>
         <text x="190" y="222" text-anchor="end" font-size="15" class="mono" fill="var(--ink)">v V</text>
         <line x1="256" y1="236" x2="256" y2="198" stroke="var(--normal)" stroke-width="2.2" marker-end="url(#ah)"/>
-        <text x="266" y="214" font-size="13" fill="var(--ink)"><tspan class="mono">Esc</tspan>, or act on the</text>
-        <text x="266" y="231" font-size="13" fill="var(--ink)">selection: <tspan class="mono">d</tspan> <tspan class="mono">y</tspan> <tspan class="mono">&gt;</tspan></text>
+        <text x="266" y="216" font-size="13" fill="var(--ink)"><tspan class="mono">Esc</tspan>, or <tspan class="mono">d</tspan> <tspan class="mono">y</tspan> <tspan class="mono">&gt;</tspan></text>
+        <text x="266" y="232" font-size="12" fill="var(--muted)">act on the selection</text>
       </svg>
       <p class="cap"><span class="k i">i</span> types before the cursor, <span class="k i">a</span> after it, <span class="k i">o</span> on a new line below.</p>
     </figure>
 
     <figure class="cell w5 m-line">
-      <h3>Moving along a line <small>cursor on the n of backend_server</small></h3>
-      <svg viewBox="0 0 530 160" role="img" aria-label="Motions on one line, with the cursor on the n of backend_server: 0 goes to the start of the line, ^ to the first non-blank character, b to the start of the word, e to the end of the word, w to the next word, $ to the end of the line.">
-        <text x="282.3" y="13" text-anchor="middle" font-size="12" fill="var(--muted)">cursor</text>
-        <line x1="282.3" y1="17" x2="282.3" y2="30" stroke="var(--muted)" stroke-width="1.2"/>
-        <rect x="18" y="33" width="494" height="40" rx="5" fill="var(--soft)"/>
-        <rect x="276.0" y="35" width="12.6" height="36" fill="var(--normal)" opacity=".35"/>
-        <text x="24" y="60" font-size="20" class="mono" fill="var(--ink)" xml:space="preserve" textLength="478.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text>
-        <g stroke="var(--normal)" stroke-width="1.4">
-          <line x1="80.7" y1="75" x2="80.7" y2="88"/>
-          <line x1="219.3" y1="75" x2="219.3" y2="88"/>
-          <line x1="408.3" y1="75" x2="408.3" y2="88"/>
-          <line x1="30.3" y1="75" x2="30.3" y2="110"/>
-          <line x1="383.1" y1="75" x2="383.1" y2="110"/>
-          <line x1="496.5" y1="75" x2="496.5" y2="132"/>
-        </g>
-        <g font-size="13" fill="var(--ink)">
-          <text x="74.7" y="102"><tspan class="mono" fill="var(--normal)" font-size="16">^</tspan> first character</text>
-          <text x="213.3" y="102"><tspan class="mono" fill="var(--normal)" font-size="16">b</tspan> start of word</text>
-          <text x="402.3" y="102"><tspan class="mono" fill="var(--normal)" font-size="16">w</tspan> next word</text>
-          <text x="24.3" y="124"><tspan class="mono" fill="var(--normal)" font-size="16">0</tspan> start of line</text>
-          <text x="389.1" y="124" text-anchor="end">end of word <tspan class="mono" fill="var(--normal)" font-size="16">e</tspan></text>
-          <text x="502.5" y="146" text-anchor="end">end of line <tspan class="mono" fill="var(--normal)" font-size="16">$</tspan></text>
-        </g>
-        <text x="24" y="146" font-size="12.5" fill="var(--muted)"><tspan class="mono" fill="var(--ink)">h j k l</tspan> move one step ← ↓ ↑ →</text>
+      <h3>Moving along a line <small>dashed box: where the cursor starts, green: where the key takes it</small></h3>
+      <svg viewBox="0 0 540 196" role="img" aria-label="Motions on one line, starting with the cursor on the n of backend_server: 0 goes to the start of the line, ^ to the first character, b to the start of the word, e to the end of the word, w to the next word, $ to the end of the line.">
+        <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--normal)"/></marker></defs>
+        <text x="8" y="34" font-size="17" class="mono" fill="var(--normal)">0</text><text x="32" y="34" font-size="13" fill="var(--ink)">start of line</text><rect x="166" y="19" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="20" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="170.0" y="20" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="34" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 18 Q270.8 7 174.8 18" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/><text x="8" y="64" font-size="17" class="mono" fill="var(--normal)">^</text><text x="32" y="64" font-size="13" fill="var(--ink)">first character</text><rect x="166" y="49" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="50" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="208.4" y="50" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="64" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 48 Q290.0 37 213.2 48" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/><text x="8" y="94" font-size="17" class="mono" fill="var(--normal)">b</text><text x="32" y="94" font-size="13" fill="var(--ink)">start of word</text><rect x="166" y="79" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="80" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="314.0" y="80" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="94" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 78 Q342.8 67 318.8 78" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/><text x="8" y="124" font-size="17" class="mono" fill="var(--normal)">e</text><text x="32" y="124" font-size="13" fill="var(--ink)">end of word</text><rect x="166" y="109" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="110" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="438.8" y="110" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="124" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 108 Q405.20000000000005 97 443.6 108" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/><text x="8" y="154" font-size="17" class="mono" fill="var(--normal)">w</text><text x="32" y="154" font-size="13" fill="var(--ink)">next word</text><rect x="166" y="139" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="140" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="458.0" y="140" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="154" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 138 Q414.8 127 462.8 138" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/><text x="8" y="184" font-size="17" class="mono" fill="var(--normal)">$</text><text x="32" y="184" font-size="13" fill="var(--ink)">end of line</text><rect x="166" y="169" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="170" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="525.2" y="170" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="184" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 168 Q448.4 157 530.0 168" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/>
       </svg>
-      <p class="cap"><span class="k n">f</span><kbd>x</kbd> jumps to the next x on the line, <span class="k n">;</span> repeats it. A number in front repeats a motion: <span class="k n">3w</span> is three words on.</p>
+      <p class="cap"><span class="k n">h</span> <span class="k n">j</span> <span class="k n">k</span> <span class="k n">l</span> move one step ← ↓ ↑ →. <span class="k n">f</span><kbd>x</kbd> jumps to the next x on the line, <span class="k n">;</span> repeats it. A number in front repeats: <span class="k n">3w</span> is three words on.</p>
     </figure>
 
     <figure class="cell w3 m-file">
@@ -266,7 +270,7 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
       <h3>Verb + where <small>type the two keys in a row</small></h3>
       <div class="tablewrap">
       <table class="gram">
-        <thead><tr><th></th><th><span class="k">w</span><br>next word</th><th><span class="k">$</span><br>line end</th><th><span class="k">iw</span><span class="vim">vim</span><br>word</th><th><span class="k">i"</span><span class="vim">vim</span><br>in "…"</th><th>twice<br>= line</th></tr></thead>
+        <thead><tr><th></th><th><span class="k">w</span><br>next word</th><th><span class="k">$</span><br>line end</th><th><span class="k">iw</span><span class="vim">vim</span><br>word</th><th><span class="k">i"</span><span class="vim">vim</span><br>in "…"</th><th>same key<br>twice</th></tr></thead>
         <tbody>
           <tr><th class="row"><span class="k">d</span> delete</th><td>dw</td><td>d$</td><td>diw</td><td>di"</td><td class="hot">dd</td></tr>
           <tr><th class="row"><span class="k">c</span> change</th><td>cw</td><td>c$</td><td>ciw</td><td class="hot">ci"</td><td>cc</td></tr>
@@ -274,7 +278,7 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
         </tbody>
       </table>
       </div>
-      <p class="cap">Read <span class="k n">dw</span> as d + w: delete to the next word. <span class="k">c</span> deletes and leaves you in Insert mode. <span class="k n">p</span> pastes what you deleted or copied, <span class="k n">x</span> deletes one character, <span class="k n">.</span> repeats the last change.</p>
+      <p class="cap">Read <span class="k n">dw</span> as d + w: delete to the next word. The same key twice works on the whole line: <span class="k n">dd</span> deletes it. <span class="k">c</span> deletes and leaves you in Insert mode. <span class="k n">p</span> pastes what you deleted or copied, <span class="k n">x</span> deletes one character, <span class="k n">.</span> repeats the last change.</p>
     </div>
 
     <div class="cell w3 m-ess">
@@ -299,16 +303,6 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
       </div>
     </div>
 
-    <div class="cell w12">
-      <h3>Everyday tasks <small>each key is coloured by the mode it leaves you in</small></h3>
-      <div class="steps">
-        <div class="strip"><b>Change one setting</b><span class="k">vi file</span><span class="to">→</span><span class="k c">/listen</span><span class="k n">Enter</span><span class="to">→</span><span class="k i">cw</span><em>new value</em><span class="k n">Esc</span><span class="to">→</span><span class="k c">:wq</span></div>
-        <div class="strip"><b>Add a line at the end</b><span class="k n">G</span><span class="k i">o</span><em>type it</em><span class="k n">Esc</span><span class="to">→</span><span class="k c">:wq</span></div>
-        <div class="strip"><b>Read a log</b><span class="k">view app.log</span><em>(read-only)</em><span class="to">→</span><span class="k n">G</span><span class="k c">?ERROR</span><span class="k n">Enter</span><span class="k n">n</span><em>earlier match</em><span class="to">→</span><span class="k c">:q</span></div>
-        <div class="strip"><b>Undo a mistake</b><span class="k n">Esc</span><span class="k n">Esc</span><span class="to">→</span><span class="k n">u</span><em>a few times</em><span class="to">→</span><em>or</em><span class="k c">:q!</span><em>to leave without saving</em></div>
-        <div class="strip"><b>A file owned by root</b><span class="k">sudoedit /etc/…</span><em>opens with your own settings; for cron use</em><span class="k">crontab -e</span></div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -408,6 +402,35 @@ ul.tight { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: .
       <h3>Only on this Mac (on a server, use the keys above)</h3>
       <div class="row"><span><span class="k">Opt+hjkl</span> move between panes</span><span><span class="k">Opt+1…9</span> go to a window</span><span><span class="k">Opt+n</span> new window</span><span><span class="k">Opt+z</span> zoom</span><span><span class="k">Opt+/</span> short key list</span><span><span class="k">Space</span>+<span class="k">/</span> this sheet</span><span>The bottom line of tmux lists the keys you can press next</span></div>
     </div>
+  </div>
+</section>
+
+<!-- ============================ recipes ============================ -->
+<section class="page" id="recipes" aria-labelledby="recipes-h">
+  <div class="page-head">
+    <h2 id="recipes-h">Everyday recipes</h2>
+    <p>Real tasks, key by key. Vim keys are coloured by the mode they leave you in; plain grey means type it as shown.</p>
+  </div>
+  <div class="recipes-head"><h3>Vim</h3><p>Start in Normal mode. <span class="vim">vim</span> means Vim rather than a minimal vi.</p></div>
+  <div class="recipes">
+      <article class="recipe"><h4>Change a value</h4><div class="strip"><span class="k">vi nginx.conf</span><span class="to">→</span><span class="k c">/worker_conn</span><span class="k n">Enter</span><span class="to">→</span><span class="k n">w</span><span class="k i">cw</span><em>2048</em><span class="k n">Esc</span><span class="to">→</span><span class="k c">:wq</span></div><div class="ba"><span>before</span><span>worker_connections <span class="hl">1024</span>;</span><span>after</span><span>worker_connections <span class="hl">2048</span>;</span></div><p class="why">w steps from the name onto the value; cw replaces just that word.</p></article>
+      <article class="recipe"><h4>Comment out a line</h4><div class="strip"><span class="k c">/listen 80</span><span class="k n">Enter</span><span class="to">→</span><span class="k i">I</span><em>#</em><span class="k n">Esc</span><span class="to">→</span><span class="k c">:wq</span></div><div class="ba"><span>before</span><span>    listen 80;</span><span>after</span><span>    <span class="hl">#</span> listen 80;</span></div><p class="why">I types at the start of the line, whatever the cursor position.</p></article>
+      <article class="recipe"><h4>Comment out several lines<span class="vim">vim</span></h4><div class="strip"><span class="k v">Ctrl-v</span><span class="k v">jjj</span><span class="to">→</span><span class="k i">I</span><em>#</em><span class="k n">Esc</span></div><p class="why">Ctrl-v selects a column; what you type after I appears on every line when you press Esc.</p></article>
+      <article class="recipe"><h4>Delete lines</h4><div class="strip"><span class="k n">5dd</span><em>5 lines from here</em><em>or</em><span class="k c">:10,20d</span><em>lines 10–20</em></div><p class="why">Turn on line numbers first if you need them: :set nu</p></article>
+      <article class="recipe"><h4>Copy a line, then edit the copy</h4><div class="strip"><span class="k n">yy</span><span class="k n">p</span><span class="to">→</span><span class="k n">w</span><span class="k i">C</span><em>10.0.0.2;</em><span class="k n">Esc</span></div><div class="ba"><span>before</span><span>allow 10.0.0.1;</span><span>after</span><span>allow 10.0.0.1;<br>allow <span class="hl">10.0.0.2;</span></span></div><p class="why">p pastes below the cursor (P above). C replaces everything to the end of the line.</p></article>
+      <article class="recipe"><h4>Replace everywhere, one at a time</h4><div class="strip"><span class="k c">:%s/old/new/gc</span><span class="k n">Enter</span><span class="to">→</span><em>answer</em><span class="k n">y</span><em>or</em><span class="k n">n</span><em>for each</em></div><p class="why">% means every line, g every match on a line, c asks each time. Drop c to replace them all at once.</p></article>
+      <article class="recipe"><h4>Read a log from the end</h4><div class="strip"><span class="k">view app.log</span><span class="to">→</span><span class="k n">G</span><span class="k c">?ERROR</span><span class="k n">Enter</span><span class="to">→</span><span class="k n">n</span><em>older</em><span class="k n">N</span><em>newer</em><span class="to">→</span><span class="k c">:q</span></div><p class="why">view opens read-only. ? searches upwards, so n keeps going back in time.</p></article>
+      <article class="recipe"><h4>Saved, but no permission<span class="vim">vim</span></h4><div class="strip"><span class="k c">:w !sudo tee % &gt; /dev/null</span><span class="k n">Enter</span><span class="to">→</span><span class="k n">L</span><span class="to">→</span><span class="k c">:q</span></div><p class="why">For a root file you opened without sudo. L reloads the saved file when Vim warns that it changed.</p></article>
+      <article class="recipe"><h4>Throw away your changes</h4><div class="strip"><span class="k c">:e!</span><em>back to the saved file</em><em>or</em><span class="k c">:q!</span><em>just leave</em></div><p class="why">Nothing is written until :w, so either way the file on disk is untouched.</p></article>
+  </div>
+  <div class="recipes-head"><h3>tmux</h3><p><kbd>C-b</kbd> then the key.</p></div>
+  <div class="recipes">
+      <article class="recipe"><h4>A job that survives logout</h4><div class="strip"><span class="k">tmux new -s deploy</span><span class="to">→</span><em>start the job</em><span class="to">→</span><span class="k">C-b d</span><span class="to">→</span><em>later:</em><span class="k">tmux a -t deploy</span></div><p class="why">The job keeps running on the server after you detach or the connection drops.</p></article>
+      <article class="recipe"><h4>Edit while watching the log</h4><div class="strip"><span class="k">C-b %</span><span class="to">→</span><span class="k">tail -f app.log</span><span class="to">→</span><span class="k">C-b o</span><span class="to">→</span><span class="k">vi app.conf</span></div><p class="why">C-b o switches between the two panes; C-b z zooms the one you are in.</p></article>
+      <article class="recipe"><h4>Copy an error from the scrollback</h4><div class="strip"><span class="k">C-b [</span><span class="k">?error</span><span class="k">Enter</span><span class="to">→</span><span class="k">Space</span><span class="k">$</span><span class="k">Enter</span><span class="to">→</span><span class="k">C-b ]</span></div><p class="why">With vi keys: Space starts the selection, $ extends it to the line end, Enter copies.</p></article>
+      <article class="recipe"><h4>Type in every pane at once</h4><div class="strip"><span class="k">C-b :</span><em>setw synchronize-panes on</em><span class="to">→</span><em>… then</em><em>off</em></div><p class="why">Handy for running the same command on several servers, each ssh-ed in its own pane.</p></article>
+      <article class="recipe"><h4>Name things so you find them</h4><div class="strip"><span class="k">C-b ,</span><em>window</em><span class="k">C-b $</span><em>session</em><span class="to">→</span><span class="k">C-b w</span><em>pick from the tree</em></div><p class="why">tmux ls and C-b s list sessions by these names.</p></article>
+      <article class="recipe"><h4>Close what you no longer need</h4><div class="strip"><span class="k">C-b x</span><em>pane</em><span class="k">C-b &amp;</span><em>window</em><em>answer</em><span class="k">y</span><span class="to">→</span><span class="k">tmux kill-session -t old</span></div><p class="why">exit in the last pane of a window closes it too.</p></article>
   </div>
 </section>
 

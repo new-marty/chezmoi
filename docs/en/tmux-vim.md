@@ -25,10 +25,12 @@ for paper.
   switch, run the recipes as `just --justfile "$(chezmoi source-path)/justfile" cheatsheet`.
 - It is drawn rather than listed: the Vim modes as a map (colour means mode
   everywhere on the page), motions on a real line and through a file, the
-  verbs and ranges as a table, and the tmux screen with the key for each part.
+  verbs and ranges as a table, the tmux screen with the key for each part, and
+  a page of everyday recipes with the text before and after.
   Dashed boxes are Mac-only.
-- Print it: `just cheatsheet-pdf` writes two A4 landscape pages (Vim on the
-  front, tmux on the back) to `~/Downloads/tmux-vim-cheatsheet.pdf` with
+- Print it: `just cheatsheet-pdf` writes three A4 landscape pages (Vim, tmux,
+  and everyday recipes such as changing a setting or keeping a job alive after
+  logout) to `~/Downloads/tmux-vim-cheatsheet.pdf` with
   Chrome. Pass a path to write elsewhere: `just cheatsheet-pdf ~/Desktop/sheet.pdf`.
 
 Learn one or two keys a day ("Learn Vim Progressively").
