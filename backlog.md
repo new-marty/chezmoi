@@ -6,45 +6,14 @@
 
 ---
 
-## [Todo] 会社の Mac を opt-in（`omz`、`cursor`、`editor-builtin`）で chezmoi に移す
+## [Todo] 会社の Mac を chezmoi に移す
 
-リポジトリ側は対応済み。会社の Mac 用の環境は定義せず、使うものを opt-in する:
-`omz`（Oh My Zsh で同梱プラグインを読む。会社の Mac は clone できないので
-`dot_zsh/omz-custom` に同梱）と、エディタの見た目の `editor-extensions` /
-`editor-builtin`（既定なし。`vscode` か `cursor` を選んだら一方を必ず選ぶ）。
-スイッチの選び方、Oh My Zsh の入れ方、clone できないときの手順は `docs/en/setup.md`
-にある。このマシンでは `optin = ["omz", "cursor", "editor-builtin"]` にし、`tmux` は
-選ばない（tpm を clone する）。許可リストの都合で、fzf、peco、atuin、eza、bat、zoxide、
-direnv、mise、navi、delta、Ghostty、Hack Nerd Font は今は入れられない。どれも入っていなくても
-動くので、許可されたら入れて apply し直すだけでよい。拡張機能は、許可されたものを
-ローカルで入れる（一覧は opt-in しない）。Poimandres と catppuccin の拡張、Hack Nerd Font が
-入ったら、`editor-builtin` を `editor-extensions` に替えて apply する。
+リポジトリ側の準備は済んでいる。使えるものに合わせてスイッチを選び、足りないものは
+ローカルのファイルで補う（手順は `docs/en/setup.md`）。残りはそのマシンでしかできない:
 
-今は zip から作った `~/.dotfiles/` を symlink で使っている。移す手順:
-
-1. マシン固有のものをローカルのファイルへ移す。`~/.gitconfig` には `user.name`、
-   `user.email` と署名の設定だけを残す（ほかは `~/.config/git/config` から来る）。
-   秘密の値と追加の `PATH` は `~/.zshenv.local`、自分のエイリアスと関数は `~/.zshrc.local`。
-2. `~/.dotfiles/` を指す symlink だけを消す（ディレクトリはバックアップとして残す）:
-   `find ~ ~/.config ~/Library/Application\ Support/Cursor/User -maxdepth 1 -type l -lname "$HOME/.dotfiles/*"`
-3. リポジトリを用意し、スイッチを選ぶ。`chezmoi diff` で、Cursor の設定を以前の
-   `~/.dotfiles/cursor/settings.json` と比べる。
-4. `chezmoi apply --less-interactive` で apply し、新しいターミナルでプロンプト（steeef）、
-   `gst` などのエイリアス、`just doctor` を確かめる。すべて動いたら `~/.dotfiles/` を消す。
-
-残りはリポジトリの外でしかできないこと:
-
-- `vscode` か `cursor` を選んでいる手元の Mac は、次の apply の前に `optin` へ
-  `editor-extensions` を足す（足さないと apply が止まる）。
-- 手作業版の `~/.dotfiles/zsh/steeef.zsh-theme` と `~/.dotfiles/cursor/settings.json` は
-  リポジトリに無いまま、説明をもとに Cursor の設定（`editor-builtin`）を作り直した。
-  持ち帰って `chezmoi diff` と比べ、足りないものを取り込む。手作業版の steeef の修正
-  （トゥルーカラーの 16 進の色、iTerm2 以外では時計を左に出す）は取り込んでいない。
-  全マシンのプロンプトを opt-in なしに変えてしまううえ、Cursor のパレットは
-  `editor-builtin` が Poimandres にし、iTerm2 はプリセットで足りるため。Cursor で右側の
-  時計が本当に出ないかは会社の Mac で確かめ、出ないならそのときに考える。
-- chezmoi の許可が下りたら、移行手順どおりに apply し、iTerm2 と Cursor でプロンプトと
-  配色を確かめる。`chezmoi init` が clone できるかもここで分かる（できなければ zip）。
+- chezmoi が使えるようになったら、手作業の `~/.dotfiles/` の中身をローカルのファイルへ
+  移し、symlink を外してから apply する。プロンプトと配色を確かめる。
+- 手作業版の Cursor の設定と steeef の修正を `chezmoi diff` と比べ、取り込むものを決める。
 
 ---
 
