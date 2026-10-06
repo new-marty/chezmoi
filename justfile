@@ -75,6 +75,22 @@ doctor:
     set -e
     echo "🔍 Checking dotfiles health..."
     echo ""
+
+    # The profile picks the zsh plugin loader (.chezmoidata/profiles.toml).
+    profile="$(chezmoi execute-template '{{{{ dig "profile" "full" . }}' 2>/dev/null || echo "unknown")"
+    echo "🧩 Profile: $profile"
+    if [[ "$profile" == work ]]; then
+        if [[ -r "${ZSH:-$HOME/.oh-my-zsh}/oh-my-zsh.sh" ]]; then
+            echo "  ✅ zsh plugins: Oh My Zsh ${ZSH:-$HOME/.oh-my-zsh}, plugins from ~/.zsh/omz-custom"
+        else
+            echo "  ❌ zsh plugins: Oh My Zsh not installed, ~/.zsh is sourced without plugins (docs/en/work-mac.md)"
+        fi
+    elif command -v sheldon &>/dev/null; then
+        echo "  ✅ zsh plugins: sheldon (~/.config/sheldon/plugins.toml)"
+    else
+        echo "  ❌ zsh plugins: sheldon not installed, ~/.zsh is sourced without plugins"
+    fi
+    echo ""
     
     echo "📦 Tools the dotfiles use (all optional except chezmoi and git):"
     # The shell and gitconfig check for each of these and fall back to the
@@ -204,6 +220,6 @@ lint:
     set -euo pipefail
     # Run from ~/justfile (the opt-in copy), this file sits outside the source tree.
     [ -f dot_zshrc ] || cd "$(chezmoi source-path)"
-    for f in dot_zshrc dot_zsh/*.zsh dot_zsh/tests/*.zsh; do zsh -n "$f"; done
+    for f in dot_zshrc dot_zsh/*.zsh dot_zsh/*.zsh-theme dot_zsh/tests/*.zsh; do zsh -n "$f"; done
     shellcheck scripts/*.sh run_once_before_install-tpm.sh.tmpl
 

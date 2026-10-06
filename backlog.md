@@ -6,6 +6,23 @@
 
 ---
 
+## [Todo] 会社の Mac を `profile = "work"` に移し、手作業版との差を取り込む
+
+リポジトリ側は対応済み（`profile = "work"` で Oh My Zsh と同梱プラグイン、Poimandres の
+色を設定で付けたエディタ設定、トゥルーカラーの steeef）。手順は `docs/en/work-mac.md`。
+残りは会社の Mac でしかできないこと:
+
+- 手作業版の `~/.dotfiles/zsh/steeef.zsh-theme` と `~/.dotfiles/cursor/settings.json` は
+  リポジトリに無いまま、説明をもとに作り直した。持ち帰って `chezmoi diff` と比べ、
+  色の値やエディタ設定に足りないものがあれば取り込む。手作業版の時計は
+  `TERM_PROGRAM=iTerm.app` のときだけ右に出していたが、こちらは VS Code と Cursor
+  （`TERM_PROGRAM=vscode`）のときだけ左に出す。Ghostty で今の表示を変えないため。
+- chezmoi の許可が下りたら、移行手順どおりに apply し、iTerm2 と Cursor でプロンプトと
+  配色を確かめる。`chezmoi init` が clone できるかもここで分かる（できなければ zip）。
+- sheldon が許可されたら `profile = "full"` に戻す。
+
+---
+
 ## [Todo] VS Code と Cursor の拡張機能の一覧を見直す
 
 `private_Library/Application Support/Code/User/extensions.json` は VS Code が読まない

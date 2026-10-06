@@ -13,3 +13,4 @@
 | [Git](git.md)                         | 共有の git 設定で何が変わるか、git のエイリアスを確かめる        |
 | [SSH](ssh-setup.md)                   | ホストや鍵を足す、SSH 鍵でコミットに署名する                     |
 | [任意のツール](tools.md)              | dotfiles が使うツールと、それぞれで何が増えるかを確かめる        |
+| [会社の Mac](work-mac.md)             | sheldon が使えず Oh My Zsh は使える Mac を設定する（`profile = "work"`） |

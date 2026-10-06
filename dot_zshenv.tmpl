@@ -63,6 +63,11 @@ DOTFILES_GUI_EDITOR='code'
 DOTFILES_GUI_EDITOR=''
 {{- end }}
 
+# Machine profile (.chezmoidata/profiles.toml), for .zshrc to pick the plugin
+# loader: "work" loads Oh My Zsh, "full" loads sheldon. A plain shell variable,
+# like DOTFILES_GUI_EDITOR.
+DOTFILES_PROFILE='{{ dig "profile" "full" . }}'
+
 # Machine-local environment (not managed by chezmoi)
 [[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"
 

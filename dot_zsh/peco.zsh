@@ -9,7 +9,7 @@ function peco-select-history() {
   zle clear-screen
 }
 zle -N peco-select-history
-bindkey '^r' peco-select-history
+command -v peco &>/dev/null && bindkey '^r' peco-select-history
 
 # cdr and its directory list are zsh functions that must be loaded before use;
 # chpwd_recent_dirs records each directory change for `cdr -l` to list.
@@ -34,4 +34,4 @@ function peco-cdr() {
   fi
 }
 zle -N peco-cdr
-bindkey '^u' peco-cdr
+command -v peco &>/dev/null && bindkey '^u' peco-cdr

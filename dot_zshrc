@@ -3,15 +3,48 @@ unsetopt correct correctall
 DISABLE_CORRECTION="true"
 setopt auto_pushd auto_cd
 
-# Completion settings (cached for faster startup)
-autoload -U compinit
-zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
-if [[ -s "$zcompdump" && "$zcompdump" -nt "${ZDOTDIR:-$HOME}/.zshrc" ]]; then
-  compinit -C  # Use cached completions
+# Plugin loader. DOTFILES_PROFILE comes from .zshenv (chezmoi's `profile`):
+# the work profile loads Oh My Zsh, the full profile loads sheldon. When the
+# loader is not installed, the ~/.zsh files are sourced directly further down.
+if [[ $DOTFILES_PROFILE == work && -r ${ZSH:-$HOME/.oh-my-zsh}/oh-my-zsh.sh ]]; then
+  dotfiles_loader=omz
+elif command -v sheldon &>/dev/null; then
+  dotfiles_loader=sheldon
 else
-  compinit       # Rebuild cache if missing or stale
+  dotfiles_loader=none
 fi
-unset zcompdump
+
+if [[ $dotfiles_loader == omz ]]; then
+  # Oh My Zsh is installed by hand from its zip into ~/.oh-my-zsh and only
+  # loads plugins here. The plugins it does not ship are vendored in
+  # ~/.zsh/omz-custom (scripts/vendor-omz-plugins.sh), kept outside
+  # ~/.oh-my-zsh so that reinstalling Oh My Zsh does not touch them. The steeef
+  # theme is sourced from ~/.zsh with the other files below, not as an Oh My
+  # Zsh theme. zsh-syntax-highlighting must come before
+  # zsh-history-substring-search.
+  export ZSH="${ZSH:-$HOME/.oh-my-zsh}"
+  ZSH_CUSTOM="$HOME/.zsh/omz-custom"
+  ZSH_THEME=""
+  zstyle ':omz:update' mode disabled  # updating needs git; reinstall from the zip
+  plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search)
+  source "$ZSH/oh-my-zsh.sh"  # runs compinit
+
+  # Up/Down search history for what is typed so far
+  bindkey '^[[A' history-substring-search-up
+  bindkey '^[[B' history-substring-search-down
+  [[ -n ${terminfo[kcuu1]} ]] && bindkey "${terminfo[kcuu1]}" history-substring-search-up
+  [[ -n ${terminfo[kcud1]} ]] && bindkey "${terminfo[kcud1]}" history-substring-search-down
+else
+  # Completion settings (cached for faster startup)
+  autoload -U compinit
+  zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
+  if [[ -s "$zcompdump" && "$zcompdump" -nt "${ZDOTDIR:-$HOME}/.zshrc" ]]; then
+    compinit -C  # Use cached completions
+  else
+    compinit       # Rebuild cache if missing or stale
+  fi
+  unset zcompdump
+fi
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*:default' menu select=1
 
@@ -44,9 +77,9 @@ command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
 command -v navi &>/dev/null && eval "$(navi widget zsh)"
 
 # Load Sheldon with caching for faster startup
-# (plugins are managed via ~/.config/sheldon/plugins.toml). Without sheldon,
-# source the local files directly so the aliases and widgets still load.
-if command -v sheldon &>/dev/null; then
+# (plugins are managed via ~/.config/sheldon/plugins.toml). With Oh My Zsh or
+# no loader, source the local files directly so the aliases and widgets load.
+if [[ $dotfiles_loader == sheldon ]]; then
   cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}
   sheldon_cache="$cache_dir/sheldon.zsh"
   sheldon_toml="$HOME/.config/sheldon/plugins.toml"
@@ -61,17 +94,21 @@ else
   for f in ~/.zsh/*.zsh(N) ~/.zsh/*.zsh-theme(N); do source "$f"; done
   unset f
 fi
+unset dotfiles_loader
 
-# Custom key bindings (after sheldon loading)
+# Custom key bindings (after plugin loading). Each needs its tool; without it
+# the key keeps zsh's own binding (Ctrl+R: incremental history search).
 # Note: atuin uses --disable-up-arrow so up/down arrows work normally
-bindkey '^R' peco-select-history  # Ctrl+R: peco history search
+command -v peco &>/dev/null && bindkey '^R' peco-select-history  # Ctrl+R: peco history search
 (( $+widgets[_atuin_search_widget] )) && bindkey '^H' _atuin_search_widget # Ctrl+H: atuin enhanced history search
 
 # Ensure suggestion widgets work properly (after all other bindings)
-bindkey '^G' show_command_templates # Ctrl+G for command templates
-bindkey '^S' smart_command_suggest  # Ctrl+S for smart suggestions
-bindkey '^F' show_frequent_commands # Ctrl+F for frequent commands
-bindkey '^N' navi_widget            # Ctrl+N for navi cheat sheets
+if command -v fzf &>/dev/null; then
+  bindkey '^G' show_command_templates # Ctrl+G for command templates
+  bindkey '^S' smart_command_suggest  # Ctrl+S for smart suggestions
+  bindkey '^F' show_frequent_commands # Ctrl+F for frequent commands
+fi
+command -v navi &>/dev/null && bindkey '^N' navi_widget  # Ctrl+N for navi cheat sheets
 
 # Machine-local aliases and functions (not managed by chezmoi)
 if [[ -f ~/.zshrc.local ]]; then source ~/.zshrc.local; fi

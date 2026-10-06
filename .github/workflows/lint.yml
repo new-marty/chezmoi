@@ -41,7 +41,7 @@ jobs:
       # get a syntax check only, as oh-my-zsh's CI does.
       - name: Check zsh syntax
         run: |
-          for f in dot_zshrc dot_zsh/*.zsh dot_zsh/tests/*.zsh; do
+          for f in dot_zshrc dot_zsh/*.zsh dot_zsh/*.zsh-theme dot_zsh/tests/*.zsh; do
             zsh -n "$f"
           done
 
@@ -124,6 +124,8 @@ jobs:
             '{{ keys .optin_paths | sortAlpha | toJson }}')"
           printf '[data]\n    optin = %s\n' "$names" > "$RUNNER_TEMP/all.toml"
           printf '[data]\n    optin = ["vscode", "no-such-switch"]\n' > "$RUNNER_TEMP/unknown.toml"
+          printf '[data]\n    profile = "work"\n    optin = %s\n' "$names" > "$RUNNER_TEMP/work.toml"
+          printf '[data]\n    profile = "no-such-profile"\n' > "$RUNNER_TEMP/unknown-profile.toml"
           cat "$RUNNER_TEMP/optin-paths.txt" "$RUNNER_TEMP/all.toml"
           [ -s "$RUNNER_TEMP/optin-files.txt" ]
 
@@ -144,6 +146,7 @@ jobs:
           while IFS= read -r p; do
             [ -e "$home/$p" ] && { echo "::error::not opted in but applied: ~/$p"; fail=1; }
           done < "$RUNNER_TEMP/optin-paths.txt"
+          [ -e "$home/.zsh/omz-custom" ] && { echo "::error::work profile plugins applied without profile = \"work\""; fail=1; }
           [ "$fail" = 0 ]
           HOME="$home" git config --get core.pager
           HOME="$home" zsh -i -c 'echo "interactive shell started"'
@@ -175,6 +178,42 @@ jobs:
           fi
           [ "$fail" = 0 ]
           HOME="$home" zsh -i -c 'echo "interactive shell started"'
+
+      - name: The work profile loads Oh My Zsh with the vendored plugins
+        run: |
+          # The work Mac installs Oh My Zsh from its zip and cannot clone, so
+          # the plugins must come from the repository (dot_zsh/omz-custom).
+          set -euo pipefail
+          home="$(mktemp -d)"
+          chezmoi apply --config "$RUNNER_TEMP/work.toml" \
+            --source "$SRC" --destination "$home" --exclude=scripts \
+            --persistent-state "$RUNNER_TEMP/work.boltdb"
+          grep -qx "DOTFILES_PROFILE='work'" "$home/.zshenv"
+          # Before Oh My Zsh is installed the shell still starts, without it.
+          HOME="$home" zsh -i -c 'echo "interactive shell started"'
+          curl -fsSL -o "$RUNNER_TEMP/omz.zip" https://github.com/ohmyzsh/ohmyzsh/archive/refs/heads/master.zip
+          unzip -q "$RUNNER_TEMP/omz.zip" -d "$RUNNER_TEMP"
+          mv "$RUNNER_TEMP/ohmyzsh-master" "$home/.oh-my-zsh"
+          HOME="$home" zsh -i -c '
+            for p in $plugins; do print "plugin: $p"; done
+            (( $+functions[_zsh_autosuggest_start] )) || { echo "zsh-autosuggestions not loaded"; exit 1; }
+            (( $+functions[history-substring-search-up] )) || { echo "zsh-history-substring-search not loaded"; exit 1; }
+            [[ -n $ZSH_HIGHLIGHT_VERSION ]] || { echo "zsh-syntax-highlighting not loaded"; exit 1; }
+            (( $+functions[fcat] )) || { echo "~/.zsh/commands.zsh not loaded"; exit 1; }
+          '
+
+      - name: An unknown profile name stops the apply
+        run: |
+          set -uo pipefail
+          home="$(mktemp -d)"
+          if chezmoi apply --config "$RUNNER_TEMP/unknown-profile.toml" \
+              --source "$SRC" --destination "$home" --exclude=scripts \
+              --persistent-state "$RUNNER_TEMP/unknown-profile.boltdb" 2> "$RUNNER_TEMP/unknown-profile.err"; then
+            echo "::error::apply succeeded with an unknown profile"
+            exit 1
+          fi
+          cat "$RUNNER_TEMP/unknown-profile.err"
+          grep -q 'data.profile must be one of full, work, not "no-such-profile"' "$RUNNER_TEMP/unknown-profile.err"
 
       - name: An unknown switch name stops the apply
         run: |

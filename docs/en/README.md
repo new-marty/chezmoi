@@ -15,3 +15,4 @@ the keybindings only, and `docs` opens this folder in your editor.
 | [Git](git.md)                          | see what the shared git config changes, and its aliases            |
 | [SSH](ssh-setup.md)                    | add hosts and keys, sign commits with an SSH key                   |
 | [Optional tools](tools.md)             | see which tools the dotfiles use and what each one adds            |
+| [Work Mac](work-mac.md)                | set up a Mac whose allow-list has Oh My Zsh but not sheldon (`profile = "work"`) |

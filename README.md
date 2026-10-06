@@ -110,6 +110,23 @@ Removing a switch later deletes nothing: chezmoi stops managing those files
 and leaves them where they are. [Setup in detail](docs/en/setup.md) lists the
 files each switch writes and how to clean up after removing one.
 
+## Work Mac
+
+On a Mac whose software allow-list has Oh My Zsh but not sheldon, select the
+work profile in `~/.config/chezmoi/chezmoi.toml`. zsh then loads its plugins
+with Oh My Zsh (installed by hand from its zip) from copies kept in this
+repository, so applying clones nothing, and the VS Code and Cursor settings use
+the built-in theme and system fonts instead of extensions and a Nerd Font.
+
+```toml
+[data]
+    profile = "work"
+    optin = ["cursor"]
+```
+
+The default profile is `full` (sheldon). [Work Mac](docs/en/work-mac.md) has
+the allow-list, installing Oh My Zsh, and moving from a hand-made setup.
+
 ## Put your own settings in local files
 
 These files belong to the machine. The repository never holds their contents.
@@ -140,6 +157,7 @@ in, where to keep API keys, and what to do if this repository wrote an older
 .
 ├── dot_zshenv.tmpl, dot_zprofile.tmpl, dot_zshrc   # zsh startup files
 ├── dot_zsh/                      # aliases, commands, prompt theme, widgets
+│   └── omz-custom/               # Oh My Zsh plugins of the work profile (vendored)
 ├── create_dot_gitconfig          # ~/.gitconfig, created once for local settings
 ├── dot_gitignore_global
 ├── dot_editorconfig
@@ -148,6 +166,7 @@ in, where to keep API keys, and what to do if this repository wrote an older
 ├── private_Library/              # VS Code and Cursor settings (macOS)
 ├── karabiner/                    # Karabiner-Elements config, linked from ~/.config/karabiner
 ├── .chezmoidata/optin.toml       # opt-in switches and the files each one writes
+├── .chezmoidata/profiles.toml    # machine profiles: full (sheldon), work (Oh My Zsh)
 ├── .chezmoitemplates/            # settings template shared by VS Code and Cursor
 ├── run_once_before_install-tpm.sh.tmpl   # installs the tmux plugin manager (tmux switch)
 ├── justfile

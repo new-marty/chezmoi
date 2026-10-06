@@ -9,7 +9,7 @@ the dotfiles do with each tool; for how to use the tool itself, follow its link.
 
 | Tool | What the dotfiles do with it |
 | ---- | ---------------------------- |
-| [sheldon](https://sheldon.cli.rs/) | Loads the zsh plugins in `~/.config/sheldon/plugins.toml` (syntax highlighting, autosuggestions, fzf-tab and others). Its output is cached in `~/.cache/sheldon.zsh` and rebuilt when `plugins.toml` changes. Without sheldon, only the files in `~/.zsh/` are loaded. |
+| [sheldon](https://sheldon.cli.rs/) | Loads the zsh plugins in `~/.config/sheldon/plugins.toml` (syntax highlighting, autosuggestions, fzf-tab and others). Its output is cached in `~/.cache/sheldon.zsh` and rebuilt when `plugins.toml` changes. Without sheldon, only the files in `~/.zsh/` are loaded. The work profile uses Oh My Zsh instead ([Work Mac](work-mac.md)). |
 | [fzf](https://junegunn.github.io/fzf/) | The list for `Ctrl+G`, `Ctrl+S`, `Ctrl+F`, `Tab` completion and `cdf`. |
 | [peco](https://github.com/peco/peco) | History search on `Ctrl+R` and recent directories on `Ctrl+U`. |
 | [atuin](https://docs.atuin.sh/) | History search on `Ctrl+H`. The up arrow is left to zsh. |

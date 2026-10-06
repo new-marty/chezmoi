@@ -4,6 +4,11 @@ This document explains how the steeef zsh theme is optimized for Ghostty's poima
 
 ## Color Mapping
 
+In a truecolor terminal (`COLORTERM=truecolor`: Ghostty, iTerm2, the VS Code and
+Cursor terminals) the theme writes the colors below as hex values (`%F{#89ddff}`),
+so the prompt looks the same whatever palette the terminal has. Other terminals
+get the palette numbers.
+
 The steeef theme uses specific palette numbers that correspond to poimandres colors:
 
 ### Poimandres Palette (from ghostty/poimandres.ghostty)

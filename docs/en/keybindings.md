@@ -1,7 +1,8 @@
 # Keybindings
 
 These are the zsh keybindings the dotfiles add. Each one needs the tool named in
-its row; without it the key does nothing useful. Type `keys` in a terminal for a
+its row; without it the key is not bound and keeps zsh's own meaning (`Ctrl+R`
+is then zsh's incremental history search). Type `keys` in a terminal for a
 short version of this table.
 
 | Key      | What it does                                                   | Needs          |
@@ -14,6 +15,7 @@ short version of this table.
 | `Ctrl+H` | Search history with more filters (directory, session)          | atuin          |
 | `Ctrl+U` | Jump to a recently visited directory                           | peco           |
 | `Tab`    | Completion in an fzf list, with a preview of files and folders | sheldon, fzf   |
+| `Up`/`Down` | Search history for what is typed so far                     | the work profile ([Work Mac](work-mac.md)) |
 
 The picked command is placed on the command line, not run, so you can edit it
 before pressing Enter.

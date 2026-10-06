@@ -25,6 +25,19 @@ Library
 {{ end }}
 
 {{- /*
+Machine profile (.chezmoidata/profiles.toml). Only the work profile loads Oh My
+Zsh, so only it gets the vendored Oh My Zsh plugins.
+*/}}
+{{- $profile := dig "profile" "full" . }}
+{{- if not (and (kindIs "string" $profile) (has $profile .profiles)) }}
+{{-   fail (printf "chezmoi.toml: data.profile must be one of %s, not %q" (.profiles | join ", ") $profile) }}
+{{- end }}
+{{- if ne $profile "work" }}
+# Oh My Zsh plugins of the work profile
+.zsh/omz-custom
+{{- end }}
+
+{{- /*
 Opt-in application settings. .chezmoidata/optin.toml maps each switch to the
 files, directories and scripts it controls; the machine selects switches with
 `optin = [...]` under [data] in its chezmoi.toml. `dig` returns an empty list when the key is
