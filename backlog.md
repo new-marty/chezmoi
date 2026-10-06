@@ -39,10 +39,9 @@ ssh は無視する）、毎回 apply で戻すかを決める。
 済み（2026-10-06）: この Mac の `~/.ssh/config.local` から 1Password の `IdentityAgent` を外し、
 `Host *` でこの鍵を使う形にした（控えは取ってある）。unraid、mini、GitHub はこの鍵で入れることを確認。
 unraid と mini の `authorized_keys` にはこの鍵（と mini に iphone）しか無く、消すものは無い。
+この鍵にはパスフレーズをかけない（本人の判断）。
 
 残り:
-- 鍵にパスフレーズをかけ、キーチェーンに覚えさせる（本人が入力）:
-  `ssh-keygen -p -f ~/.ssh/id_ed25519_macbook`、`ssh-add --apple-use-keychain ~/.ssh/id_ed25519_macbook`
 - debian は接続がタイムアウトして未確認。届くときに、この鍵で入れるか確かめる。
 - GitHub の認証用の鍵: ubuntu 1Password は ubuntu の鍵を 1Password から外すときに作り直す。
   2023 年の RSA 鍵（タイトルはメールアドレス）は、どのマシンのものか分からず残してある。
