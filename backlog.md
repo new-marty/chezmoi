@@ -17,10 +17,12 @@
 - この変更が main に入ったら、`vscode` か `cursor` を選んでいる手元の Mac は、
   次の apply の前に `optin` へ `editor-extensions` を足す（足さないと apply が止まる）。
 - 手作業版の `~/.dotfiles/zsh/steeef.zsh-theme` と `~/.dotfiles/cursor/settings.json` は
-  リポジトリに無いまま、説明をもとに作り直した。持ち帰って `chezmoi diff` と比べ、
-  足りないものを取り込む。手作業版の時計は `TERM_PROGRAM=iTerm.app` のときだけ右に
-  出していたが、こちらは VS Code と Cursor（`TERM_PROGRAM=vscode`）のときだけ左に出す。
-  Ghostty で今の表示を変えないため。
+  リポジトリに無いまま、説明をもとに Cursor の設定（`editor-builtin`）を作り直した。
+  持ち帰って `chezmoi diff` と比べ、足りないものを取り込む。手作業版の steeef の修正
+  （トゥルーカラーの 16 進の色、iTerm2 以外では時計を左に出す）は取り込んでいない。
+  全マシンのプロンプトを opt-in なしに変えてしまううえ、Cursor のパレットは
+  `editor-builtin` が Poimandres にし、iTerm2 はプリセットで足りるため。Cursor で右側の
+  時計が本当に出ないかは会社の Mac で確かめ、出ないならそのときに考える。
 - chezmoi の許可が下りたら、移行手順どおりに apply し、iTerm2 と Cursor でプロンプトと
   配色を確かめる。`chezmoi init` が clone できるかもここで分かる（できなければ zip）。
 

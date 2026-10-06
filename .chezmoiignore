@@ -44,7 +44,8 @@ existing file in place and stops managing it; it never deletes it.
 {{- /*
 Choices (optin_choices in optin.toml): when a machine selects a switch that
 needs a choice, it must also select exactly one of the choice's options. There
-is no default; the apply stops until the machine picks one.
+is no default; the apply stops until the machine picks one. An option selected
+without any switch that needs it would do nothing, so that stops the apply too.
 */}}
 {{- range $name, $ch := .optin_choices }}
 {{-   $needed := list }}
@@ -53,6 +54,9 @@ is no default; the apply stops until the machine picks one.
 {{-   range $ch.options }}{{ if has . $optin }}{{ $picked = append $picked . }}{{ end }}{{ end }}
 {{-   if gt (len $picked) 1 }}
 {{-     fail (printf "chezmoi.toml: data.optin selects both %s; keep only one (%s)" ($picked | join " and ") $ch.description) }}
+{{-   end }}
+{{-   if and $picked (not $needed) }}
+{{-     fail (printf "chezmoi.toml: data.optin selects %s, which only changes %s; also select %s, or remove it" ($picked | join " and ") ($ch.required_by | join " and ") ($ch.required_by | join " or ")) }}
 {{-   end }}
 {{-   if and $needed (eq (len $picked) 0) }}
 {{-     fail (printf "chezmoi.toml: data.optin selects %s, so it must also select one of %s (%s); there is no default" ($needed | join " and ") ($ch.options | join " or ") $ch.description) }}

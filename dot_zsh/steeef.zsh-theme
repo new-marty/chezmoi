@@ -30,21 +30,8 @@ autoload -U add-zsh-hook
 autoload -Uz vcs_info
 
 # Enhanced color detection for Ghostty support
-# A truecolor terminal gets the Poimandres colors as hex values, so the prompt
-# looks the same whatever palette the terminal has (the VS Code and Cursor
-# terminals, iTerm2 without a Poimandres preset). Otherwise use the palette
-# numbers, which Ghostty's poimandres theme maps to the same colors, or fall
-# back to basic colors.
-if [[ $COLORTERM == (truecolor|24bit) ]]; then
-    turquoise="%F{#89ddff}" # palette 4
-    orange="%F{#fffac2}"    # palette 11
-    purple="%F{#fcc5e9}"    # palette 13
-    hotpink="%F{#d0679d}"   # palette 1
-    limegreen="%F{#5de4c7}" # palette 2
-    red="%F{#d0679d}"       # palette 9
-    blue="%F{#89ddff}"      # palette 4
-    gray="%F{#a6accd}"      # palette 8
-else
+# Use extended color palette if available; otherwise, fall back to basic colors.
+# Colors optimized for Ghostty's poimandres theme
 case $TERM in
 *256color* | *rxvt* | xterm-ghostty | xterm-kitty | alacritty)
     # Poimandres theme optimized colors (using palette numbers)
@@ -55,7 +42,6 @@ case $TERM in
     limegreen="%F{2}" # palette 2: #5de4c7 (green)
     red="%F{9}"       # palette 9: #d0679d (bright pink/red)
     blue="%F{4}"      # palette 4: #89ddff (blue)
-    gray="%F{8}"      # palette 8: #a6accd (gray)
     ;;
 *)
     # Basic 8-color fallback
@@ -66,10 +52,8 @@ case $TERM in
     limegreen="%F{green}"
     red="%F{red}"
     blue="%F{blue}"
-    gray="%F{8}"
     ;;
 esac
-fi
 
 # SSH connection handling for Ghostty
 if [[ -n $SSH_CONNECTION && $TERM == xterm-ghostty ]]; then
@@ -119,17 +103,17 @@ function steeef_precmd {
 
         # Check for staged changes
         if ! git diff --cached --quiet 2>/dev/null; then
-            git_staged="${limegreen}●%f" # palette 2: bright teal/green
+            git_staged="%F{2}●%f" # palette 2: bright teal/green
         fi
 
         # Check for unstaged changes
         if ! git diff --quiet 2>/dev/null; then
-            git_unstaged="${orange}●%f" # cream/yellow
+            git_unstaged="%F{3}●%f" # palette 3: cream/yellow
         fi
 
         # Check for untracked files - use a visually distinct color
         if git ls-files --other --exclude-standard 2>/dev/null | grep -q "."; then
-            git_untracked="${red}●%f" # palette 9: bright pink
+            git_untracked="%F{9}●%f" # palette 9: bright pink
         fi
 
         # Build complete format
@@ -144,22 +128,15 @@ function exit_status {
     echo ""
 }
 
-# Clock, in a subtle color from the poimandres theme. The VS Code and Cursor
-# terminals (TERM_PROGRAM=vscode) do not show RPROMPT, so there the clock goes
-# at the end of the first prompt line instead.
-if [[ $TERM_PROGRAM == vscode ]]; then
-    steeef_clock="${gray}%D{%H:%M:%S}%f"
-    RPROMPT=''
-else
-    steeef_clock=''
-    RPROMPT="${gray}%D{%H:%M:%S}%f"
-fi
-
 # Main prompt definition: displays username, hostname, current directory, vcs info, and virtualenv info.
 # Enhanced to show root user in red, optimized for poimandres theme
 PROMPT=$'
-%(!.${red}.${blue})%n${PR_RST} at ${orange}%m${PR_RST} in ${limegreen}%~${PR_RST} ${vcs_info_msg_0_}$(python_info)${steeef_clock}
+%(!.${red}.${blue})%n${PR_RST} at ${orange}%m${PR_RST} in ${limegreen}%~${PR_RST} ${vcs_info_msg_0_}$(python_info)
 $(exit_status)$ '
+
+# Right prompt to show additional info (optional)
+# Using subtle colors from poimandres theme
+RPROMPT='%F{8}%D{%H:%M:%S}%f'
 
 # Additional useful settings for better terminal experience
 # Note: HISTSIZE/SAVEHIST are set in .zshrc (100000)

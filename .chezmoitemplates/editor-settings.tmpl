@@ -7,7 +7,11 @@ colours the built-in Default Dark Modern theme with the Poimandres colours (the
 same as private_dot_config/ghostty/themes/poimandres.ghostty) and uses system
 fonts.
 */ -}}
-{{- $builtin := has "editor-builtin" (dig "optin" list .) -}}
+{{- $optin := dig "optin" list . -}}
+{{- $builtin := has "editor-builtin" $optin -}}
+{{- if not (or $builtin (has "editor-extensions" $optin)) -}}
+{{-   fail "chezmoi.toml: data.optin must select editor-extensions or editor-builtin for the VS Code and Cursor settings" -}}
+{{- end -}}
 {
   // =============================================================================
   // Editor Settings - shared by VS Code and Cursor (.chezmoitemplates/editor-settings.tmpl)

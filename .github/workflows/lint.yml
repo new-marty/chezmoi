@@ -191,9 +191,12 @@ jobs:
           grep -qx "DOTFILES_OMZ=1" "$home/.zshenv"
           # Before Oh My Zsh is installed the shell still starts, without it.
           HOME="$home" zsh -i -c 'echo "interactive shell started"'
-          curl -fsSL -o "$RUNNER_TEMP/omz.zip" https://github.com/ohmyzsh/ohmyzsh/archive/refs/heads/master.zip
+          # A fixed Oh My Zsh commit, so an upstream change does not turn this
+          # red for unrelated commits. Move it forward when updating the work Mac.
+          omz_commit=60c9a7a839b790cd905d0fd4419435124fd1bdc0
+          curl -fsSL -o "$RUNNER_TEMP/omz.zip" "https://github.com/ohmyzsh/ohmyzsh/archive/$omz_commit.zip"
           unzip -q "$RUNNER_TEMP/omz.zip" -d "$RUNNER_TEMP"
-          mv "$RUNNER_TEMP/ohmyzsh-master" "$home/.oh-my-zsh"
+          mv "$RUNNER_TEMP/ohmyzsh-$omz_commit" "$home/.oh-my-zsh"
           HOME="$home" zsh -i -c '
             for p in $plugins; do print "plugin: $p"; done
             (( $+functions[_zsh_autosuggest_start] )) || { echo "zsh-autosuggestions not loaded"; exit 1; }
@@ -221,11 +224,29 @@ jobs:
           }
           expect_fail '["vscode"]' 'there is no default' || exit 1
           expect_fail '["vscode", "editor-extensions", "editor-builtin"]' 'keep only one' || exit 1
+          expect_fail '["editor-builtin"]' 'or remove it' || exit 1
+          # Each option applies, and writes settings that VS Code and Cursor
+          # can parse (JSON with comments and trailing commas).
           for option in editor-extensions editor-builtin; do
+            home="$(mktemp -d)"
             printf '[data]\n    optin = ["vscode", "cursor", "%s"]\n' "$option" > "$RUNNER_TEMP/choice.toml"
             chezmoi apply --config "$RUNNER_TEMP/choice.toml" --source "$SRC" \
-              --destination "$(mktemp -d)" --exclude=scripts \
+              --destination "$home" --exclude=scripts \
               --persistent-state "$RUNNER_TEMP/choice-$option.boltdb" || exit 1
+            python3 - "$home/Library/Application Support/Code/User/settings.json" \
+                "$home/Library/Application Support/Cursor/User/settings.json" <<'PY' || exit 1
+          import json, re, sys
+          for path in sys.argv[1:]:
+              text = re.sub(r"^\s*//.*$", "", open(path).read(), flags=re.M)
+              text = re.sub(r",(\s*[}\]])", r"\1", text)
+              def no_duplicates(pairs):
+                  keys = [k for k, _ in pairs]
+                  dup = {k for k in keys if keys.count(k) > 1}
+                  assert not dup, f"{path}: duplicate keys {dup}"
+                  return dict(pairs)
+              json.loads(text, object_pairs_hook=no_duplicates)
+              print(f"{path}: valid")
+          PY
           done
 
       - name: An unknown switch name stops the apply

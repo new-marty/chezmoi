@@ -120,20 +120,17 @@ mv ~/Downloads/chezmoi-main ~/.local/share/chezmoi
    chezmoi apply --less-interactive
    ```
 
-6. 新しいターミナルを開き、プロンプト（steeef と時計）、`gst` などのエイリアス、just が
+6. 新しいターミナルを開き、プロンプト（steeef）、`gst` などのエイリアス、just が
    入っていれば `just --justfile "$(chezmoi source-path)/justfile" doctor` を確かめる。
 7. すべて動いたら `~/.dotfiles/` を消す。
 
-## iTerm2 の配色
+## ターミナルの配色
 
-iTerm2 のプロファイルは chezmoi では管理しないので、手で設定する。プロンプトはこれに
-左右されない。トゥルーカラーのターミナル（iTerm2、VS Code と Cursor のターミナル）では、
-steeef テーマが Poimandres の色を 16 進で指定する。それ以外の出力の色は、iTerm2 で
-Poimandres のカラープリセットを読み込む（Settings → Profiles → Colors → Color Presets →
-Import）。色の値は `private_dot_config/ghostty/themes/poimandres.ghostty` にある。
-
-時計は、iTerm2 などでは右側のプロンプトに出る。VS Code と Cursor のターミナルは右側の
-プロンプトを表示しないので、そこではプロンプトの 1 行目の最後に出る。
+steeef のプロンプトはターミナルのパレット番号で色を指定するので、パレットが Poimandres なら
+Poimandres の色になる。Cursor（と VS Code）のターミナルでは `editor-builtin` がパレットを
+設定する。iTerm2 のプロファイルは chezmoi では管理しないので、Poimandres のカラープリセットを
+手で読み込む（Settings → Profiles → Colors → Color Presets → Import）。色の値は
+`private_dot_config/ghostty/themes/poimandres.ghostty` にある。
 
 ## sheldon や拡張が許可されたら
 

@@ -20,20 +20,14 @@ if [[ $dotfiles_loader == omz ]]; then
   # ~/.zsh/omz-custom (scripts/vendor-omz-plugins.sh), kept outside
   # ~/.oh-my-zsh so that reinstalling Oh My Zsh does not touch them. The steeef
   # theme is sourced from ~/.zsh with the other files below, not as an Oh My
-  # Zsh theme. zsh-syntax-highlighting must come before
-  # zsh-history-substring-search.
+  # Zsh theme. zsh-syntax-highlighting and zsh-history-substring-search are
+  # sourced at the end of this file instead (see there).
   export ZSH="${ZSH:-$HOME/.oh-my-zsh}"
   ZSH_CUSTOM="$HOME/.zsh/omz-custom"
   ZSH_THEME=""
   zstyle ':omz:update' mode disabled  # updating needs git; reinstall from the zip
-  plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search)
+  plugins=(git zsh-autosuggestions)
   source "$ZSH/oh-my-zsh.sh"  # runs compinit
-
-  # Up/Down search history for what is typed so far
-  bindkey '^[[A' history-substring-search-up
-  bindkey '^[[B' history-substring-search-down
-  [[ -n ${terminfo[kcuu1]} ]] && bindkey "${terminfo[kcuu1]}" history-substring-search-up
-  [[ -n ${terminfo[kcud1]} ]] && bindkey "${terminfo[kcud1]}" history-substring-search-down
 else
   # Completion settings (cached for faster startup)
   autoload -U compinit
@@ -94,12 +88,13 @@ else
   for f in ~/.zsh/*.zsh(N) ~/.zsh/*.zsh-theme(N); do source "$f"; done
   unset f
 fi
-unset dotfiles_loader
 
 # Custom key bindings (after plugin loading). Each needs its tool; without it
 # the key keeps zsh's own binding (Ctrl+R: incremental history search).
 # Note: atuin uses --disable-up-arrow so up/down arrows work normally
-command -v peco &>/dev/null && bindkey '^R' peco-select-history  # Ctrl+R: peco history search
+# Ctrl+R: peco history search. Bound here rather than in peco.zsh, after atuin,
+# which binds Ctrl+R itself.
+command -v peco &>/dev/null && bindkey '^R' peco-select-history
 (( $+widgets[_atuin_search_widget] )) && bindkey '^H' _atuin_search_widget # Ctrl+H: atuin enhanced history search
 
 # Ensure suggestion widgets work properly (after all other bindings)
@@ -109,6 +104,25 @@ if command -v fzf &>/dev/null; then
   bindkey '^F' show_frequent_commands # Ctrl+F for frequent commands
 fi
 command -v navi &>/dev/null && bindkey '^N' navi_widget  # Ctrl+N for navi cheat sheets
+
+# Oh My Zsh's remaining plugins. zsh-syntax-highlighting goes last so that it
+# sees every widget defined above (on zsh before 5.9 it wraps only the widgets
+# that exist when it loads; sheldon defers it for the same reason), and
+# zsh-history-substring-search must come after it.
+if [[ $dotfiles_loader == omz ]]; then
+  for f in zsh-syntax-highlighting zsh-history-substring-search; do
+    [[ -r $ZSH_CUSTOM/plugins/$f/$f.zsh ]] && source "$ZSH_CUSTOM/plugins/$f/$f.zsh"
+  done
+  unset f
+  # Up/Down search history for what is typed so far
+  if (( $+widgets[history-substring-search-up] )); then
+    bindkey '^[[A' history-substring-search-up
+    bindkey '^[[B' history-substring-search-down
+    [[ -n ${terminfo[kcuu1]} ]] && bindkey "${terminfo[kcuu1]}" history-substring-search-up
+    [[ -n ${terminfo[kcud1]} ]] && bindkey "${terminfo[kcud1]}" history-substring-search-down
+  fi
+fi
+unset dotfiles_loader
 
 # Machine-local aliases and functions (not managed by chezmoi)
 if [[ -f ~/.zshrc.local ]]; then source ~/.zshrc.local; fi

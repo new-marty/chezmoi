@@ -125,23 +125,19 @@ from the home directory into it. To move it to chezmoi:
    chezmoi apply --less-interactive
    ```
 
-6. Open a new terminal and check the prompt (steeef, with the clock), an alias
+6. Open a new terminal and check the prompt (steeef), an alias
    such as `gst`, and `just --justfile "$(chezmoi source-path)/justfile" doctor`
    if just is installed.
 7. Once everything works, delete `~/.dotfiles/`.
 
-## iTerm2 colours
+## Terminal colours
 
-The iTerm2 profile is not managed by chezmoi; set it up by hand. The prompt
-does not depend on it: in a truecolor terminal (iTerm2, the VS Code and Cursor
-terminals) the steeef theme writes the Poimandres colours as hex values. For
-the colours of everything else, import a Poimandres colour preset in iTerm2
-(Settings → Profiles → Colors → Color Presets → Import). The colour values are
-in `private_dot_config/ghostty/themes/poimandres.ghostty`.
-
-The prompt shows the clock on the right in iTerm2 and other terminals. The VS
-Code and Cursor terminals do not show a right-hand prompt, so there the clock
-goes at the end of the first prompt line.
+The steeef prompt uses the terminal's palette numbers, so it shows the
+Poimandres colours wherever the palette is Poimandres. In the Cursor (and VS
+Code) terminal, `editor-builtin` sets that palette. The iTerm2 profile is not
+managed by chezmoi: import a Poimandres colour preset by hand (Settings →
+Profiles → Colors → Color Presets → Import). The colour values are in
+`private_dot_config/ghostty/themes/poimandres.ghostty`.
 
 ## When sheldon or the extensions are allowed
 

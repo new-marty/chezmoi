@@ -77,9 +77,11 @@ doctor:
     echo ""
 
     # The "omz" opt-in picks Oh My Zsh over sheldon (.chezmoidata/optin.toml).
-    omz="$(chezmoi execute-template '{{{{ has "omz" (dig "optin" list .) }}' 2>/dev/null || echo "unknown")"
     echo "🧩 zsh plugins:"
-    if [[ "$omz" == true ]]; then
+    if ! omz="$(chezmoi execute-template '{{{{ has "omz" (dig "optin" list .) }}' 2>&1)"; then
+        echo "  ❌ chezmoi cannot read this machine's config; run chezmoi diff to see why:"
+        echo "     $omz"
+    elif [[ "$omz" == true ]]; then
         if [[ -r "${ZSH:-$HOME/.oh-my-zsh}/oh-my-zsh.sh" ]]; then
             echo "  ✅ Oh My Zsh ${ZSH:-$HOME/.oh-my-zsh}, plugins from ~/.zsh/omz-custom"
         else
@@ -145,7 +147,7 @@ optin:
     {{{{- end -}}
     {{{{- end -}}')"
     managed="$(chezmoi managed --include=all 2>&1)" || {
-        echo "chezmoi managed failed (an unknown name in the optin list?):"
+        echo "chezmoi managed failed (the optin list has an unknown name or a missing choice?):"
         echo "$managed"
         exit 1
     }
