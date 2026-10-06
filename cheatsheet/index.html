@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vim and tmux map</title>
 <!--
-  Four A4 landscape pages that look the same on screen and on paper
-  (just cheatsheet-pdf): Vim, tmux, Vim recipes, tmux recipes. Sizes are in
+  Five A4 landscape pages that look the same on screen and on paper
+  (just cheatsheet-pdf): Vim modes, Vim moving and editing, tmux, Vim recipes, tmux recipes. Sizes are in
   cqw (a share of the page width), so the screen shows the printed page scaled.
   Colour means mode in Vim (normal, insert, visual, command) and level in tmux
   (session, window, pane). Dashed boxes are Mac-only; everything else works on
@@ -96,6 +96,9 @@ code ins { text-decoration: none; background: var(--normal-bg); outline: 1px sol
 code .cur { outline: 1.5px dashed var(--muted); }
 code .gone { font-family: var(--f-ui); color: var(--muted); }
 .ess { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7cqw; }
+.ess.seven { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.ess.seven b { font-size: 1.35cqw; }
+.ess b em { color: var(--muted); font-style: italic; }
 .ess.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .ess.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .ess div { border-radius: .6cqw; padding: .7cqw .9cqw; display: grid; gap: .1cqw; background: var(--soft); }
@@ -106,6 +109,25 @@ code .gone { font-family: var(--f-ui); color: var(--muted); }
 .mac { border: 1.5px dashed var(--mac); border-radius: .8cqw; padding: .8cqw 1cqw; display: grid; gap: .4cqw; font-size: 1cqw; }
 .mac h4 { color: var(--mac); font-size: 1.05cqw; }
 .mac p { line-height: 1.9; }
+
+/* Vim modes page */
+.modesgrid { grid-template-areas: "a a a a a a b b b b b b" "c c c c c c d d d d d d"; grid-template-rows: auto auto; align-content: space-between; }
+.modesgrid .area-a { grid-area: a; } .modesgrid .area-b { grid-area: b; } .modesgrid .area-c { grid-area: c; } .modesgrid .area-d { grid-area: d; }
+.krows { display: grid; gap: .55cqw; }
+.krow { display: grid; grid-template-columns: 5cqw 15cqw 1fr; gap: .9cqw; align-items: center; }
+.kk { justify-self: start; font-size: 1.25cqw; }
+.kwhat { font-size: 1.05cqw; }
+code.mini { font-family: var(--f-key); font-size: 1.05cqw; background: var(--soft); border: 1px solid var(--line); border-radius: .35cqw; padding: .25cqw .6cqw; white-space: pre; line-height: 1.5; justify-self: start; }
+/* Vim moving page */
+.movegrid { grid-template-areas: "a a a a a a a b b b b b" "c c c c c c c c c c c c" "d d d d d d d d d d d d"; grid-template-rows: auto auto auto; align-content: space-between; }
+.movegrid .area-a { grid-area: a; } .movegrid .area-b { grid-area: b; } .movegrid .area-c { grid-area: c; } .movegrid .area-d { grid-area: d; }
+.movegrid .area-b svg { width: auto; height: 22cqw; max-width: 100%; }
+.movegrid .vrow { grid-template-columns: 11cqw 16cqw 1fr; }
+
+/* frames around sections */
+.page .cell { border: 1px solid var(--line); border-radius: .9cqw; padding: 1.1cqw 1.3cqw; background: var(--paper); }
+.page .cell.mac { border: 1.5px dashed var(--mac); }
+.recipe { border: 1px solid var(--line); border-radius: .9cqw; padding: 1.1cqw 1.3cqw; }
 
 /* tmux page */
 .tmuxgrid { grid-template-areas: "a a a a a a a a b b b b" "c c c c c c c c c c c c" "d d d d d d e e e e e e"; grid-template-rows: auto auto auto; align-content: space-between; }
@@ -177,49 +199,75 @@ code .gone { font-family: var(--f-ui); color: var(--muted); }
 .vimgrid .area-d svg { width: auto; height: 21cqw; max-width: 100%; }
 .tmuxgrid .area-a svg, .tmuxgrid .area-b svg { width: auto; height: 24cqw; max-width: 100%; }
 .recipe .scr { font-size: .88cqw; }
+.movegrid .area-a svg { width: auto; height: 18.5cqw; max-width: 100%; }
+.movegrid .area-b svg { height: 19cqw; }
+.movegrid .verbs { gap: .35cqw; }
+.ess.seven div { padding: .5cqw .7cqw; }
+.tmuxgrid .area-a svg, .tmuxgrid .area-b svg { height: 21.5cqw; }
+.page .cell { padding: 1cqw 1.2cqw; }
+.recipe { padding: .8cqw 1cqw; gap: .55cqw; }
+.recipes { gap: 1.1cqw 1.4cqw; }
+.recipe h4 { font-size: 1.5cqw; }
+.recipe .strip { font-size: 1.2cqw; }
+.recipe .why { font-size: 1.08cqw; }
+.recipes.t3 .recipe h4 { font-size: 1.6cqw; }
+.recipes.t3 .recipe .strip { font-size: 1.35cqw; }
+.recipes.t3 .recipe .why { font-size: 1.15cqw; }
 
 </style>
 </head>
 <body>
-<nav class="nav"><h1>Vim and tmux map</h1><a href="#vim">Vim</a><a href="#tmux">tmux</a><a href="#vim-recipes">Vim recipes</a><a href="#tmux-recipes">tmux recipes</a><p>Each page is one A4 landscape sheet: <kbd>just cheatsheet-pdf</kbd>.</p></nav>
+<nav class="nav"><h1>Vim and tmux map</h1><a href="#vim">Vim modes</a><a href="#vim-move">Vim moving</a><a href="#tmux">tmux</a><a href="#vim-recipes">Vim recipes</a><a href="#tmux-recipes">tmux recipes</a><p>Each page is one A4 landscape sheet: <kbd>just cheatsheet-pdf</kbd>.</p></nav>
 <div class="scroll"><div class="sheet">
 <section class="page" id="vim" aria-labelledby="vim-h">
-  <header class="ph"><h2 id="vim-h">Vim</h2><p>Colour shows the mode. Check you are in Normal mode (green) before you type a command.</p></header>
-  <div class="g vimgrid">
+  <header class="ph"><h2 id="vim-h">Vim: modes</h2><p>Colour shows the mode. Check you are in Normal mode (green) before you type a command.</p></header>
+  <div class="g modesgrid">
     <div class="cell area-a"><h3>The modes <small>Vim opens in Normal. Lost? Press Esc twice.</small></h3>
       <svg viewBox="0 0 520 262" role="img" aria-label="Vim starts in Normal mode, with a block cursor and an empty bottom line. i, a or o goes to Insert mode, where the bottom line shows -- INSERT -- and you type text; Esc comes back. v or V goes to Visual mode, -- VISUAL --, to select text; Esc, d or y comes back. A colon goes to Command mode, where you type the command on the bottom line; Enter or Esc comes back.">
         <defs><marker id="mh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="context-stroke"/></marker></defs>
         <rect x="2" y="2" width="168" height="256" rx="10" fill="var(--normal-bg)" stroke="var(--normal)" stroke-width="2.5"/><text x="86" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="var(--ink)">NORMAL</text><text x="86" y="44" text-anchor="middle" font-size="12" fill="var(--ink)">move, delete, copy</text><rect x="14" y="56" width="144" height="70" rx="6" fill="var(--soft)" stroke="var(--line)"/><text x="22" y="74" font-size="12.5" class="mono" fill="var(--ink)" xml:space="preserve">server {</text><text x="22" y="90" font-size="12.5" class="mono" fill="var(--ink)" xml:space="preserve">  listen 80;</text><text x="22" y="106" font-size="12.5" class="mono" fill="var(--ink)" xml:space="preserve">}</text><rect x="15" y="107" width="142" height="18" fill="none"/><line x1="14" y1="107" x2="158" y2="107" stroke="var(--line)"/><text x="22" y="120" font-size="12" class="mono" fill="var(--muted)" font-weight="700" xml:space="preserve"> </text><rect x="37" y="79" width="7.5" height="15" fill="var(--ink)"/><text x="37" y="90" font-size="12.5" class="mono" fill="var(--paper)">l</text><text x="86" y="146" text-anchor="middle" font-size="11.5" fill="var(--muted)">block cursor</text><text x="86" y="161" text-anchor="middle" font-size="11.5" fill="var(--muted)">bottom line is empty</text><text x="86" y="200" text-anchor="middle" font-size="12" fill="var(--ink)">Lost? press</text><text x="86" y="220" text-anchor="middle" font-size="16" class="mono" fill="var(--ink)">Esc  Esc</text><text x="86" y="238" text-anchor="middle" font-size="12" fill="var(--ink)">to come back here</text><line x1="174" y1="32" x2="300" y2="32" stroke="var(--insert)" stroke-width="2.4" marker-end="url(#mh)"/><text x="237" y="25" text-anchor="middle" font-size="15" class="mono" fill="var(--ink)">i  a  o</text><line x1="300" y1="52" x2="176" y2="52" stroke="var(--normal)" stroke-width="2.4" marker-end="url(#mh)"/><text x="237" y="71" text-anchor="middle" font-size="13" class="mono" fill="var(--ink)">Esc</text><rect x="304" y="2" width="214" height="80" rx="10" fill="var(--insert-bg)" stroke="var(--insert)" stroke-width="2"/><text x="314" y="20" font-size="13.5" font-weight="700" fill="var(--ink)">INSERT</text><text x="382" y="20" font-size="11.5" fill="var(--ink)">type text</text><rect x="314" y="27" width="194" height="50" rx="6" fill="var(--soft)" stroke="var(--line)"/><text x="322" y="45" font-size="12.5" class="mono" fill="var(--ink)" xml:space="preserve">  listen 8080;</text><rect x="315" y="58" width="192" height="18" fill="none"/><line x1="314" y1="58" x2="508" y2="58" stroke="var(--line)"/><text x="322" y="71" font-size="12" class="mono" fill="var(--insert)" font-weight="700" xml:space="preserve">-- INSERT --</text><line x1="419.5" y1="32" x2="419.5" y2="48" stroke="var(--insert)" stroke-width="2"/><line x1="174" y1="120" x2="300" y2="120" stroke="var(--visual)" stroke-width="2.4" marker-end="url(#mh)"/><text x="237" y="113" text-anchor="middle" font-size="15" class="mono" fill="var(--ink)">v  V</text><line x1="300" y1="140" x2="176" y2="140" stroke="var(--normal)" stroke-width="2.4" marker-end="url(#mh)"/><text x="237" y="159" text-anchor="middle" font-size="13" class="mono" fill="var(--ink)">Esc  d  y</text><rect x="304" y="90" width="214" height="80" rx="10" fill="var(--visual-bg)" stroke="var(--visual)" stroke-width="2"/><text x="314" y="108" font-size="13.5" font-weight="700" fill="var(--ink)">VISUAL</text><text x="382" y="108" font-size="11.5" fill="var(--ink)">select text</text><rect x="314" y="115" width="194" height="50" rx="6" fill="var(--soft)" stroke="var(--line)"/><text x="322" y="133" font-size="12.5" class="mono" fill="var(--ink)" xml:space="preserve">  listen 80;</text><rect x="315" y="146" width="192" height="18" fill="none"/><line x1="314" y1="146" x2="508" y2="146" stroke="var(--line)"/><text x="322" y="159" font-size="12" class="mono" fill="var(--visual)" font-weight="700" xml:space="preserve">-- VISUAL --</text><rect x="389.5" y="121" width="15.5" height="15" fill="var(--visual)" opacity=".35"/><line x1="174" y1="208" x2="300" y2="208" stroke="var(--command)" stroke-width="2.4" marker-end="url(#mh)"/><text x="237" y="201" text-anchor="middle" font-size="15" class="mono" fill="var(--ink)">:</text><line x1="300" y1="228" x2="176" y2="228" stroke="var(--normal)" stroke-width="2.4" marker-end="url(#mh)"/><text x="237" y="247" text-anchor="middle" font-size="13" class="mono" fill="var(--ink)">Enter  Esc</text><rect x="304" y="178" width="214" height="80" rx="10" fill="var(--command-bg)" stroke="var(--command)" stroke-width="2"/><text x="314" y="196" font-size="13.5" font-weight="700" fill="var(--ink)">COMMAND</text><text x="392" y="196" font-size="11.5" fill="var(--ink)">run a command</text><rect x="314" y="203" width="194" height="50" rx="6" fill="var(--soft)" stroke="var(--line)"/><text x="322" y="221" font-size="12.5" class="mono" fill="var(--ink)" xml:space="preserve">  listen 80;</text><rect x="315" y="234" width="192" height="18" fill="var(--command-bg)"/><line x1="314" y1="234" x2="508" y2="234" stroke="var(--line)"/><text x="322" y="247" font-size="12" class="mono" fill="var(--ink)" font-weight="700" xml:space="preserve">:wq</text>
       </svg>
-      <h3>Quit and undo</h3>
-      <div class="ess four">
+    </div>
+    <div class="cell area-b"><h3>Where typing starts <small>Insert mode · cursor on the 8 of <code>  listen 80;</code></small></h3>
+      <div class="krows"><div class="krow"><span class="k i kk">i</span><span class="kwhat">before the cursor</span><code class="mini">  listen <span class="ci"></span>80;</code></div><div class="krow"><span class="k i kk">a</span><span class="kwhat">after the cursor</span><code class="mini">  listen 8<span class="ci"></span>0;</code></div><div class="krow"><span class="k i kk">I</span><span class="kwhat">at the start of the line</span><code class="mini">  <span class="ci"></span>listen 80;</code></div><div class="krow"><span class="k i kk">A</span><span class="kwhat">at the end of the line</span><code class="mini">  listen 80;<span class="ci"></span></code></div><div class="krow"><span class="k i kk">o</span><span class="kwhat">on a new line below</span><code class="mini">  listen 80;
+  <span class="ci"></span>
+}</code></div><div class="krow"><span class="k i kk">O</span><span class="kwhat">on a new line above</span><code class="mini">server {
+  <span class="ci"></span>
+  listen 80;</code></div></div>
+      <p class="cap">The pink bar is where your text goes. Press <span class="k n">Esc</span> when you are done.</p>
+    </div>
+    <div class="cell area-c"><h3>What gets selected <small>Visual mode · start on the 8, then press <span class="k n">j</span></small></h3>
+      <div class="krows"><div class="krow"><span class="k v kk">v</span><span class="kwhat">characters, from the cursor to where you move</span><code class="mini">listen <span class="vsel">80;</span>
+<span class="vsel">listen 4</span>43;</code></div><div class="krow"><span class="k v kk">V</span><span class="kwhat">whole lines</span><code class="mini"><span class="vsel">listen 80;</span>
+<span class="vsel">listen 443;</span></code></div><div class="krow"><span class="k v kk">Ctrl-v</span><span class="kwhat">a block of columns</span><code class="mini">listen <span class="vsel">80</span>;
+listen <span class="vsel">44</span>3;</code></div></div>
+      <p class="cap">Then act on the selection: <span class="k n">d</span> delete · <span class="k n">y</span> copy · <span class="k i">c</span> change · <span class="k n">&gt;</span> indent. <span class="k n">Esc</span> cancels.</p>
+    </div>
+    <div class="cell area-d"><h3>Quit and undo</h3>
+      <div class="ess">
         <div class="c"><b>:wq</b><span>save and quit</span></div>
         <div class="c"><b>:q!</b><span>quit without saving</span></div>
         <div class="n"><b>u</b><span>undo</span></div>
         <div class="n"><b>Ctrl-r</b><span>redo</span></div>
       </div>
+      <p class="cap">On a bare server <kbd>vi</kbd> is often minimal: arrow keys in Insert mode type letters, so press Esc and use h j k l. Keys marked <span class="vimtag">vim</span> need Vim, not busybox vi.</p>
+      <div class="mac"><h4>Only on this Mac</h4><p><span class="k">Esc</span> also switches to English input · <span class="k">Space</span>+<span class="k">/</span> opens this sheet · <kbd>vimtutor</kbd> is a 30-minute lesson</p></div>
     </div>
-    <figure class="cell area-b"><h3>Moving along a line <small>dashed: where the cursor starts · green: where the key takes it</small></h3>
+  </div>
+</section>
+</div></div>
+<div class="scroll"><div class="sheet">
+<section class="page" id="vim-move" aria-labelledby="vim-move-h">
+  <header class="ph"><h2 id="vim-move-h">Vim: moving and editing</h2><p>All of these keys work in Normal mode (green).</p></header>
+  <div class="g movegrid">
+    <figure class="cell area-a"><h3>Moving along a line <small>dashed: where the cursor starts · green: where the key takes it</small></h3>
       <svg viewBox="0 0 540 200" role="img" aria-label="Motions on one line, starting with the cursor on the n of backend_server: 0 goes to the start of the line, ^ to the first character, b to the start of the word, e to the end of the word, w to the next word, $ to the end of the line.">
         <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--normal)"/></marker></defs>
         <text x="8" y="34" font-size="17" class="mono" fill="var(--normal)">0</text><text x="32" y="34" font-size="13.5" fill="var(--ink)">start of line</text><rect x="166" y="19" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="20" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="170.0" y="20" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="34" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 18 Q270.8 7 174.8 18" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/><text x="8" y="65" font-size="17" class="mono" fill="var(--normal)">^</text><text x="32" y="65" font-size="13.5" fill="var(--ink)">first character</text><rect x="166" y="50" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="51" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="208.4" y="51" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="65" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 49 Q290.0 38 213.2 49" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/><text x="8" y="96" font-size="17" class="mono" fill="var(--normal)">b</text><text x="32" y="96" font-size="13.5" fill="var(--ink)">start of word</text><rect x="166" y="81" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="82" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="314.0" y="82" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="96" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 80 Q342.8 69 318.8 80" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/><text x="8" y="127" font-size="17" class="mono" fill="var(--normal)">e</text><text x="32" y="127" font-size="13.5" fill="var(--ink)">end of word</text><rect x="166" y="112" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="113" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="438.8" y="113" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="127" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 111 Q405.20000000000005 100 443.6 111" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/><text x="8" y="158" font-size="17" class="mono" fill="var(--normal)">w</text><text x="32" y="158" font-size="13.5" fill="var(--ink)">next word</text><rect x="166" y="143" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="144" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="458.0" y="144" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="158" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 142 Q414.8 131 462.8 142" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/><text x="8" y="189" font-size="17" class="mono" fill="var(--normal)">$</text><text x="32" y="189" font-size="13.5" fill="var(--ink)">end of line</text><rect x="166" y="174" width="372.8" height="21" rx="4" fill="var(--soft)"/><rect x="362.0" y="175" width="9.6" height="19" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.5"/><rect x="525.2" y="175" width="9.6" height="19" fill="var(--normal)" opacity=".45"/><text x="170" y="189" font-size="16" class="mono" fill="var(--ink)" xml:space="preserve" textLength="364.8" lengthAdjust="spacingAndGlyphs">    proxy_pass backend_server timeout;</text><path d="M366.8 173 Q448.4 162 530.0 173" fill="none" stroke="var(--normal)" stroke-width="1.6" marker-end="url(#ah2)"/>
       </svg>
       <p class="cap"><b>h j k l</b> move one step left, down, up, right. <span class="k n">f</span><kbd>x</kbd> jumps to the next x on the line and <span class="k n">;</span> repeats it. A number repeats a motion: <span class="k n">3w</span> is three words on.</p>
-      <p class="cap">On a bare server <kbd>vi</kbd> is often minimal: arrow keys in Insert mode type letters, so press Esc and use h j k l. Keys marked <span class="vimtag">vim</span> need Vim, not busybox vi.</p>
-      <div class="mac"><h4>Only on this Mac</h4><p><span class="k">Esc</span> also switches to English input · <span class="k">Space</span>+<span class="k">/</span> opens this sheet · <kbd>vimtutor</kbd> is a 30-minute lesson</p></div>
     </figure>
-    <div class="cell area-c"><h3>Verb + where <small>delete <span class="k">d</span> · change <span class="k">c</span> · copy <span class="k">y</span>, then a motion. The same key twice means the whole line.</small></h3>
-      <div class="verbs">
-<div class="vrow"><div class="vkeys"><span class="k n">dw</span></div><div class="vwhat">delete to the next word</div><div class="vdemo"><code class="before">proxy_pass <span class="cur">b</span><del>ackend_server </del>timeout;</code><span class="to">→</span><code class="after">proxy_pass timeout;</code></div></div>
-<div class="vrow"><div class="vkeys"><span class="k n">d$</span></div><div class="vwhat">delete to the end of the line</div><div class="vdemo"><code class="before">proxy_pass <span class="cur">b</span><del>ackend_server timeout;</del></code><span class="to">→</span><code class="after">proxy_pass </code></div></div>
-<div class="vrow"><div class="vkeys"><span class="k n">dd</span></div><div class="vwhat">delete the whole line</div><div class="vdemo"><code class="before"><del>proxy_pass backend_server timeout;</del></code><span class="to">→</span><code class="after"><span class="gone">(line removed; p puts it back)</span></code></div></div>
-<div class="vrow"><div class="vkeys"><span class="k i">cw</span><em>api</em><span class="k n">Esc</span></div><div class="vwhat">change to the end of the word</div><div class="vdemo"><code class="before">proxy_pass <span class="cur">b</span><mark>ackend_server</mark> timeout;</code><span class="to">→</span><code class="after">proxy_pass <ins>api</ins> timeout;</code></div></div>
-<div class="vrow"><div class="vkeys"><span class="k i">ci"</span><em>/srv</em><span class="k n">Esc</span><span class="vimtag">vim</span></div><div class="vwhat">change inside the quotes</div><div class="vdemo"><code class="before">root "<mark>/var/<span class="cur">w</span>ww</mark>";</code><span class="to">→</span><code class="after">root "<ins>/srv</ins>";</code></div></div>
-<div class="vrow"><div class="vkeys"><span class="k n">yy</span><span class="k n">p</span></div><div class="vwhat">copy the line, paste below</div><div class="vdemo"><code class="before">allow 10.0.0.1;</code><span class="to">→</span><code class="after">allow 10.0.0.1;<br><ins>allow 10.0.0.1;</ins></code></div></div>
-      </div>
-      <p class="cap"><span class="k n">p</span> pastes what was deleted or copied · <span class="k n">x</span> deletes one character · <span class="k n">.</span> repeats the last change · <span class="k n">u</span> undoes it</p>
-    </div>
-    <div class="cell area-d"><h3>Moving through a file <small>blue dashes: the part on screen</small></h3>
+    <div class="cell area-b"><h3>Moving through a file <small>blue dashes: the part on screen</small></h3>
       <svg viewBox="0 0 330 300" role="img" aria-label="Moving through a file. gg goes to the first line and G to the last. :42 goes to line 42. Ctrl-u and Ctrl-d move the screen half a screen up or down. /word finds the next match below; n goes to the next match and N to the previous one.">
         <defs><marker id="fh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="context-stroke"/></marker></defs>
         <rect x="46" y="6" width="112" height="288" rx="6" fill="var(--soft)" stroke="var(--line)"/>
@@ -248,6 +296,28 @@ code .gone { font-family: var(--f-ui); color: var(--muted); }
           <text x="206" y="287">last line</text>
         </g>
       </svg>
+    </div>
+    <div class="cell area-c"><h3>Verb + where <small>delete <span class="k">d</span> · change <span class="k">c</span> · copy <span class="k">y</span>, then a motion. The same key twice means the whole line.</small></h3>
+      <div class="verbs">
+<div class="vrow"><div class="vkeys"><span class="k n">dw</span></div><div class="vwhat">delete to the next word</div><div class="vdemo"><code class="before">proxy_pass <span class="cur">b</span><del>ackend_server </del>timeout;</code><span class="to">→</span><code class="after">proxy_pass timeout;</code></div></div>
+<div class="vrow"><div class="vkeys"><span class="k n">d$</span></div><div class="vwhat">delete to the end of the line</div><div class="vdemo"><code class="before">proxy_pass <span class="cur">b</span><del>ackend_server timeout;</del></code><span class="to">→</span><code class="after">proxy_pass </code></div></div>
+<div class="vrow"><div class="vkeys"><span class="k n">dd</span></div><div class="vwhat">delete the whole line</div><div class="vdemo"><code class="before"><del>proxy_pass backend_server timeout;</del></code><span class="to">→</span><code class="after"><span class="gone">(line removed; p puts it back)</span></code></div></div>
+<div class="vrow"><div class="vkeys"><span class="k i">cw</span><em>api</em><span class="k n">Esc</span></div><div class="vwhat">change to the end of the word</div><div class="vdemo"><code class="before">proxy_pass <span class="cur">b</span><mark>ackend_server</mark> timeout;</code><span class="to">→</span><code class="after">proxy_pass <ins>api</ins> timeout;</code></div></div>
+<div class="vrow"><div class="vkeys"><span class="k i">ci"</span><em>/srv</em><span class="k n">Esc</span><span class="vimtag">vim</span></div><div class="vwhat">change inside the quotes</div><div class="vdemo"><code class="before">root "<mark>/var/<span class="cur">w</span>ww</mark>";</code><span class="to">→</span><code class="after">root "<ins>/srv</ins>";</code></div></div>
+<div class="vrow"><div class="vkeys"><span class="k n">yy</span><span class="k n">p</span></div><div class="vwhat">copy the line, paste below</div><div class="vdemo"><code class="before">allow 10.0.0.1;</code><span class="to">→</span><code class="after">allow 10.0.0.1;<br><ins>allow 10.0.0.1;</ins></code></div></div>
+      </div>
+      <p class="cap"><span class="k n">p</span> pastes what was deleted or copied · <span class="k n">x</span> deletes one character · <span class="k n">.</span> repeats the last change · <span class="k n">u</span> undoes it</p>
+    </div>
+    <div class="cell area-d"><h3>Also worth knowing <small>the rest of vimtutor's first chapter that helps on a server</small></h3>
+      <div class="ess seven">
+        <div class="n"><b>r<em>x</em></b><span>replace one char</span></div>
+        <div class="n"><b>%</b><span>matching bracket</span></div>
+        <div class="c"><b>:s/a/b/g</b><span>this line only</span></div>
+        <div class="c"><b>:w x.bak</b><span>save a copy</span></div>
+        <div class="n"><b>Ctrl-g</b><span>where am I?</span></div>
+        <div class="c"><b>:e Tab</b><span>complete a name</span></div>
+        <div class="c"><b>:help w</b><span>help; :q closes</span></div>
+      </div>
     </div>
   </div>
 </section>

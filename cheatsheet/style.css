@@ -79,6 +79,9 @@ code ins { text-decoration: none; background: var(--normal-bg); outline: 1px sol
 code .cur { outline: 1.5px dashed var(--muted); }
 code .gone { font-family: var(--f-ui); color: var(--muted); }
 .ess { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7cqw; }
+.ess.seven { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.ess.seven b { font-size: 1.35cqw; }
+.ess b em { color: var(--muted); font-style: italic; }
 .ess.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .ess.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .ess div { border-radius: .6cqw; padding: .7cqw .9cqw; display: grid; gap: .1cqw; background: var(--soft); }
@@ -89,6 +92,25 @@ code .gone { font-family: var(--f-ui); color: var(--muted); }
 .mac { border: 1.5px dashed var(--mac); border-radius: .8cqw; padding: .8cqw 1cqw; display: grid; gap: .4cqw; font-size: 1cqw; }
 .mac h4 { color: var(--mac); font-size: 1.05cqw; }
 .mac p { line-height: 1.9; }
+
+/* Vim modes page */
+.modesgrid { grid-template-areas: "a a a a a a b b b b b b" "c c c c c c d d d d d d"; grid-template-rows: auto auto; align-content: space-between; }
+.modesgrid .area-a { grid-area: a; } .modesgrid .area-b { grid-area: b; } .modesgrid .area-c { grid-area: c; } .modesgrid .area-d { grid-area: d; }
+.krows { display: grid; gap: .55cqw; }
+.krow { display: grid; grid-template-columns: 5cqw 15cqw 1fr; gap: .9cqw; align-items: center; }
+.kk { justify-self: start; font-size: 1.25cqw; }
+.kwhat { font-size: 1.05cqw; }
+code.mini { font-family: var(--f-key); font-size: 1.05cqw; background: var(--soft); border: 1px solid var(--line); border-radius: .35cqw; padding: .25cqw .6cqw; white-space: pre; line-height: 1.5; justify-self: start; }
+/* Vim moving page */
+.movegrid { grid-template-areas: "a a a a a a a b b b b b" "c c c c c c c c c c c c" "d d d d d d d d d d d d"; grid-template-rows: auto auto auto; align-content: space-between; }
+.movegrid .area-a { grid-area: a; } .movegrid .area-b { grid-area: b; } .movegrid .area-c { grid-area: c; } .movegrid .area-d { grid-area: d; }
+.movegrid .area-b svg { width: auto; height: 22cqw; max-width: 100%; }
+.movegrid .vrow { grid-template-columns: 11cqw 16cqw 1fr; }
+
+/* frames around sections */
+.page .cell { border: 1px solid var(--line); border-radius: .9cqw; padding: 1.1cqw 1.3cqw; background: var(--paper); }
+.page .cell.mac { border: 1.5px dashed var(--mac); }
+.recipe { border: 1px solid var(--line); border-radius: .9cqw; padding: 1.1cqw 1.3cqw; }
 
 /* tmux page */
 .tmuxgrid { grid-template-areas: "a a a a a a a a b b b b" "c c c c c c c c c c c c" "d d d d d d e e e e e e"; grid-template-rows: auto auto auto; align-content: space-between; }
@@ -160,3 +182,17 @@ code .gone { font-family: var(--f-ui); color: var(--muted); }
 .vimgrid .area-d svg { width: auto; height: 21cqw; max-width: 100%; }
 .tmuxgrid .area-a svg, .tmuxgrid .area-b svg { width: auto; height: 24cqw; max-width: 100%; }
 .recipe .scr { font-size: .88cqw; }
+.movegrid .area-a svg { width: auto; height: 18.5cqw; max-width: 100%; }
+.movegrid .area-b svg { height: 19cqw; }
+.movegrid .verbs { gap: .35cqw; }
+.ess.seven div { padding: .5cqw .7cqw; }
+.tmuxgrid .area-a svg, .tmuxgrid .area-b svg { height: 21.5cqw; }
+.page .cell { padding: 1cqw 1.2cqw; }
+.recipe { padding: .8cqw 1cqw; gap: .55cqw; }
+.recipes { gap: 1.1cqw 1.4cqw; }
+.recipe h4 { font-size: 1.5cqw; }
+.recipe .strip { font-size: 1.2cqw; }
+.recipe .why { font-size: 1.08cqw; }
+.recipes.t3 .recipe h4 { font-size: 1.6cqw; }
+.recipes.t3 .recipe .strip { font-size: 1.35cqw; }
+.recipes.t3 .recipe .why { font-size: 1.15cqw; }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds cheatsheet/index.html: four A4 landscape pages, identical on screen and paper.
+"""Builds cheatsheet/index.html: five A4 landscape pages, identical on screen and paper.
 
 Edit this file or style.css, then run:  python3 cheatsheet/build.py cheatsheet/index.html
 and check the print with:  just cheatsheet-pdf
@@ -237,6 +237,29 @@ def R(title, steps, why, ba="", vim=False):
     v = VIMTAG if vim else ""
     return f'<article class="recipe"><h4>{title}{v}</h4><div class="strip">{steps}</div>{ba}<p class="why">{why}</p></article>'
 
+
+# ---------------------------------------------------------------- Vim modes page: where typing starts, what gets selected
+def mini(lines): return '<code class="mini">' + lines + '</code>'
+def SEL(t): return f'<span class="vsel">{t}</span>'
+INSERT_ROWS = [
+    ("i", "before the cursor", mini("  listen " + CI() + "80;")),
+    ("a", "after the cursor", mini("  listen 8" + CI() + "0;")),
+    ("I", "at the start of the line", mini("  " + CI() + "listen 80;")),
+    ("A", "at the end of the line", mini("  listen 80;" + CI())),
+    ("o", "on a new line below", mini("  listen 80;\n  " + CI() + "\n}")),
+    ("O", "on a new line above", mini("server {\n  " + CI() + "\n  listen 80;")),
+]
+VISUAL_ROWS = [
+    ("v", "characters, from the cursor to where you move", mini("listen " + SEL("80;") + "\n" + SEL("listen 4") + "43;")),
+    ("V", "whole lines", mini(SEL("listen 80;") + "\n" + SEL("listen 443;"))),
+    ("Ctrl-v", "a block of columns", mini("listen " + SEL("80") + ";\nlisten " + SEL("44") + "3;")),
+]
+def key_rows(rows, mode):
+    out = []
+    for k, what, demo in rows:
+        out.append(f'<div class="krow"><span class="k {mode} kk">{k}</span><span class="kwhat">{what}</span>{demo}</div>')
+    return '<div class="krows">' + "".join(out) + '</div>'
+
 # ---------------------------------------------------------------- tmux page: copy storyboard
 LOG = ["12:01 GET /health 200", "12:02 ERROR db timeout", "12:02 retry 1", "12:03 GET /api 200"]
 def copy_story():
@@ -362,31 +385,54 @@ def page(id_, title, lead, body):
 </section>
 </div></div>'''
 
-vim_body = f'''  <div class="g vimgrid">
+vim_body = f'''  <div class="g modesgrid">
     <div class="cell area-a"><h3>The modes <small>Vim opens in Normal. Lost? Press Esc twice.</small></h3>
       {modes_svg()}
-      <h3>Quit and undo</h3>
-      <div class="ess four">
+    </div>
+    <div class="cell area-b"><h3>Where typing starts <small>Insert mode · cursor on the 8 of <code>  listen 80;</code></small></h3>
+      {key_rows(INSERT_ROWS, "i")}
+      <p class="cap">The pink bar is where your text goes. Press <span class="k n">Esc</span> when you are done.</p>
+    </div>
+    <div class="cell area-c"><h3>What gets selected <small>Visual mode · start on the 8, then press <span class="k n">j</span></small></h3>
+      {key_rows(VISUAL_ROWS, "v")}
+      <p class="cap">Then act on the selection: <span class="k n">d</span> delete · <span class="k n">y</span> copy · <span class="k i">c</span> change · <span class="k n">&gt;</span> indent. <span class="k n">Esc</span> cancels.</p>
+    </div>
+    <div class="cell area-d"><h3>Quit and undo</h3>
+      <div class="ess">
         <div class="c"><b>:wq</b><span>save and quit</span></div>
         <div class="c"><b>:q!</b><span>quit without saving</span></div>
         <div class="n"><b>u</b><span>undo</span></div>
         <div class="n"><b>Ctrl-r</b><span>redo</span></div>
       </div>
-    </div>
-    <figure class="cell area-b"><h3>Moving along a line <small>dashed: where the cursor starts · green: where the key takes it</small></h3>
-      {line_svg()}
-      <p class="cap"><b>h j k l</b> move one step left, down, up, right. <span class="k n">f</span><kbd>x</kbd> jumps to the next x on the line and <span class="k n">;</span> repeats it. A number repeats a motion: <span class="k n">3w</span> is three words on.</p>
       <p class="cap">On a bare server <kbd>vi</kbd> is often minimal: arrow keys in Insert mode type letters, so press Esc and use h j k l. Keys marked {VIMTAG} need Vim, not busybox vi.</p>
       <div class="mac"><h4>Only on this Mac</h4><p><span class="k">Esc</span> also switches to English input · <span class="k">Space</span>+<span class="k">/</span> opens this sheet · <kbd>vimtutor</kbd> is a 30-minute lesson</p></div>
+    </div>
+  </div>'''
+
+move_body = f'''  <div class="g movegrid">
+    <figure class="cell area-a"><h3>Moving along a line <small>dashed: where the cursor starts · green: where the key takes it</small></h3>
+      {line_svg()}
+      <p class="cap"><b>h j k l</b> move one step left, down, up, right. <span class="k n">f</span><kbd>x</kbd> jumps to the next x on the line and <span class="k n">;</span> repeats it. A number repeats a motion: <span class="k n">3w</span> is three words on.</p>
     </figure>
+    <div class="cell area-b"><h3>Moving through a file <small>blue dashes: the part on screen</small></h3>
+      {file_svg()}
+    </div>
     <div class="cell area-c"><h3>Verb + where <small>delete <span class="k">d</span> · change <span class="k">c</span> · copy <span class="k">y</span>, then a motion. The same key twice means the whole line.</small></h3>
       <div class="verbs">
 {verb_rows()}
       </div>
       <p class="cap"><span class="k n">p</span> pastes what was deleted or copied · <span class="k n">x</span> deletes one character · <span class="k n">.</span> repeats the last change · <span class="k n">u</span> undoes it</p>
     </div>
-    <div class="cell area-d"><h3>Moving through a file <small>blue dashes: the part on screen</small></h3>
-      {file_svg()}
+    <div class="cell area-d"><h3>Also worth knowing <small>the rest of vimtutor's first chapter that helps on a server</small></h3>
+      <div class="ess seven">
+        <div class="n"><b>r<em>x</em></b><span>replace one char</span></div>
+        <div class="n"><b>%</b><span>matching bracket</span></div>
+        <div class="c"><b>:s/a/b/g</b><span>this line only</span></div>
+        <div class="c"><b>:w x.bak</b><span>save a copy</span></div>
+        <div class="n"><b>Ctrl-g</b><span>where am I?</span></div>
+        <div class="c"><b>:e Tab</b><span>complete a name</span></div>
+        <div class="c"><b>:help w</b><span>help; :q closes</span></div>
+      </div>
     </div>
   </div>'''
 
@@ -427,8 +473,8 @@ doc = f'''<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vim and tmux map</title>
 <!--
-  Four A4 landscape pages that look the same on screen and on paper
-  (just cheatsheet-pdf): Vim, tmux, Vim recipes, tmux recipes. Sizes are in
+  Five A4 landscape pages that look the same on screen and on paper
+  (just cheatsheet-pdf): Vim modes, Vim moving and editing, tmux, Vim recipes, tmux recipes. Sizes are in
   cqw (a share of the page width), so the screen shows the printed page scaled.
   Colour means mode in Vim (normal, insert, visual, command) and level in tmux
   (session, window, pane). Dashed boxes are Mac-only; everything else works on
@@ -441,8 +487,9 @@ doc = f'''<!doctype html>
 </style>
 </head>
 <body>
-<nav class="nav"><h1>Vim and tmux map</h1><a href="#vim">Vim</a><a href="#tmux">tmux</a><a href="#vim-recipes">Vim recipes</a><a href="#tmux-recipes">tmux recipes</a><p>Each page is one A4 landscape sheet: <kbd>just cheatsheet-pdf</kbd>.</p></nav>
-{page("vim", "Vim", "Colour shows the mode. Check you are in Normal mode (green) before you type a command.", vim_body)}
+<nav class="nav"><h1>Vim and tmux map</h1><a href="#vim">Vim modes</a><a href="#vim-move">Vim moving</a><a href="#tmux">tmux</a><a href="#vim-recipes">Vim recipes</a><a href="#tmux-recipes">tmux recipes</a><p>Each page is one A4 landscape sheet: <kbd>just cheatsheet-pdf</kbd>.</p></nav>
+{page("vim", "Vim: modes", "Colour shows the mode. Check you are in Normal mode (green) before you type a command.", vim_body)}
+{page("vim-move", "Vim: moving and editing", "All of these keys work in Normal mode (green).", move_body)}
 {page("tmux", "tmux", 'Colour shows the level: <span style="color:var(--session)">session</span> ⊃ <span style="color:var(--window)">window</span> ⊃ <span style="color:var(--pane)">pane</span>.', tmux_body)}
 {page("vim-recipes", "Vim recipes", "Real tasks, key by key. Each key is coloured by the mode it leaves you in; grey means type it as shown. Start in Normal mode.", vim_recipes_body)}
 {page("tmux-recipes", "tmux recipes", "Real tasks, key by key. <span class=\"k pre\">C-b …</span> means press C-b, let go, then the key.", tmux_recipes_body)}
