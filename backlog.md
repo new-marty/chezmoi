@@ -41,6 +41,21 @@ ssh は無視する）、毎回 apply で戻すかを決める。
 
 ---
 
+## [Doing] SSH を 1Password のエージェントから外す
+
+使うたびの確認が煩わしく、ロック中は push も止まるため、SSH は 1Password を使わない形にする。
+マシンごとに1本の鍵（この Mac は `~/.ssh/id_ed25519_macbook`）を、パスフレーズで暗号化して
+macOS のキーチェーンに覚えさせる（`UseKeychain yes`、`AddKeysToAgent yes`）。平文の鍵ファイルを
+読まれて持ち出される危険は防ぎ、ログイン後は確認なしで使える。
+
+手順: 各ホスト（GitHub、debian、unraid、mini）にこの鍵の公開鍵が登録されているか確かめ、
+無ければ 1Password が使えるうちに登録する → パスフレーズとキーチェーン → `~/.ssh/config.local` から
+1Password の `IdentityAgent` を外す → 全ホストで接続を確かめる → 1Password 側の SSH 鍵と、
+サーバーに残る古い公開鍵を片付ける。設定はリポジトリの外（`~/.ssh/config.local`）だけで変わる。
+パスワードや TOTP は下の Vaultwarden 移行の範囲で、ここでは扱わない。
+
+---
+
 ## 1Password から Vaultwarden への移行
 
 下に8フェーズの移行計画がある。パスワードと TOTP の移行、SSH Agent の切り替え、
