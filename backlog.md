@@ -23,8 +23,8 @@
 ## [Todo] OrbStack が `~/.ssh/config` に書き足す行への対応
 
 OrbStack は更新のたびに `~/.ssh/config` の先頭へ `Include ~/.orbstack/ssh/config` を
-書き足す（OrbStack の issue #544、#489）。このマシンではその行を `~/.ssh/config.local`
-に移してあるので、書き足されると `chezmoi diff` に差分が出て、次の apply で消える。
+書き足す（OrbStack の issue #544、#489）。その行を `~/.ssh/config.local`
+に移している場合、書き足されると `chezmoi diff` に差分が出て、次の apply で消える。
 差分が出たら、共有の `private_dot_ssh/config` にその行を入れるか（ファイルが無ければ
 ssh は無視する）、毎回 apply で戻すかを決める。
 
@@ -33,20 +33,14 @@ ssh は無視する）、毎回 apply で戻すかを決める。
 ## [Todo] SSH を 1Password のエージェントから外す（残り）
 
 使うたびの確認が煩わしく、ロック中は push も止まるため、SSH は 1Password を使わない形にする。
-秘密鍵は接続元のマシン1台につき1本（この Mac は `~/.ssh/id_ed25519_macbook`）にして、その公開鍵を
-入りたい先すべてに登録する。秘密鍵はほかのマシンにコピーしない。
-
-済み（2026-10-06）: この Mac の `~/.ssh/config.local` から 1Password の `IdentityAgent` を外し、
-`Host *` でこの鍵を使う形にした（控えは取ってある）。unraid、mini、GitHub はこの鍵で入れることを確認。
-unraid と mini の `authorized_keys` にはこの鍵（と mini に iphone）しか無く、消すものは無い。
-この鍵にはパスフレーズをかけ、キーチェーンに保存した（パスフレーズは 1Password にも控えてある）。
+秘密鍵は接続元のマシン1台につき1本にして、その公開鍵を入りたい先すべてに登録する。
+秘密鍵はほかのマシンにコピーしない。手順は、鍵を作ってパスフレーズをかけ、キーチェーンなどに覚えさせ、
+`~/.ssh/config.local` から 1Password の `IdentityAgent` を外して `IdentityFile` を指す。
 
 残り:
-- debian は接続がタイムアウトして未確認。届くときに、この鍵で入れるか確かめる。
-- GitHub の認証用の鍵: ubuntu 1Password は ubuntu の鍵を 1Password から外すときに作り直す。
-  署名用の鍵2本と、2025-12 から使われていなかった RSA 鍵は 2026-10-06 に削除した。
-- 1Password の SSH 鍵の項目を消す。ubuntu がまだ 1Password の鍵を使っているので、ubuntu の鍵を作り直してから
-  （1Password の SSH エージェントは 2026-10-06 に止めた）。
+- 1Password のエージェントを使っている接続元が残っていれば、そこでも上の手順で鍵を作り直し、
+  GitHub と接続先から古い公開鍵を外す。
+- それが済んだら、1Password の SSH 鍵の項目を消す。
 
 ---
 
@@ -102,13 +96,8 @@ Vaultwarden/Bitwarden へ移行できる範囲の機能しか使わない。現�
 
 ##### SSH Agent の現状
 
-| マシン | SSH Agent の使い方 |
-|--------|------------------|
-| Personal Mac (github.com) | `IdentityAgent none` — ローカルキー (`id_ed25519_macbook`) |
-| Personal Mac (その他) | 1Password SSH Agent |
-| Work Mac | 1Password SSH Agent |
-| Ubuntu | 1Password SSH Agent 完全依存 |
-| Unraid (ヘッドレス) | SSH ターゲット（Agent不要） |
+2026-10 時点で、SSH は 1Password のエージェントから外す方向で、接続元ごとのローカル鍵に移している
+（上の「SSH を 1Password のエージェントから外す」）。フェーズ0とフェーズ4は、その結果を見て要否を決める。
 
 ---
 
@@ -118,7 +107,7 @@ Vaultwarden/Bitwarden へ移行できる範囲の機能しか使わない。現�
 
 ##### やること
 
-1. **Personal Mac に Bitwarden デスクトップアプリをインストール**
+1. **1台に Bitwarden デスクトップアプリをインストール**
    ```bash
    brew install --cask bitwarden
    ```
@@ -160,7 +149,7 @@ Vaultwarden/Bitwarden へ移行できる範囲の機能しか使わない。現�
 
 ---
 
-#### Phase 1: Vaultwarden セットアップ on Unraid（1-2時間）
+#### Phase 1: Vaultwarden を自宅サーバーにセットアップ（1-2時間）
 
 ##### docker-compose.yml
 
@@ -184,7 +173,7 @@ services:
 
 ##### やること
 
-1. Unraid に docker-compose でデプロイ
+1. 自宅サーバーに docker-compose でデプロイ
 2. Tailscale 経由でアクセス（`tailscale serve --bg 8080`）
    - 外部公開しない。Tailnet 内のみ
 3. HTTPS 設定（Tailscale cert or Caddy reverse proxy）
@@ -193,8 +182,8 @@ services:
    - 管理画面で新規登録を無効化
 5. **バックアップ設定**（重要）
    - SQLite DB (`/data/db.sqlite3`) の自動バックアップ
-   - Unraid の Appdata Backup プラグイン or cron
-   - バックアップ先: Unraid の別ディスク + クラウド（暗号化）
+   - サーバーのバックアップ機能 or cron
+   - バックアップ先: 別ディスク + クラウド（暗号化）
    - **Vaultwarden が落ちた時のために、Bitwarden クライアントのオフラインキャッシュに依存する期間がある**ことを認識しておく
 
 ##### 完了条件
@@ -352,8 +341,6 @@ age 暗号化はローカルキーのみで動作し、ネットワーク不要�
      ServerAliveInterval 60
 ```
 
-> `IdentityAgent none` (Personal Mac の github.com) はそのまま残す。
-
 ###### 4-3. `dot_gitconfig.tmpl` — op-ssh-sign を削除
 
 ```diff
@@ -382,9 +369,7 @@ age 暗号化はローカルキーのみで動作し、ネットワーク不要�
 ```bash
 # SSH 接続
 ssh -T git@github.com
-ssh debian
-ssh unraid
-ssh mac-mini
+ssh <接続先>
 
 # Git signing
 git commit --allow-empty -m "test bitwarden signing"
@@ -462,12 +447,12 @@ chezmoi apply --dry-run -v
 現時点では age 暗号化 + `bw` CLI で十分だが、ホームラボの拡大に伴い
 シークレットマネージャーが必要になる可能性がある。以下のタイミングで Infisical 導入を再検討:
 
-- Unraid 上のコンテナが増え、`.env` の手動管理が煩雑になったとき
+- 自宅サーバーのコンテナが増え、`.env` の手動管理が煩雑になったとき
 - 複数サービス間でシークレットを共有する必要が出たとき
 - CI/CD パイプラインからシークレットを動的に取得したいとき
 - シークレットのローテーション（定期更新）を自動化したいとき
 
-Infisical は Unraid の docker-compose で Vaultwarden と並べて立てられるので、
+Infisical は自宅サーバーの docker-compose で Vaultwarden と並べて立てられるので、
 この移行が完了した後にいつでも追加可能。
 
 ---
