@@ -220,6 +220,8 @@ git の `core.editor`（Cursor / VS Code）は `c` alias と同じ規則で決�
 
 ## 5. 覚える核（参考）
 
+選択に関わらず、サーバーで通じるキー。
+
 ### Vim（`vi` でも通じるもの）
 
 ```text
@@ -270,6 +272,3 @@ tmux ls / tmux a -t 名前
   `lua/lazyvim/plugins/editor.lua`）
 - Ghostty の `macos-option-as-alt` の既定値: Ghostty のソースの変更履歴（公式サイトの
   設定リファレンスは、この環境のネットワーク制限で読めなかった）
-
-
-選択に関わらず、サーバーで通じるキー。
