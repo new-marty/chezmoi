@@ -6,6 +6,25 @@
 
 ---
 
+## [Todo] tmux と Vim を、サーバーでもそのまま使える形で覚える環境を作る
+
+手元の Mac ではヒントやプラグインで覚えやすくし、何も入っていないサーバーでも同じキーで
+保守作業ができるようにしたい。調査と計画は `docs/plans/tmux-vim-learning.md` にある
+（実装はまだ）。
+
+調査で分かったこと: 今の tmux 設定はプレフィックスが `Ctrl+\` で、`prefix p/w/s/r` の既定の
+動作を独自のモードで上書きし、ヒントバーとチートシートには既定のキー（`"` `%` `c` `o` `?`）
+が出てこない。Vim / Neovim の設定はリポジトリに無く、`EDITOR` は nano。
+vim-tmux-navigator が `Ctrl+H`（atuin）と `Ctrl+L` を潰している疑いがあり、Ghostty に
+`macos-option-as-alt` が無いので `Opt+…` のキーが届いているかも要確認。
+
+### 残り
+- 計画の「3. 決めること」（D1〜D6）を本人が決める
+- フェーズ 0（実機確認）から順に実装する。Vim の設定は新しい `vim` スイッチにする
+- 終わったら、この項目と `docs/plans/tmux-vim-learning.md` を消す（中身は docs/{ja,en} に移す）
+
+---
+
 ## [Todo] VS Code と Cursor の拡張機能の一覧を見直す
 
 `private_Library/Application Support/Code/User/extensions.json` は VS Code が読まない
