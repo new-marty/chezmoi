@@ -6,6 +6,15 @@
 
 ---
 
+## [Doing] 会社の Mac 用のドキュメント（`docs/{en,ja}/work-mac.md`）をなくす
+
+方針は「マシンや環境を定義せず、opt-in とローカルのファイルで運用する」。特定のマシン向けの
+ページはこの方針に反する。誰にでも使える中身（Oh My Zsh を zip から入れる手順、clone せずに
+リポジトリを置く手順）は `docs/{en,ja}/setup.md` に移し、会社の Mac 固有の移行手順は
+下の項目に移す。
+
+---
+
 ## [Todo] 会社の Mac を opt-in（`omz`、`cursor`、`editor-builtin`）で chezmoi に移す
 
 リポジトリ側は対応済み。会社の Mac 用の環境は定義せず、使うものを opt-in する:
