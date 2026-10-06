@@ -21,7 +21,7 @@
       "complex_modifications": {
         "rules": [
           {
-            "description": "SpaceFN: hold Space for h/j/k/l arrows (U.S. input source only); tap Space for space",
+            "description": "SpaceFN: hold Space for h/j/k/l arrows and / for the tmux and Vim cheat sheet (English input only: Japanese input uses Space to convert); tap Space for space",
             "manipulators": [
               {
                 "type": "basic",
@@ -60,7 +60,7 @@
                     "type": "input_source_if",
                     "input_sources": [
                       {
-                        "input_source_id": "^com\\.apple\\.keylayout\\.US$"
+                        "input_source_id": "^com\\.apple\\.keylayout\\.(US|ABC)$"
                       }
                     ]
                   }
@@ -162,6 +162,29 @@
                     "value": 1
                   }
                 ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "slash",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "open ~/.config/karabiner/../cheatsheet/index.html"
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "variable_if",
+                    "name": "spacefn_layer",
+                    "value": 1
+                  }
+                ]
               }
             ]
           },
@@ -229,6 +252,76 @@
                   "basic.to_if_held_down_threshold_milliseconds": 100,
                   "basic.to_if_alone_timeout_milliseconds": 300
                 }
+              }
+            ]
+          },
+          {
+            "description": "Esc and Ctrl+[ also switch to English input in terminals, VS Code and Cursor, so Vim's normal mode does not receive Japanese input",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "escape",
+                  "modifiers": {
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "escape"
+                  },
+                  {
+                    "key_code": "japanese_eisuu"
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_if",
+                    "bundle_identifiers": [
+                      "^com\\.mitchellh\\.ghostty$",
+                      "^com\\.apple\\.Terminal$",
+                      "^com\\.googlecode\\.iterm2$",
+                      "^com\\.microsoft\\.VSCode$",
+                      "^com\\.todesktop\\.230313mzl4w4u92$"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "open_bracket",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "escape"
+                  },
+                  {
+                    "key_code": "japanese_eisuu"
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_if",
+                    "bundle_identifiers": [
+                      "^com\\.mitchellh\\.ghostty$",
+                      "^com\\.apple\\.Terminal$",
+                      "^com\\.googlecode\\.iterm2$",
+                      "^com\\.microsoft\\.VSCode$",
+                      "^com\\.todesktop\\.230313mzl4w4u92$"
+                    ]
+                  }
+                ]
               }
             ]
           }
