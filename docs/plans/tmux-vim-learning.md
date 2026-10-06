@@ -45,13 +45,22 @@
 実機での確認が要るもの（このクラウド環境からは確かめられない）:
 
 - Ghostty で `Opt` キーが tmux に届いているか。`private_dot_config/ghostty/config.tmpl` に
-  `macos-option-as-alt` が無い。これが無いと macOS の Option は `˙ ∆ ˚ ¬` のような文字を
-  送るので、`Opt+hjkl` などが効いていない可能性がある。Karabiner 側で変換していれば効く。
+  `macos-option-as-alt` が無い。Ghostty はこれが未設定のとき、その時点の入力ソースが US
+  配列なら Option を Alt として送り、US 以外の配列なら送らない（入力ソースを切り替えると
+  その場で変わる）。送らないときの Option は `˙ ∆ ˚ ¬` のような文字になり、`Opt+hjkl` などは
+  効かない。JIS 配列や日本語入力のときにどちらになるかは、実機で確かめる必要がある。
+  Karabiner 側で変換していれば、この設定に関係なく効く。
 - vim-tmux-navigator との衝突。このプラグインは、プレフィックス無しの `Ctrl+h/j/k/l` を
-  ペイン移動に取る。`dot_zshrc` は `Ctrl+H` を atuin に割り当てているので、tmux の中では
-  atuin が開かず、`Ctrl+L`（画面クリア）も効かない可能性がある。プラグインの版によっては
-  `Ctrl+\`（前のペイン）も取り、プレフィックスと重なる。Vim / Neovim 側には今、対になる
-  プラグインが無い。
+  ペイン移動に、`Ctrl+\` を前のペインへの移動に、既定で割り当てる（プラグインの
+  `vim-tmux-navigator.tmux` で確認）。
+  - `dot_zshrc` は `Ctrl+H` を atuin に割り当てているので、tmux の中では atuin が開かない
+    可能性がある。
+  - `Ctrl+L`（画面クリア）は、プラグインが代わりに `prefix Ctrl+L` へ割り当てる
+    （`@vim_navigator_prefix_mapping_clear_screen`）。
+  - `Ctrl+\` はこの設定のプレフィックスと同じキー。プレフィックスとプラグインの割り当ての
+    どちらが効くかは実機で確かめる必要がある。プラグイン側は
+    `@vim_navigator_mapping_prev` で別のキーに変えられる。
+  - Vim / Neovim 側には今、対になるプラグインが無い。
 
 ### Vim / Neovim
 
@@ -133,13 +142,19 @@
 | Neovim + kickstart.nvim（＋UI プラグインを自分で足す） | 足した分だけ | `init.lua` 1 つで全部読めるので、設定の中身も学べる | リッチにするほど自分で保守する |
 | Neovim + AstroNvim / NvChad | LazyVim と同程度 | 同程度 | 同程度。日本語・英語の情報量は LazyVim が多い |
 
-LazyVim の既定で、vi と動作が違うキー（手元とサーバーで指がずれる所）:
+LazyVim の既定で、vi と動作が違うキー（手元とサーバーで指がずれる所）。LazyVim の
+`lua/lazyvim/config/keymaps.lua` と `lua/lazyvim/plugins/editor.lua` で確認した:
 
-- `s`（normal / visual）: flash.nvim のジャンプ。vi では 1 文字消して入力モードに入る。
-  設定で外せる。
-- `H` / `L`: 前後のバッファへ切り替え。vi では画面の上端・下端へ移動。
+- `s`（normal / visual / operator）: flash.nvim のジャンプ。`S` は treesitter での選択。
+  operator 待ちの `r`、`R` も flash が取る。vi では `s` は 1 文字消して入力モードに入り、
+  `S` は行を消して入力モードに入る。設定で外せる。
+- `H` / `L`（`<S-h>` / `<S-l>`）: 前後のバッファへ切り替え。vi では画面の上端・下端へ移動。
+- `<C-h/j/k/l>`: 分割したウィンドウ間の移動（`<C-w>h/j/k/l` と同じ）。vi の `<C-w>h` などは
+  そのまま使える。
+- `<C-s>`: 保存（normal / insert / visual）。vi の端末では出力停止になることがある
+  （`Ctrl+Q` で再開）。
+- `<esc>`: 検索の強調表示も消す。入力モードを抜ける動作は vi と同じ。
 - mini.pairs が括弧や引用符を自動で閉じる。vi では閉じない。
-- `<C-s>` で保存できる。vi では端末の出力停止になることがある（`Ctrl+Q` で再開）。
 
 Neovim で使える、学習用の追加プラグイン（キーは変えない）:
 
@@ -164,7 +179,9 @@ Neovim を chezmoi で管理するときの事実:
 - CI の `fresh-apply` は nvim を起動しないので、プラグインの取得は CI に影響しない。
 - テーマ: Ghostty と VS Code は poimandres、tmux は catppuccin mocha。Neovim には
   どちらのテーマもある（poimandres.nvim / catppuccin.nvim）。
-- LazyVim が求める Neovim の版は時期で上がる。着手時に確認が要る。
+- LazyVim の README（2026-10 時点）が挙げる要件: Neovim 0.11.2 以上（LuaJIT 版）、
+  Git 2.19.0 以上、nvim-treesitter 用の C コンパイラ。Nerd Font は任意。lazygit、ripgrep、
+  fd などは要件ではなく、あると機能が増える。要件は時期で上がる。
 
 ### 3-5. `EDITOR` / `VISUAL`
 
@@ -182,7 +199,7 @@ git の `core.editor`（Cursor / VS Code）は `c` alias と同じ規則で決�
 | 案 | 内容 |
 |----|------|
 | 外す | `Ctrl+H`（atuin）と `Ctrl+L` が戻る。手元の移動は `Opt+hjkl`（tmux）と `Ctrl+w hjkl`（Vim 既定、サーバーでも通じる） |
-| 残し、Neovim 側にも対のプラグインを入れる | tmux のペインと Neovim の分割を同じキーで行き来できる。atuin を別のキーへ移す必要がある（上矢印は `omz` の history-substring-search が使う）。画面クリアはプラグインの README にある `prefix Ctrl+L` の回避策がある |
+| 残し、Neovim 側にも対のプラグインを入れる | tmux のペインと Neovim の分割を同じキーで行き来できる。atuin を別のキーへ移す必要がある（上矢印は `omz` の history-substring-search が使う）。画面クリアは `prefix Ctrl+L` になる。`Ctrl+\` はプレフィックスと重なるので、`@vim_navigator_mapping_prev` で変えるかを決める |
 | 今のまま | Vim 側のプラグインが無いので、衝突だけが残る |
 
 ---
@@ -202,8 +219,6 @@ git の `core.editor`（Cursor / VS Code）は `c` alias と同じ規則で決�
 ---
 
 ## 5. 覚える核（参考）
-
-選択に関わらず、サーバーで通じるキー。
 
 ### Vim（`vi` でも通じるもの）
 
@@ -245,3 +260,16 @@ tmux ls / tmux a -t 名前
   プラグインを入れるか、テーマ、clone やフォントの入れられない Mac をどう扱うか
 - 3-5 `EDITOR`
 - 3-6 vim-tmux-navigator
+
+---
+
+## 7. 確かめた一次情報
+
+- vim-tmux-navigator: <https://github.com/christoomey/vim-tmux-navigator>（`vim-tmux-navigator.tmux`）
+- LazyVim: <https://github.com/LazyVim/LazyVim>（`README.md`、`lua/lazyvim/config/keymaps.lua`、
+  `lua/lazyvim/plugins/editor.lua`）
+- Ghostty の `macos-option-as-alt` の既定値: Ghostty のソースの変更履歴（公式サイトの
+  設定リファレンスは、この環境のネットワーク制限で読めなかった）
+
+
+選択に関わらず、サーバーで通じるキー。
