@@ -23,14 +23,16 @@ for paper.
 - Open it: `Space`+`/` (Karabiner, while typing in English), `just cheatsheet`,
   or `Opt+/` inside tmux for the short text version. Without the `justfile`
   switch, run the recipes as `just --justfile "$(chezmoi source-path)/justfile" cheatsheet`.
-- On screen, show stage ① only, ①②, or everything; hide the Mac-only keys;
-  search for a key or a word.
+- It is drawn rather than listed: the Vim modes as a map (colour means mode
+  everywhere on the page), motions on a real line and through a file, the
+  verbs and ranges as a table, and the tmux screen with the key for each part.
+  Dashed boxes are Mac-only.
 - Print it: `just cheatsheet-pdf` writes two A4 landscape pages (Vim on the
   front, tmux on the back) to `~/Downloads/tmux-vim-cheatsheet.pdf` with
   Chrome. Pass a path to write elsewhere: `just cheatsheet-pdf ~/Desktop/sheet.pdf`.
 
-Stages follow "Learn Vim Progressively": learn one or two keys a day, and tick
-the box once you have used a key for a week without looking it up.
+Learn one or two keys a day ("Learn Vim Progressively"); the back page has room
+to write down the three for this week.
 
 ## Setting up
 
