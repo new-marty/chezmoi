@@ -74,13 +74,17 @@ cheatsheet:
 cheatsheet-pdf out="":
     #!/usr/bin/env bash
     set -euo pipefail
+    # A relative path is taken from where just was run, not from the source tree.
+    out="{{ out }}"
+    if [[ -n "$out" && "$out" != /* ]]; then out="{{ invocation_directory() }}/$out"; fi
     [ -f cheatsheet/index.html ] || cd "$(chezmoi source-path)"
     chrome="${GOOGLE_CHROME_PATH:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
     [[ -x "$chrome" ]] || { echo "❌ Google Chrome not found: $chrome"; exit 1; }
-    out="{{ out }}"
     [[ -n "$out" ]] || out="$HOME/Downloads/tmux-vim-cheatsheet.pdf"
+    rm -f "$out"
     "$chrome" --headless --disable-gpu --no-pdf-header-footer \
-        --print-to-pdf="$out" "file://$(pwd)/cheatsheet/index.html" 2>/dev/null
+        --print-to-pdf="$out" "file://$(pwd)/cheatsheet/index.html" 2>/dev/null || true
+    [[ -s "$out" ]] || { echo "❌ Chrome did not write $out"; exit 1; }
     echo "✅ $out"
 
 # macOS shows an accent menu instead of repeating a held key; VSCodeVim's README

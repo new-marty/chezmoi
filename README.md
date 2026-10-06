@@ -151,11 +151,14 @@ in, where to keep API keys, and what to do if this repository wrote an older
 │   └── omz-custom/               # zsh plugins for Oh My Zsh (omz switch, vendored)
 ├── create_dot_gitconfig          # ~/.gitconfig, created once for local settings
 ├── dot_gitignore_global
+├── dot_vimrc                     # ~/.vimrc (vim switch)
 ├── dot_editorconfig
 ├── private_dot_ssh/              # ~/.ssh/config
-├── private_dot_config/           # git (shared config), ghostty, mise, navi, sheldon, tmux
+├── private_dot_config/           # git (shared config), ghostty, mise, navi, nvim, sheldon, tmux
 ├── private_Library/              # VS Code and Cursor settings (macOS)
 ├── karabiner/                    # Karabiner-Elements config, linked from ~/.config/karabiner
+├── cheatsheet/                   # tmux and Vim cheat sheet, for the screen and A4 paper
+├── vscode/                       # VS Code extension list (just vscode-extensions)
 ├── .chezmoidata/optin.toml       # opt-in switches, the files each one writes, required choices
 ├── .chezmoitemplates/            # settings template shared by VS Code and Cursor
 ├── run_once_before_install-tpm.sh.tmpl   # installs the tmux plugin manager (tmux switch)

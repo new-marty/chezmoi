@@ -9,7 +9,9 @@
   Mac-only keys, search. On paper (just cheatsheet-pdf): two A4 landscape
   pages, Vim on the front and tmux on the back.
   Keys marked "Mac" work only on the owner's Mac (Karabiner, Ghostty, this
-  repository's tmux.conf); every other key works on a bare server.
+  repository's tmux.conf). Keys marked "vim" need Vim rather than a minimal vi
+  (busybox vi has no text objects, visual mode or registers). Everything else
+  works on a bare server.
   Stages follow "Learn Vim Progressively": a few commands at a time, tick one
   off after a week of using it without looking.
 -->
@@ -119,7 +121,7 @@ kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); bo
   .sheet:last-of-type { break-after: auto; }
   .sheet-head h2 { font-size: 12.5pt; }
   .sheet-head p { font-size: 8pt; }
-  .cols { display: block; column-count: 4; column-gap: 5mm; column-fill: auto; height: 183mm; }
+  .cols { display: block; column-width: auto; column-count: 4; column-gap: 5mm; column-fill: auto; height: 183mm; }
   #tmux .cols { column-count: 3; }
   .group, .box { margin-bottom: 2.2mm; }
   .group h3, .box h3 { font-size: 8.2pt; }
@@ -148,8 +150,8 @@ kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); bo
 <!-- ======================= Vim ======================= -->
 <section class="sheet" id="vim">
   <div class="sheet-head">
-    <h2>Vim — どのサーバーの vi でも通じるキー</h2>
-    <p>Esc で「ノーマルモード」に戻ってからキーを打つ。迷ったら Esc を2回。</p>
+    <h2>Vim — サーバーの vi で通じるキー</h2>
+    <p>Esc で「ノーマルモード」に戻ってからキーを打つ。迷ったら Esc を2回。<span class="ver">vim</span> の印は Vim が入っているときだけ（busybox の vi には無い）。</p>
   </div>
   <div class="cols">
 
@@ -159,7 +161,7 @@ kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); bo
       <div class="examples">
         <kbd>dw</kbd><span>単語を消す</span>
         <kbd>3dd</kbd><span>3行を消す（動詞を2回 = 行全体）</span>
-        <kbd>ci"</kbd><span>"…" の中を消して入力へ</span>
+        <kbd>ci"</kbd><span>"…" の中を消して入力へ <span class="ver">vim</span></span>
         <kbd>y$</kbd><span>行末までコピー</span>
         <kbd>.</kbd><span>直前の変更をもう一度</span>
       </div>
@@ -173,8 +175,8 @@ kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); bo
       <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>:q</kbd> <kbd>:q!</kbd></span><span class="d">閉じる / 保存せずに閉じる</span><span class="tick"></span></div>
       <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>:wq</kbd> <kbd>ZZ</kbd></span><span class="d">保存して閉じる</span><span class="tick"></span></div>
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>:e file</kbd></span><span class="d">別のファイルを開く</span><span class="tick"></span></div>
-      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>:sp</kbd> <kbd>:vs</kbd></span><span class="d">上下 / 左右に分割</span><span class="tick"></span></div>
-      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>Ctrl-w</kbd> <kbd>hjkl</kbd></span><span class="d">分割の間を移る</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>:sp</kbd> <kbd>:vs</kbd><span class="ver">vim</span></span><span class="d">上下 / 左右に分割</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>Ctrl-w</kbd> <kbd>hjkl</kbd><span class="ver">vim</span></span><span class="d">分割の間を移る</span><span class="tick"></span></div>
     </div>
 
     <div class="group">
@@ -207,13 +209,13 @@ kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); bo
       <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>dd</kbd></span><span class="d">行を消す（消した行は <kbd>p</kbd> で貼れる）</span><span class="tick"></span></div>
       <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>u</kbd></span><span class="d">元に戻す</span><span class="tick"></span></div>
       <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>Ctrl-r</kbd></span><span class="d">やり直す（vi 互換の vi では <kbd>u</kbd> がこの役も）</span><span class="tick"></span></div>
-      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>cw</kbd> <kbd>ciw</kbd></span><span class="d">単語を書き換える</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>cw</kbd> <kbd>ciw</kbd></span><span class="d">単語を書き換える（<kbd>ciw</kbd> は <span class="ver">vim</span>）</span><span class="tick"></span></div>
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>D</kbd> <kbd>C</kbd></span><span class="d">行末まで消す / 消して入力</span><span class="tick"></span></div>
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>r</kbd><i>x</i></span><span class="d">1文字を x に置き換える</span><span class="tick"></span></div>
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>.</kbd></span><span class="d">直前の変更を繰り返す</span><span class="tick"></span></div>
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>&gt;&gt;</kbd> <kbd>&lt;&lt;</kbd></span><span class="d">字下げ / 戻す</span><span class="tick"></span></div>
       <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>J</kbd></span><span class="d">下の行をつなげる</span><span class="tick"></span></div>
-      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>qa</kbd>…<kbd>q</kbd> <kbd>@a</kbd></span><span class="d">操作を a に記録 / 再生</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>qa</kbd>…<kbd>q</kbd> <kbd>@a</kbd><span class="ver">vim</span></span><span class="d">操作を a に記録 / 再生</span><span class="tick"></span></div>
     </div>
 
     <div class="group">
@@ -230,9 +232,9 @@ kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); bo
       <h3>選ぶ・コピー・貼る</h3>
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>yy</kbd></span><span class="d">行をコピー</span><span class="tick"></span></div>
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>p</kbd> <kbd>P</kbd></span><span class="d">後 / 前に貼る</span><span class="tick"></span></div>
-      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>v</kbd> <kbd>V</kbd></span><span class="d">文字 / 行を選ぶ → <kbd>d</kbd> <kbd>y</kbd> <kbd>&gt;</kbd></span><span class="tick"></span></div>
-      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>Ctrl-v</kbd></span><span class="d">矩形で選ぶ → <kbd>I</kbd># <kbd>Esc</kbd> で行頭に一斉入力</span><span class="tick"></span></div>
-      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>"ay</kbd> <kbd>"ap</kbd></span><span class="d">置き場 a にコピー / から貼る</span><span class="tick"></span></div>
+      <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>v</kbd> <kbd>V</kbd><span class="ver">vim</span></span><span class="d">文字 / 行を選ぶ → <kbd>d</kbd> <kbd>y</kbd> <kbd>&gt;</kbd></span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>Ctrl-v</kbd><span class="ver">vim</span></span><span class="d">矩形で選ぶ → <kbd>I</kbd># <kbd>Esc</kbd> で行頭に一斉入力</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>"ay</kbd> <kbd>"ap</kbd><span class="ver">vim</span></span><span class="d">置き場 a にコピー / から貼る</span><span class="tick"></span></div>
     </div>
 
     <div class="box">
@@ -258,7 +260,7 @@ kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); bo
       <h3>サーバーの vi の実情</h3>
       <ul>
         <li>Debian / Ubuntu の <kbd>vi</kbd> は最小版（vim-tiny）のことが多い。入力中の矢印キーで A B C D が入る → <kbd>Esc</kbd> してから <kbd>hjkl</kbd>。<kbd>vim</kbd> があればそちらを使う</li>
-        <li>Alpine やコンテナの vi は busybox 版。① の範囲はおおむね使える</li>
+        <li>Alpine やコンテナの vi は busybox 版。① の範囲はおおむね使える。<span class="ver">vim</span> の印のキーは無い</li>
         <li>nano しかなければ <kbd>EDITOR=vi</kbd> を待たず nano で直す。練習は手元で</li>
       </ul>
     </div>
@@ -278,8 +280,8 @@ kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); bo
 <!-- ======================= tmux ======================= -->
 <section class="sheet" id="tmux">
   <div class="sheet-head">
-    <h2>tmux — どのサーバーの tmux でも通じるキー</h2>
-    <p><kbd>C-b</kbd> は Ctrl を押しながら b。いったん離してから次のキー。</p>
+    <h2>tmux — サーバーの tmux で通じるキー</h2>
+    <p><kbd>C-b</kbd> は Ctrl を押しながら b。いったん離してから次のキー。サーバーのウィンドウ番号は 0 から。</p>
   </div>
   <div class="cols">
 
@@ -317,7 +319,7 @@ kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); bo
       <div class="row" data-stage="1"><span class="st">①</span><span class="k"><kbd>C-b x</kbd></span><span class="d">ペインを閉じる（確認あり）</span><span class="tick"></span></div>
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b ←↑↓→</kbd></span><span class="d">その向きのペインへ</span><span class="tick"></span></div>
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b z</kbd></span><span class="d">今のペインを全画面に / 戻す</span><span class="tick"></span></div>
-      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>C-b Ctrl-←↑↓→</kbd></span><span class="d">大きさを変える</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>C-b Opt+←↑↓→</kbd></span><span class="d">大きさを変える（Ctrl+矢印は macOS が先に取る）</span><span class="tick"></span></div>
       <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>C-b !</kbd></span><span class="d">ペインを新しいウィンドウに出す</span><span class="tick"></span></div>
       <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>C-b {</kbd> <kbd>C-b }</kbd></span><span class="d">ペインを入れ替える</span><span class="tick"></span></div>
     </div>
@@ -328,8 +330,8 @@ kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); bo
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>q</kbd></span><span class="d">コピーモードを出る</span><span class="tick"></span></div>
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>/</kbd> <kbd>?</kbd> <kbd>n</kbd></span><span class="d">探す（vi キーのとき）</span><span class="tick"></span></div>
       <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>Space</kbd> … <kbd>Enter</kbd></span><span class="d">選んでコピー → <kbd>C-b ]</kbd> で貼る</span><span class="tick"></span></div>
-      <p class="note">サーバーの既定は emacs 風のキー。vi キーにするには <kbd>C-b :</kbd> <code>setw -g mode-keys vi</code></p>
-      <div class="row mac-only" data-mac data-stage="2"><span class="st">②</span><span class="k"><kbd>v</kbd> <kbd>y</kbd><span class="tag">Mac</span></span><span class="d">選ぶ / コピー（Mac のクリップボードへ）</span><span class="tick"></span></div>
+      <p class="note">サーバーの tmux が vi キーになるのは、起動したときの EDITOR か VISUAL に vi が含まれるとき。そうでなければ emacs 風。<kbd>C-b :</kbd> <code>setw -g mode-keys vi</code> で切り替えられる</p>
+      <div class="row mac-only" data-mac data-stage="2"><span class="st">②</span><span class="k"><kbd>v</kbd> <kbd>y</kbd><span class="tag">Mac</span></span><span class="d">選ぶ / コピー（Mac のクリップボードへ。素の tmux では <kbd>v</kbd> は矩形の切り替え）</span><span class="tick"></span></div>
     </div>
 
     <div class="group">
@@ -338,19 +340,19 @@ kbd { display: inline-block; background: var(--key-bg); color: var(--key-fg); bo
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b /</kbd><span class="ver">3.1+</span></span><span class="d">次に押すキーの意味を出す</span><span class="tick"></span></div>
       <div class="row" data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b &lt;</kbd> <kbd>C-b &gt;</kbd><span class="ver">3.0+</span></span><span class="d">ウィンドウ / ペインのメニュー</span><span class="tick"></span></div>
       <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>C-b :</kbd></span><span class="d">コマンドを打つ（古い tmux でも使える）</span><span class="tick"></span></div>
-      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>tmux -V</kbd></span><span class="d">版を確かめる（3.0 未満なら上の2つは無い）</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>C-b C-b</kbd></span><span class="d">中で開いた tmux（サーバー）に C-b を送る</span><span class="tick"></span></div>
+      <div class="row" data-stage="3"><span class="st">③</span><span class="k"><kbd>tmux -V</kbd></span><span class="d">版を確かめる（3.1 未満は <kbd>C-b /</kbd> が無く、3.0 未満はメニューも無い）</span><span class="tick"></span></div>
     </div>
 
     <div class="group mac-only">
       <h3>この Mac だけの近道 <span class="tag">Mac</span></h3>
       <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Opt+hjkl</kbd></span><span class="d">ペインを移る（サーバー: <kbd>C-b o</kbd>）</span><span class="tick"></span></div>
-      <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Opt+1…9</kbd></span><span class="d">ウィンドウへ（サーバー: <kbd>C-b 1</kbd>）</span><span class="tick"></span></div>
+      <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Opt+1…9</kbd></span><span class="d">ウィンドウへ（サーバー: <kbd>C-b 0</kbd> が最初）</span><span class="tick"></span></div>
       <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Opt+n</kbd> <kbd>Opt+z</kbd></span><span class="d">新しいウィンドウ / 全画面</span><span class="tick"></span></div>
       <div class="row" data-mac data-stage="2"><span class="st">②</span><span class="k"><kbd>Opt+t</kbd></span><span class="d">浮かぶ作業用の端末</span><span class="tick"></span></div>
-      <div class="row" data-mac data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b P W S R</kbd></span><span class="d">ペイン / ウィンドウ / セッション / 大きさのモード。下の段にヒント</span><span class="tick"></span></div>
+      <div class="row" data-mac data-stage="2"><span class="st">②</span><span class="k"><kbd>C-b P W S R</kbd></span><span class="d">ペイン / ウィンドウ / セッション / 大きさ用の次の1キー。下の段にヒント</span><span class="tick"></span></div>
       <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Opt+/</kbd></span><span class="d">tmux の中で早見表</span><span class="tick"></span></div>
       <div class="row" data-mac data-stage="1"><span class="st">①</span><span class="k"><kbd>Space</kbd>+<kbd>/</kbd></span><span class="d">この手帖を開く（英数入力のとき）</span><span class="tick"></span></div>
-      <p class="note">手元の tmux の中でサーバーの tmux を開いたら、<kbd>C-b C-b</kbd> で内側に送る。</p>
     </div>
 
     <div class="box">
