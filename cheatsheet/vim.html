@@ -255,7 +255,7 @@ ol.rsteps .sk { flex: 0 1 auto; min-width: 0; }
 </style>
 </head>
 <body>
-<nav class="nav"><h1>Vim</h1><a href="#vim">Modes</a><a href="#vim-move">Moving and editing</a><a href="#vim-recipes">Recipes</a><a href="#vim-recipes-2">More recipes</a><p>Dashed boxes work only on this Mac; everything else works on any server.</p></nav>
+<nav class="nav"><h1>Vim</h1><a href="#vim">Modes</a><a href="#vim-move">Moving and editing</a><a href="#vim-recipes">Recipes</a><a href="#vim-recipes-2">More recipes</a><p>Dashed boxes work only on this Mac; everything else works on any server. Scroll with j k, d u, gg G.</p></nav>
 <div class="scroll"><div class="sheet">
 <section class="page" id="vim" aria-labelledby="vim-h">
   <header class="ph"><h2 id="vim-h">Vim: modes</h2><p>Colour shows the mode. Check you are in Normal mode (green) before you type a command.</p></header>
@@ -436,5 +436,26 @@ $ <span class="ci"></span></div><div class="st ">&nbsp;</div></div></div></div><
   </div>
 </section>
 </div></div>
+<script>
+// Vim keys for reading: j/k scroll a little, d/u half a screen, gg/G top/bottom.
+(() => {
+  let last = "";
+  document.addEventListener("keydown", (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const half = window.innerHeight / 2;
+    switch (e.key) {
+      case "j": scrollBy(0, 70); break;
+      case "k": scrollBy(0, -70); break;
+      case "d": scrollBy(0, half); break;
+      case "u": scrollBy(0, -half); break;
+      case "G": scrollTo(0, document.body.scrollHeight); break;
+      case "g": if (last === "g") scrollTo(0, 0); break;
+      default: last = ""; return;
+    }
+    last = e.key;
+    e.preventDefault();
+  });
+})();
+</script>
 </body>
 </html>

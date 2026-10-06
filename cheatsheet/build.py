@@ -551,8 +551,29 @@ def document(title, nav, pages):
 </style>
 </head>
 <body>
-<nav class="nav"><h1>{title}</h1>{nav}<p>Dashed boxes work only on this Mac; everything else works on any server.</p></nav>
+<nav class="nav"><h1>{title}</h1>{nav}<p>Dashed boxes work only on this Mac; everything else works on any server. Scroll with j k, d u, gg G.</p></nav>
 {pages}
+<script>
+// Vim keys for reading: j/k scroll a little, d/u half a screen, gg/G top/bottom.
+(() => {{
+  let last = "";
+  document.addEventListener("keydown", (e) => {{
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const half = window.innerHeight / 2;
+    switch (e.key) {{
+      case "j": scrollBy(0, 70); break;
+      case "k": scrollBy(0, -70); break;
+      case "d": scrollBy(0, half); break;
+      case "u": scrollBy(0, -half); break;
+      case "G": scrollTo(0, document.body.scrollHeight); break;
+      case "g": if (last === "g") scrollTo(0, 0); break;
+      default: last = ""; return;
+    }}
+    last = e.key;
+    e.preventDefault();
+  }});
+}})();
+</script>
 </body>
 </html>
 '''

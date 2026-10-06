@@ -36,11 +36,18 @@ function run(argv) {
   win.makeKeyAndOrderFront(null);
   app.activateIgnoringOtherApps(true);
 
-  // Run until the window is closed.
-  app.finishLaunching;
-  while (win.isVisible) {
-    const ev = app.nextEventMatchingMaskUntilDateInModeDequeue(
-      $.NSEventMaskAny, $.NSDate.dateWithTimeIntervalSinceNow(0.2), $.NSDefaultRunLoopMode, true);
-    if (!ev.isNil()) app.sendEvent(ev);
-  }
+  // Let AppKit run the event loop (WebKit needs it to scroll and redraw), and
+  // quit when the window closes.
+  ObjC.registerSubclass({
+    name: "CheatSheetWindowDelegate",
+    protocols: ["NSWindowDelegate"],
+    methods: {
+      "windowWillClose:": {
+        types: ["void", ["id"]],
+        implementation: function () { $.NSApplication.sharedApplication.terminate(null); },
+      },
+    },
+  });
+  win.delegate = $.CheatSheetWindowDelegate.alloc.init;
+  app.run;
 }

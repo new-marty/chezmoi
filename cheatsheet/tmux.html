@@ -255,7 +255,7 @@ ol.rsteps .sk { flex: 0 1 auto; min-width: 0; }
 </style>
 </head>
 <body>
-<nav class="nav"><h1>tmux</h1><a href="#tmux">Keys</a><a href="#tmux-recipes">Recipes</a><p>Dashed boxes work only on this Mac; everything else works on any server.</p></nav>
+<nav class="nav"><h1>tmux</h1><a href="#tmux">Keys</a><a href="#tmux-recipes">Recipes</a><p>Dashed boxes work only on this Mac; everything else works on any server. Scroll with j k, d u, gg G.</p></nav>
 <div class="scroll"><div class="sheet">
 <section class="page" id="tmux" aria-labelledby="tmux-h">
   <header class="ph"><h2 id="tmux-h">tmux</h2><p>Colour shows the level: <span style="color:var(--session)">session</span> ⊃ <span style="color:var(--window)">window</span> ⊃ <span style="color:var(--pane)">pane</span>.</p></header>
@@ -383,5 +383,26 @@ $ <span class="paste">ERROR db timeout</span><span class="ci"></span></div></div
   </div>
 </section>
 </div></div>
+<script>
+// Vim keys for reading: j/k scroll a little, d/u half a screen, gg/G top/bottom.
+(() => {
+  let last = "";
+  document.addEventListener("keydown", (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const half = window.innerHeight / 2;
+    switch (e.key) {
+      case "j": scrollBy(0, 70); break;
+      case "k": scrollBy(0, -70); break;
+      case "d": scrollBy(0, half); break;
+      case "u": scrollBy(0, -half); break;
+      case "G": scrollTo(0, document.body.scrollHeight); break;
+      case "g": if (last === "g") scrollTo(0, 0); break;
+      default: last = ""; return;
+    }
+    last = e.key;
+    e.preventDefault();
+  });
+})();
+</script>
 </body>
 </html>
