@@ -76,19 +76,19 @@ doctor:
     echo "🔍 Checking dotfiles health..."
     echo ""
 
-    # The profile picks the zsh plugin loader (.chezmoidata/profiles.toml).
-    profile="$(chezmoi execute-template '{{{{ dig "profile" "full" . }}' 2>/dev/null || echo "unknown")"
-    echo "🧩 Profile: $profile"
-    if [[ "$profile" == work ]]; then
+    # The "omz" opt-in picks Oh My Zsh over sheldon (.chezmoidata/optin.toml).
+    omz="$(chezmoi execute-template '{{{{ has "omz" (dig "optin" list .) }}' 2>/dev/null || echo "unknown")"
+    echo "🧩 zsh plugins:"
+    if [[ "$omz" == true ]]; then
         if [[ -r "${ZSH:-$HOME/.oh-my-zsh}/oh-my-zsh.sh" ]]; then
-            echo "  ✅ zsh plugins: Oh My Zsh ${ZSH:-$HOME/.oh-my-zsh}, plugins from ~/.zsh/omz-custom"
+            echo "  ✅ Oh My Zsh ${ZSH:-$HOME/.oh-my-zsh}, plugins from ~/.zsh/omz-custom"
         else
-            echo "  ❌ zsh plugins: Oh My Zsh not installed, ~/.zsh is sourced without plugins (docs/en/work-mac.md)"
+            echo "  ❌ Oh My Zsh not installed, ~/.zsh is sourced without plugins (docs/en/work-mac.md)"
         fi
     elif command -v sheldon &>/dev/null; then
-        echo "  ✅ zsh plugins: sheldon (~/.config/sheldon/plugins.toml)"
+        echo "  ✅ sheldon (~/.config/sheldon/plugins.toml)"
     else
-        echo "  ❌ zsh plugins: sheldon not installed, ~/.zsh is sourced without plugins"
+        echo "  ❌ sheldon not installed, ~/.zsh is sourced without plugins"
     fi
     echo ""
     
@@ -140,6 +140,9 @@ optin:
     {{{{- range dig "scripts" list $sw -}}
     {{{{ $name }}{{{{ "\t" }}{{{{ $on }}{{{{ "\tscript\t" }}{{{{ . }}{{{{ "\n" }}
     {{{{- end -}}
+    {{{{- if not (or (dig "files" list $sw) (dig "scripts" list $sw)) -}}
+    {{{{ $name }}{{{{ "\t" }}{{{{ $on }}{{{{ "\tnone\t-\n" }}
+    {{{{- end -}}
     {{{{- end -}}')"
     managed="$(chezmoi managed --include=all 2>&1)" || {
         echo "chezmoi managed failed (an unknown name in the optin list?):"
@@ -162,13 +165,19 @@ optin:
     dest="$(chezmoi execute-template '{{{{ .chezmoi.destDir }}')"
     stale=()
     changed=()
-    printf "%-10s %-9s %-8s %-8s %s\n" SWITCH SELECTED EXISTS MANAGED PATH
+    printf "%-18s %-9s %-8s %-8s %s\n" SWITCH SELECTED EXISTS MANAGED PATH
     while IFS=$'\t' read -r name selected kind path; do
+        # A switch that writes no files of its own (editor-builtin) shows its
+        # selection only.
+        if [[ "$kind" == none ]]; then
+            printf "%-18s %-9s %-8s %-8s %s\n" "$name" "$selected" - - -
+            continue
+        fi
         if [[ "$kind" == script ]]; then exists="script"
         elif [[ -e "$dest/$path" ]]; then exists="yes"
         else exists="no"; fi
         if grep -qxF "$path" <<<"$managed"; then is_managed="yes"; else is_managed="no"; fi
-        printf "%-10s %-9s %-8s %-8s %s\n" "$name" "$selected" "$exists" "$is_managed" "$path"
+        printf "%-18s %-9s %-8s %-8s %s\n" "$name" "$selected" "$exists" "$is_managed" "$path"
         if [[ "$exists" == yes && "$is_managed" == no ]]; then
             case "$(written_by_chezmoi "$path")" in
                 yes) stale+=("$path") ;;

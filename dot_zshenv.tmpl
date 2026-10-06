@@ -63,10 +63,10 @@ DOTFILES_GUI_EDITOR='code'
 DOTFILES_GUI_EDITOR=''
 {{- end }}
 
-# Machine profile (.chezmoidata/profiles.toml), for .zshrc to pick the plugin
-# loader: "work" loads Oh My Zsh, "full" loads sheldon. A plain shell variable,
+# zsh plugin loader for .zshrc: 1 when "omz" is in the opt-in list, so .zshrc
+# loads the plugins with Oh My Zsh instead of sheldon. A plain shell variable,
 # like DOTFILES_GUI_EDITOR.
-DOTFILES_PROFILE='{{ dig "profile" "full" . }}'
+DOTFILES_OMZ={{ if has "omz" $optin }}1{{ else }}0{{ end }}
 
 # Machine-local environment (not managed by chezmoi)
 [[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"

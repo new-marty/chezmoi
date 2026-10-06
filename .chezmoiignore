@@ -25,19 +25,6 @@ Library
 {{ end }}
 
 {{- /*
-Machine profile (.chezmoidata/profiles.toml). Only the work profile loads Oh My
-Zsh, so only it gets the vendored Oh My Zsh plugins.
-*/}}
-{{- $profile := dig "profile" "full" . }}
-{{- if not (and (kindIs "string" $profile) (has $profile .profiles)) }}
-{{-   fail (printf "chezmoi.toml: data.profile must be one of %s, not %q" (.profiles | join ", ") $profile) }}
-{{- end }}
-{{- if ne $profile "work" }}
-# Oh My Zsh plugins of the work profile
-.zsh/omz-custom
-{{- end }}
-
-{{- /*
 Opt-in application settings. .chezmoidata/optin.toml maps each switch to the
 files, directories and scripts it controls; the machine selects switches with
 `optin = [...]` under [data] in its chezmoi.toml. `dig` returns an empty list when the key is
@@ -52,6 +39,23 @@ existing file in place and stops managing it; it never deletes it.
 {{- range $optin }}
 {{-   if not (hasKey $.optin_paths .) }}
 {{-     fail (printf "chezmoi.toml: unknown opt-in %q in data.optin; valid names are in .chezmoidata/optin.toml: %s" . (keys $.optin_paths | sortAlpha | join ", ")) }}
+{{-   end }}
+{{- end }}
+{{- /*
+Choices (optin_choices in optin.toml): when a machine selects a switch that
+needs a choice, it must also select exactly one of the choice's options. There
+is no default; the apply stops until the machine picks one.
+*/}}
+{{- range $name, $ch := .optin_choices }}
+{{-   $needed := list }}
+{{-   range $ch.required_by }}{{ if has . $optin }}{{ $needed = append $needed . }}{{ end }}{{ end }}
+{{-   $picked := list }}
+{{-   range $ch.options }}{{ if has . $optin }}{{ $picked = append $picked . }}{{ end }}{{ end }}
+{{-   if gt (len $picked) 1 }}
+{{-     fail (printf "chezmoi.toml: data.optin selects both %s; keep only one (%s)" ($picked | join " and ") $ch.description) }}
+{{-   end }}
+{{-   if and $needed (eq (len $picked) 0) }}
+{{-     fail (printf "chezmoi.toml: data.optin selects %s, so it must also select one of %s (%s); there is no default" ($needed | join " and ") ($ch.options | join " or ") $ch.description) }}
 {{-   end }}
 {{- end }}
 # Opt-in paths not selected on this machine

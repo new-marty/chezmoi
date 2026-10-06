@@ -13,7 +13,7 @@ only when its switch is in the `optin` list of
 
 ```toml
 [data]
-    optin = ["vscode", "ghostty", "tmux"]
+    optin = ["vscode", "editor-extensions", "ghostty", "tmux"]
 ```
 
 | Switch     | Files chezmoi writes (under `~`)                                    |
@@ -26,11 +26,17 @@ only when its switch is in the `optin` list of
 | `mise`     | `.config/mise/config.toml`                                          |
 | `justfile` | `justfile`                                                          |
 | `karabiner`| `.config/karabiner` (a symlink to `karabiner/` in the source directory) |
+| `omz`      | `.zsh/omz-custom/plugins/`: zsh plugins for Oh My Zsh, which then loads them instead of sheldon ([Work Mac](work-mac.md)) |
+| `editor-extensions` | none; the VS Code and Cursor settings use the Poimandres and catppuccin extensions and Hack Nerd Font |
+| `editor-builtin` | none; the VS Code and Cursor settings colour the built-in theme with the Poimandres colours and use system fonts, for a Mac that cannot install extensions or fonts |
 
 VS Code and Cursor read settings in the same format from different places, so
 both `settings.json` files come from one template and you can select either or
-both. The switches and their files are defined in `.chezmoidata/optin.toml`,
-and this table copies it. A name that is not in it stops `chezmoi apply` with an
+both. How they look has no default: with `vscode` or `cursor` selected, select
+exactly one of `editor-extensions` and `editor-builtin` too, or `chezmoi apply`
+stops and says so. The switches and their files are defined in
+`.chezmoidata/optin.toml` (the choice is `[optin_choices.editor-look]`), and
+this table copies it. A name that is not in it stops `chezmoi apply` with an
 error listing the valid names.
 
 After changing the list, apply with `chezmoi apply --less-interactive`. A plain

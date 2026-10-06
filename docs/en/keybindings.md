@@ -15,7 +15,7 @@ short version of this table.
 | `Ctrl+H` | Search history with more filters (directory, session)          | atuin          |
 | `Ctrl+U` | Jump to a recently visited directory                           | peco           |
 | `Tab`    | Completion in an fzf list, with a preview of files and folders | sheldon, fzf   |
-| `Up`/`Down` | Search history for what is typed so far                     | the work profile ([Work Mac](work-mac.md)) |
+| `Up`/`Down` | Search history for what is typed so far                     | the `omz` switch ([Work Mac](work-mac.md)) |
 
 The picked command is placed on the command line, not run, so you can edit it
 before pressing Enter.

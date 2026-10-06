@@ -43,19 +43,17 @@ tells people to run `chezmoi init`, `chezmoi diff`, then `chezmoi apply
 --less-interactive`, because a first plain apply overwrites their existing files.
 
 - Templates use only built-in variables (`.chezmoi.os`, `.chezmoi.hostname`, ...),
-  repo data from `.chezmoidata/`, functions such as `lookPath`, and two pieces of machine
-  data: the optional `optin` list, always read as `dig "optin" list .`, and the optional
-  `profile`, always read as `dig "profile" "full" .` (valid values in
-  `.chezmoidata/profiles.toml`; `.chezmoiignore` `fail`s on any other). Do not add any
+  repo data from `.chezmoidata/`, functions such as `lookPath`, and one piece of machine
+  data: the optional `optin` list, always read as `dig "optin" list .`. Do not add any
   other `chezmoi.toml` data: chezmoi's default `missingkey=error` makes a missing key
   fail the whole apply for a stranger.
-- Profiles change how the core is set up, not whether an app's settings apply: `full`
-  (default) loads zsh plugins with sheldon; `work` (a Mac whose allow-list has Oh My Zsh
-  but not sheldon, Nerd Fonts or editor extensions, and blocks `git clone`) loads them
-  with a hand-installed Oh My Zsh from `dot_zsh/omz-custom` (vendored by
-  `scripts/vendor-omz-plugins.sh`, ignored for other profiles), and
-  `.chezmoitemplates/editor-settings.tmpl` recolours the built-in theme with system
-  fonts. Nothing applied under `work` may clone. See `docs/en/work-mac.md`.
+- Never define machines or environments (no `profile = "work"`, no per-machine
+  branches): a machine opts in to the things it uses, one switch each. Where a
+  selected switch needs a choice between alternatives, there is no default either: list
+  it under `[optin_choices.<name>]` (`required_by`, `options`) in `.chezmoidata/optin.toml`
+  and `.chezmoiignore` `fail`s unless exactly one option is selected. A switch may write
+  no files and only change a template (`editor-extensions`/`editor-builtin` in
+  `.chezmoitemplates/editor-settings.tmpl`).
 - App settings are opt-in. `.chezmoidata/optin.toml` (`[optin_paths.<switch>]`) lists
   each switch's `files` (exactly what chezmoi writes; CI fails when they drift from
   `chezmoi managed`), `dirs` (ignored so no empty dirs leak, never offered for
@@ -129,9 +127,9 @@ GitHub Issues are disabled for this repository.
 
 ## Architecture
 
-**Shell loading order**: `dot_zshenv.tmpl` (all shells, sets PATH/env and `DOTFILES_PROFILE`, then `~/.zshenv.local`) → `dot_zprofile.tmpl` (login) → `dot_zshrc` (interactive, loads tools/plugins/keybindings, then `~/.zshrc.local`).
+**Shell loading order**: `dot_zshenv.tmpl` (all shells, sets PATH/env and `DOTFILES_OMZ`, then `~/.zshenv.local`) → `dot_zprofile.tmpl` (login) → `dot_zshrc` (interactive, loads tools/plugins/keybindings, then `~/.zshrc.local`).
 
-**Plugin loader**: `dot_zshrc` stays a plain file (so `zsh -n` checks every branch) and picks the loader from `DOTFILES_PROFILE`: Oh My Zsh for `work` when `~/.oh-my-zsh` exists (plugins only; `ZSH_CUSTOM=~/.zsh/omz-custom`, no OMZ theme, it runs compinit), else sheldon when installed, else none. With Oh My Zsh or none, `dot_zshrc` sources `~/.zsh/*.zsh` and the theme directly.
+**Plugin loader**: `dot_zshrc` stays a plain file (so `zsh -n` checks every branch) and picks the loader from `DOTFILES_OMZ` (1 when the `omz` opt-in is selected): Oh My Zsh when selected and `~/.oh-my-zsh` exists (plugins only; `ZSH_CUSTOM=~/.zsh/omz-custom`, vendored by `scripts/vendor-omz-plugins.sh` because the Mac that uses it cannot clone; no OMZ theme; it runs compinit), else sheldon when installed, else none. With Oh My Zsh or none, `dot_zshrc` sources `~/.zsh/*.zsh` and the theme directly.
 
 **Sheldon caching**: Shell plugins via sheldon are cached to `~/.cache/sheldon.zsh` for fast startup. The cache auto-regenerates when `plugins.toml` changes.
 
@@ -143,4 +141,4 @@ GitHub Actions (`.github/workflows/lint.yml`) runs on pushes/PRs to main:
 - `zsh -n` on `dot_zshrc` and `dot_zsh/` (not the vendored `omz-custom`), ShellCheck on `scripts/*.sh` and the `run_once_` script (ShellCheck does not support zsh)
 - fcat tests on macOS runner
 - chezmoi doctor + template validation
-- `fresh-apply`: apply into an empty home, with paths taken from `.chezmoidata/optin.toml`: empty config (core files only, no `.zsh/omz-custom`, interactive zsh starts), every switch selected (every listed file exists, and the `files` lists match `chezmoi managed` under each switch's `dirs`), the work profile (zsh starts without Oh My Zsh, then loads every plugin from Oh My Zsh's zip), an unknown profile and an unknown switch (apply fails)
+- `fresh-apply`: apply into an empty home, with paths taken from `.chezmoidata/optin.toml`: empty config (core files only, no `.zsh/omz-custom`, interactive zsh starts), every switch selected, with the first option of each choice (every listed file exists, and the `files` lists match `chezmoi managed` under each switch's `dirs`), `omz` (zsh starts without Oh My Zsh, then loads every plugin from Oh My Zsh's zip), a choice missing or made twice (apply fails) and each option alone (applies), an unknown switch (apply fails)

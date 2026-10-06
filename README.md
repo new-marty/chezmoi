@@ -92,7 +92,7 @@ chezmoi apply --less-interactive
 
 ```toml
 [data]
-    optin = ["vscode", "ghostty", "tmux"]
+    optin = ["vscode", "editor-extensions", "ghostty", "tmux"]
 ```
 
 | Switch     | Configures                                                  |
@@ -105,6 +105,12 @@ chezmoi apply --less-interactive
 | `mise`     | mise global tool versions                                   |
 | `justfile` | `~/justfile` with update and diagnostic recipes             |
 | `karabiner`| Karabiner-Elements rules (`~/.config/karabiner` links into the repository) |
+| `omz`      | zsh plugins loaded with Oh My Zsh instead of sheldon        |
+| `editor-extensions` | VS Code and Cursor look: Poimandres and catppuccin extensions, Hack Nerd Font |
+| `editor-builtin` | VS Code and Cursor look: built-in theme in the Poimandres colours, system fonts |
+
+With `vscode` or `cursor`, pick exactly one of `editor-extensions` and
+`editor-builtin`. There is no default; `chezmoi apply` stops until you pick one.
 
 Removing a switch later deletes nothing: chezmoi stops managing those files
 and leaves them where they are. [Setup in detail](docs/en/setup.md) lists the
@@ -112,20 +118,17 @@ files each switch writes and how to clean up after removing one.
 
 ## Work Mac
 
-On a Mac whose software allow-list has Oh My Zsh but not sheldon, select the
-work profile in `~/.config/chezmoi/chezmoi.toml`. zsh then loads its plugins
-with Oh My Zsh (installed by hand from its zip) from copies kept in this
-repository, so applying clones nothing, and the VS Code and Cursor settings use
-the built-in theme and system fonts instead of extensions and a Nerd Font.
+A Mac whose software allow-list has Oh My Zsh but not sheldon, editor
+extensions or Nerd Fonts opts in to what it can use: `omz` loads the zsh
+plugins with Oh My Zsh (installed by hand from its zip) from copies kept in this
+repository, so applying clones nothing, and `editor-builtin` makes the Cursor
+settings use the built-in theme and system fonts. [Work Mac](docs/en/work-mac.md)
+has the allow-list, installing Oh My Zsh, and moving from a hand-made setup.
 
 ```toml
 [data]
-    profile = "work"
-    optin = ["cursor"]
+    optin = ["omz", "cursor", "editor-builtin"]
 ```
-
-The default profile is `full` (sheldon). [Work Mac](docs/en/work-mac.md) has
-the allow-list, installing Oh My Zsh, and moving from a hand-made setup.
 
 ## Put your own settings in local files
 
@@ -157,7 +160,7 @@ in, where to keep API keys, and what to do if this repository wrote an older
 .
 ├── dot_zshenv.tmpl, dot_zprofile.tmpl, dot_zshrc   # zsh startup files
 ├── dot_zsh/                      # aliases, commands, prompt theme, widgets
-│   └── omz-custom/               # Oh My Zsh plugins of the work profile (vendored)
+│   └── omz-custom/               # zsh plugins for Oh My Zsh (omz switch, vendored)
 ├── create_dot_gitconfig          # ~/.gitconfig, created once for local settings
 ├── dot_gitignore_global
 ├── dot_editorconfig
@@ -165,8 +168,7 @@ in, where to keep API keys, and what to do if this repository wrote an older
 ├── private_dot_config/           # git (shared config), ghostty, mise, navi, sheldon, tmux
 ├── private_Library/              # VS Code and Cursor settings (macOS)
 ├── karabiner/                    # Karabiner-Elements config, linked from ~/.config/karabiner
-├── .chezmoidata/optin.toml       # opt-in switches and the files each one writes
-├── .chezmoidata/profiles.toml    # machine profiles: full (sheldon), work (Oh My Zsh)
+├── .chezmoidata/optin.toml       # opt-in switches, the files each one writes, required choices
 ├── .chezmoitemplates/            # settings template shared by VS Code and Cursor
 ├── run_once_before_install-tpm.sh.tmpl   # installs the tmux plugin manager (tmux switch)
 ├── justfile

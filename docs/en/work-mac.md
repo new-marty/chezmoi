@@ -1,27 +1,25 @@
-# Work Mac (`profile = "work"`)
+# Work Mac
 
-The work profile is for a Mac with a software allow-list: Oh My Zsh is allowed
-but sheldon is not, `git clone` is blocked, and editor extensions and Nerd Fonts
-cannot be installed. The shell, git and editor settings are the same files as
-on any other machine; the profile changes only how zsh loads its plugins and
-how the VS Code and Cursor settings get their colours and fonts.
+This page is for a Mac with a software allow-list: Oh My Zsh is allowed but
+sheldon is not, `git clone` is blocked, and editor extensions and Nerd Fonts
+cannot be installed. Nothing here defines that Mac as an environment; it opts
+in to the switches that fit what it can use, like any other machine.
 
-## What the profile changes
+## What to opt in to
 
-| Area                        | `full` (the default)                       | `work`                                                       |
-| --------------------------- | ------------------------------------------ | ------------------------------------------------------------ |
-| zsh plugin loader           | sheldon (`~/.config/sheldon/plugins.toml`) | Oh My Zsh, installed by hand in `~/.oh-my-zsh`               |
-| zsh plugins                 | cloned by sheldon                          | `git`, plus three plugins kept in this repository and written to `~/.zsh/omz-custom` |
-| Aliases, commands, prompt   | `~/.zsh/*`                                 | the same `~/.zsh/*`                                          |
-| Up/Down arrows              | zsh's own history keys                     | history search for what is typed so far (zsh-history-substring-search) |
-| Editor colour theme         | Poimandres extension                       | built-in Default Dark Modern, recoloured with the Poimandres colours |
-| Editor and terminal font    | Hack Nerd Font                             | SF Mono, Menlo, Monaco                                       |
-| Editor icon theme           | catppuccin-mocha extension                 | the built-in default                                         |
-| Editor integrated terminal  | the editor's default                       | a login shell (`zsh -l`), so `~/.zprofile` sets up Homebrew  |
+| Switch           | What it does                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------------ |
+| `omz`            | zsh loads its plugins with Oh My Zsh, installed by hand in `~/.oh-my-zsh`, instead of sheldon: `git`, plus three plugins kept in this repository and written to `~/.zsh/omz-custom`. Up/Down then search history for what is typed so far. |
+| `cursor`         | Cursor settings, as on any machine                                                               |
+| `editor-builtin` | The Cursor (and VS Code) settings colour the built-in Default Dark Modern theme with the Poimandres colours and use SF Mono, Menlo or Monaco, instead of the Poimandres and catppuccin extensions and Hack Nerd Font (`editor-extensions`) |
 
-With Oh My Zsh not installed yet, the shell still starts: it sources `~/.zsh/*`
-without plugins, as on a machine without sheldon. `just doctor` prints the
-profile and which loader is in use.
+`editor-builtin` and `editor-extensions` have no default: with `cursor` or
+`vscode` selected, exactly one of them must be selected too.
+
+The aliases, commands and prompt are the same `~/.zsh/*` files on every
+machine. Without Oh My Zsh installed yet, the shell still starts: it sources
+`~/.zsh/*` without plugins, as on a machine without sheldon. `just doctor`
+prints which loader is in use.
 
 The plugins that Oh My Zsh does not ship are kept in `dot_zsh/omz-custom`,
 pinned to a release, so that applying needs no clone:
@@ -40,12 +38,12 @@ run the script on a machine that can clone, and commit the result.
 | Tool                         | On the work Mac        | What the dotfiles do                                                     |
 | ---------------------------- | ---------------------- | ------------------------------------------------------------------------ |
 | chezmoi                      | to be requested        | Nothing on this page applies until it is installed                       |
-| Oh My Zsh                    | allowed                | Loads the zsh plugins                                                    |
-| sheldon                      | not allowed            | Not used by the work profile                                             |
+| Oh My Zsh                    | allowed                | Loads the zsh plugins (`omz`)                                            |
+| sheldon                      | not allowed            | Not used when `omz` is selected                                          |
 | `git clone`                  | blocked                | Applying clones nothing (do not select the `tmux` switch: it clones tpm) |
 | fzf, peco, atuin, eza, bat, zoxide, direnv, mise, navi, delta | not allowed for now | Each alias or key that needs one is set only when it is installed, so the stock command or key keeps working (`Ctrl+R` is zsh's own history search) |
 | Ghostty, Hack Nerd Font      | not allowed            | Not needed: iTerm2 and system fonts are used                             |
-| Editor extensions            | cannot be installed    | Colours come from settings, not from an extension                        |
+| Editor extensions            | cannot be installed    | Colours come from settings, not from an extension (`editor-builtin`)     |
 
 Ask IT for a tool when you miss it; nothing needs to change in the repository
 when one is installed, apart from running `chezmoi apply` again for git's pager
@@ -60,7 +58,7 @@ mv ~/Downloads/ohmyzsh-master ~/.oh-my-zsh
 ```
 
 Do not run Oh My Zsh's `install.sh`: it replaces `~/.zshrc`, which comes from
-chezmoi and already holds the Oh My Zsh settings. chezmoi writes nothing into
+chezmoi and already loads Oh My Zsh when `omz` is selected. chezmoi writes nothing into
 `~/.oh-my-zsh`, so updating Oh My Zsh means replacing that directory with a
 newer zip. Its own update check is turned off, because it runs git.
 
@@ -83,18 +81,14 @@ mkdir -p ~/.local/share
 mv ~/Downloads/chezmoi-main ~/.local/share/chezmoi
 ```
 
-## Select the profile
+## Select the switches
 
 Open the chezmoi config with `chezmoi edit-config` and write:
 
 ```toml
 [data]
-    profile = "work"
-    optin = ["cursor"]
+    optin = ["omz", "cursor", "editor-builtin"]
 ```
-
-A value other than `full` or `work` stops `chezmoi apply` with an error listing
-the valid ones. Leaving `profile` out means `full`.
 
 ## Move from the old `~/.dotfiles/` setup
 
@@ -116,7 +110,7 @@ from the home directory into it. To move it to chezmoi:
    find ~ ~/.config ~/Library/Application\ Support/Cursor/User -maxdepth 1 -type l -lname "$HOME/.dotfiles/*"
    ```
 
-3. Get the repository and select the profile, as above.
+3. Get the repository and select the switches, as above.
 4. Review what applying would write. Compare the Cursor settings with the old
    `~/.dotfiles/cursor/settings.json`, and move anything you still want into
    the repository first:
@@ -149,10 +143,10 @@ The prompt shows the clock on the right in iTerm2 and other terminals. The VS
 Code and Cursor terminals do not show a right-hand prompt, so there the clock
 goes at the end of the first prompt line.
 
-## When sheldon is allowed
+## When sheldon or the extensions are allowed
 
-Change `profile` to `"full"` (or remove the line), install sheldon, and apply.
-The editor settings then switch to the Poimandres extension, the catppuccin
-icon theme and Hack Nerd Font, so install those first. chezmoi stops managing
-`~/.zsh/omz-custom` and leaves it on disk; delete it, and `~/.oh-my-zsh` if
-nothing else uses it.
+Each switch changes on its own. For sheldon, install it, remove `omz` from the
+list and apply; chezmoi stops managing `~/.zsh/omz-custom` and leaves it on
+disk, so delete it, and `~/.oh-my-zsh` if nothing else uses it. For the editor
+look, install the Poimandres and catppuccin extensions and Hack Nerd Font,
+replace `editor-builtin` with `editor-extensions` and apply.

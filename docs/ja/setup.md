@@ -39,7 +39,7 @@
 
 ```toml
 [data]
-    optin = ["vscode", "ghostty", "tmux"]
+    optin = ["vscode", "editor-extensions", "ghostty", "tmux"]
 ```
 
 | スイッチ   | chezmoi が書くファイル（`~` 以下）                                  |
@@ -52,8 +52,11 @@
 | `mise`     | `.config/mise/config.toml`                                          |
 | `justfile` | `justfile`                                                          |
 | `karabiner`| `.config/karabiner`(ソースディレクトリの `karabiner/` へのシンボリックリンク) |
+| `omz`      | `.zsh/omz-custom/plugins/`。Oh My Zsh 用の zsh プラグインで、sheldon の代わりに Oh My Zsh がこれを読み込む（[会社の Mac](work-mac.md)） |
+| `editor-extensions` | なし。VS Code と Cursor の設定が Poimandres と catppuccin の拡張、Hack Nerd Font を使う |
+| `editor-builtin` | なし。VS Code と Cursor の設定が標準テーマを Poimandres の色に塗り替え、システムのフォントを使う。拡張やフォントを入れられない Mac 向け |
 
-VS Code と Cursor は、同じ形式の設定を別々の場所から読む。そこで両方の `settings.json` を 1 つのテンプレートから生成しており、どちらか一方でも両方でも選べる。スイッチと書くファイルの対応は `.chezmoidata/optin.toml` で決めており、この表はその写しだ。そこにない名前を書くと、`chezmoi apply` は有効な名前を挙げたエラーで止まる。
+VS Code と Cursor は、同じ形式の設定を別々の場所から読む。そこで両方の `settings.json` を 1 つのテンプレートから生成しており、どちらか一方でも両方でも選べる。見た目には既定がない。`vscode` か `cursor` を選んだら、`editor-extensions` と `editor-builtin` のどちらか一方も必ず選ぶ。選ばないと `chezmoi apply` はそう告げて止まる（`.chezmoidata/optin.toml` の `[optin_choices.editor-look]`）。スイッチと書くファイルの対応は `.chezmoidata/optin.toml` で決めており、この表はその写しだ。そこにない名前を書くと、`chezmoi apply` は有効な名前を挙げたエラーで止まる。
 
 一覧を変えたら `chezmoi apply --less-interactive` で反映する。素の `chezmoi apply` は、自分で書いた `~/.config/ghostty/config` のような既存のファイルを確認なしで上書きする。
 

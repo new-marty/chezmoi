@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 # =============================================================================
-# vendor-omz-plugins.sh - Copy the Oh My Zsh plugins of the work profile into
+# vendor-omz-plugins.sh - Copy the Oh My Zsh plugins of the omz opt-in into
 # the repository
 # =============================================================================
 # Usage: ./scripts/vendor-omz-plugins.sh
 #
-# The work profile (profile = "work" in chezmoi.toml) loads its zsh plugins
-# with Oh My Zsh from ~/.zsh/omz-custom (dot_zsh/omz-custom here). The work Mac
-# cannot run git clone, so the plugins are kept in the repository and chezmoi
-# writes them as ordinary files. Run this on a machine that can clone, after
-# changing a pin below, and commit the result.
+# The "omz" opt-in loads the zsh plugins with Oh My Zsh from ~/.zsh/omz-custom
+# (dot_zsh/omz-custom here). It is for a Mac that cannot run git clone, so the
+# plugins are kept in the repository and chezmoi writes them as ordinary files.
+# Run this on a machine that can clone, after changing a pin below, and commit
+# the result. When the set of files changes, update the `files` list of
+# [optin_paths.omz] in .chezmoidata/optin.toml too (CI compares them).
 #
 # Only the files a shell loads and the licence are kept (the licence of
 # zsh-history-substring-search is in its .zsh file). chezmoi skips source

@@ -120,12 +120,12 @@ jobs:
             '{{ range $n, $sw := .optin_paths }}{{ range dig "dirs" list $sw }}{{ . }}{{ "\n" }}{{ end }}{{ end }}' \
             > "$RUNNER_TEMP/optin-dirs.txt"
           cat "$RUNNER_TEMP/optin-files.txt" "$RUNNER_TEMP/optin-dirs.txt" > "$RUNNER_TEMP/optin-paths.txt"
+          # Every switch, except that of each choice (optin_choices) only the
+          # first option is selected: selecting two options stops the apply.
           names="$(chezmoi execute-template --config "$RUNNER_TEMP/empty.toml" --source "$SRC" \
-            '{{ keys .optin_paths | sortAlpha | toJson }}')"
+            '{{ $skip := list }}{{ range .optin_choices }}{{ $skip = concat $skip (rest .options) }}{{ end }}{{ $n := list }}{{ range keys .optin_paths | sortAlpha }}{{ if not (has . $skip) }}{{ $n = append $n . }}{{ end }}{{ end }}{{ toJson $n }}')"
           printf '[data]\n    optin = %s\n' "$names" > "$RUNNER_TEMP/all.toml"
           printf '[data]\n    optin = ["vscode", "no-such-switch"]\n' > "$RUNNER_TEMP/unknown.toml"
-          printf '[data]\n    profile = "work"\n    optin = %s\n' "$names" > "$RUNNER_TEMP/work.toml"
-          printf '[data]\n    profile = "no-such-profile"\n' > "$RUNNER_TEMP/unknown-profile.toml"
           cat "$RUNNER_TEMP/optin-paths.txt" "$RUNNER_TEMP/all.toml"
           [ -s "$RUNNER_TEMP/optin-files.txt" ]
 
@@ -146,7 +146,6 @@ jobs:
           while IFS= read -r p; do
             [ -e "$home/$p" ] && { echo "::error::not opted in but applied: ~/$p"; fail=1; }
           done < "$RUNNER_TEMP/optin-paths.txt"
-          [ -e "$home/.zsh/omz-custom" ] && { echo "::error::work profile plugins applied without profile = \"work\""; fail=1; }
           [ "$fail" = 0 ]
           HOME="$home" git config --get core.pager
           HOME="$home" zsh -i -c 'echo "interactive shell started"'
@@ -179,16 +178,17 @@ jobs:
           [ "$fail" = 0 ]
           HOME="$home" zsh -i -c 'echo "interactive shell started"'
 
-      - name: The work profile loads Oh My Zsh with the vendored plugins
+      - name: The omz opt-in loads Oh My Zsh with the vendored plugins
         run: |
-          # The work Mac installs Oh My Zsh from its zip and cannot clone, so
-          # the plugins must come from the repository (dot_zsh/omz-custom).
+          # It is for a Mac that installs Oh My Zsh from its zip and cannot
+          # clone, so the plugins must come from the repository.
           set -euo pipefail
           home="$(mktemp -d)"
-          chezmoi apply --config "$RUNNER_TEMP/work.toml" \
+          printf '[data]\n    optin = ["omz"]\n' > "$RUNNER_TEMP/omz.toml"
+          chezmoi apply --config "$RUNNER_TEMP/omz.toml" \
             --source "$SRC" --destination "$home" --exclude=scripts \
-            --persistent-state "$RUNNER_TEMP/work.boltdb"
-          grep -qx "DOTFILES_PROFILE='work'" "$home/.zshenv"
+            --persistent-state "$RUNNER_TEMP/omz.boltdb"
+          grep -qx "DOTFILES_OMZ=1" "$home/.zshenv"
           # Before Oh My Zsh is installed the shell still starts, without it.
           HOME="$home" zsh -i -c 'echo "interactive shell started"'
           curl -fsSL -o "$RUNNER_TEMP/omz.zip" https://github.com/ohmyzsh/ohmyzsh/archive/refs/heads/master.zip
@@ -202,18 +202,31 @@ jobs:
             (( $+functions[fcat] )) || { echo "~/.zsh/commands.zsh not loaded"; exit 1; }
           '
 
-      - name: An unknown profile name stops the apply
+      - name: A choice must be made exactly once
         run: |
+          # optin_choices have no default: selecting a switch that needs one
+          # (vscode) without an option, or with two, stops the apply. Each
+          # option alone applies.
           set -uo pipefail
-          home="$(mktemp -d)"
-          if chezmoi apply --config "$RUNNER_TEMP/unknown-profile.toml" \
-              --source "$SRC" --destination "$home" --exclude=scripts \
-              --persistent-state "$RUNNER_TEMP/unknown-profile.boltdb" 2> "$RUNNER_TEMP/unknown-profile.err"; then
-            echo "::error::apply succeeded with an unknown profile"
-            exit 1
-          fi
-          cat "$RUNNER_TEMP/unknown-profile.err"
-          grep -q 'data.profile must be one of full, work, not "no-such-profile"' "$RUNNER_TEMP/unknown-profile.err"
+          expect_fail() {
+            printf '[data]\n    optin = %s\n' "$1" > "$RUNNER_TEMP/choice.toml"
+            if chezmoi apply --config "$RUNNER_TEMP/choice.toml" --source "$SRC" \
+                --destination "$(mktemp -d)" --exclude=scripts \
+                --persistent-state "$RUNNER_TEMP/choice.boltdb" 2> "$RUNNER_TEMP/choice.err"; then
+              echo "::error::apply succeeded with optin = $1"
+              return 1
+            fi
+            cat "$RUNNER_TEMP/choice.err"
+            grep -q "$2" "$RUNNER_TEMP/choice.err"
+          }
+          expect_fail '["vscode"]' 'there is no default' || exit 1
+          expect_fail '["vscode", "editor-extensions", "editor-builtin"]' 'keep only one' || exit 1
+          for option in editor-extensions editor-builtin; do
+            printf '[data]\n    optin = ["vscode", "cursor", "%s"]\n' "$option" > "$RUNNER_TEMP/choice.toml"
+            chezmoi apply --config "$RUNNER_TEMP/choice.toml" --source "$SRC" \
+              --destination "$(mktemp -d)" --exclude=scripts \
+              --persistent-state "$RUNNER_TEMP/choice-$option.boltdb" || exit 1
+          done
 
       - name: An unknown switch name stops the apply
         run: |

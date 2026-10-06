@@ -72,3 +72,47 @@ files = ["justfile"]
 # changes when karabiner.json alone is a symlink.
 [optin_paths.karabiner]
 files = [".config/karabiner"]
+
+# Oh My Zsh loads the zsh plugins instead of sheldon, for a Mac that has Oh My
+# Zsh but not sheldon and cannot run git clone. Oh My Zsh itself is installed by
+# hand from its zip into ~/.oh-my-zsh (docs/en/work-mac.md); chezmoi writes only
+# the plugins it does not ship, vendored by scripts/vendor-omz-plugins.sh.
+[optin_paths.omz]
+files = [
+    ".zsh/omz-custom/plugins/zsh-autosuggestions/LICENSE",
+    ".zsh/omz-custom/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh",
+    ".zsh/omz-custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh",
+    ".zsh/omz-custom/plugins/zsh-history-substring-search/zsh-history-substring-search.plugin.zsh",
+    ".zsh/omz-custom/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/.revision-hash",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/.version",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/COPYING.md",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/highlighters/brackets/brackets-highlighter.zsh",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/highlighters/cursor/cursor-highlighter.zsh",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/highlighters/line/line-highlighter.zsh",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/highlighters/main/main-highlighter.zsh",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/highlighters/pattern/pattern-highlighter.zsh",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/highlighters/regexp/regexp-highlighter.zsh",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/highlighters/root/root-highlighter.zsh",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh",
+    ".zsh/omz-custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh",
+]
+dirs = [".zsh/omz-custom"]
+
+# How the VS Code and Cursor settings look. These switches write no files of
+# their own; they change what the vscode and cursor switches write, so one of
+# them is required with those (see optin_choices below).
+#   editor-extensions  the Poimandres and catppuccin extensions, Hack Nerd Font
+#   editor-builtin     the built-in Default Dark Modern theme recoloured with
+#                      the Poimandres colours, system fonts; for a Mac that
+#                      cannot install extensions or fonts
+[optin_paths.editor-extensions]
+[optin_paths.editor-builtin]
+
+# Choices with no default. When a machine selects any switch in `required_by`,
+# it must also select exactly one switch in `options`, or the apply stops. A
+# machine that selects none of `required_by` needs none of `options`.
+[optin_choices.editor-look]
+description = "how the VS Code and Cursor settings look"
+required_by = ["vscode", "cursor"]
+options = ["editor-extensions", "editor-builtin"]

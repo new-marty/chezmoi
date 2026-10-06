@@ -6,20 +6,23 @@
 
 ---
 
-## [Todo] 会社の Mac を `profile = "work"` に移し、手作業版との差を取り込む
+## [Todo] 会社の Mac を opt-in（`omz`、`cursor`、`editor-builtin`）で chezmoi に移す
 
-リポジトリ側は対応済み（`profile = "work"` で Oh My Zsh と同梱プラグイン、Poimandres の
-色を設定で付けたエディタ設定、トゥルーカラーの steeef）。手順は `docs/en/work-mac.md`。
-残りは会社の Mac でしかできないこと:
+リポジトリ側は対応済み。会社の Mac 用の環境は定義せず、使うものを opt-in する:
+`omz`（Oh My Zsh で同梱プラグインを読む。会社の Mac は clone できないので
+`dot_zsh/omz-custom` に同梱）と、エディタの見た目の `editor-extensions` /
+`editor-builtin`（既定なし。`vscode` か `cursor` を選んだら一方を必ず選ぶ）。
+手順は `docs/en/work-mac.md`。残りはリポジトリの外でしかできないこと:
 
+- この変更が main に入ったら、`vscode` か `cursor` を選んでいる手元の Mac は、
+  次の apply の前に `optin` へ `editor-extensions` を足す（足さないと apply が止まる）。
 - 手作業版の `~/.dotfiles/zsh/steeef.zsh-theme` と `~/.dotfiles/cursor/settings.json` は
   リポジトリに無いまま、説明をもとに作り直した。持ち帰って `chezmoi diff` と比べ、
-  色の値やエディタ設定に足りないものがあれば取り込む。手作業版の時計は
-  `TERM_PROGRAM=iTerm.app` のときだけ右に出していたが、こちらは VS Code と Cursor
-  （`TERM_PROGRAM=vscode`）のときだけ左に出す。Ghostty で今の表示を変えないため。
+  足りないものを取り込む。手作業版の時計は `TERM_PROGRAM=iTerm.app` のときだけ右に
+  出していたが、こちらは VS Code と Cursor（`TERM_PROGRAM=vscode`）のときだけ左に出す。
+  Ghostty で今の表示を変えないため。
 - chezmoi の許可が下りたら、移行手順どおりに apply し、iTerm2 と Cursor でプロンプトと
   配色を確かめる。`chezmoi init` が clone できるかもここで分かる（できなければ zip）。
-- sheldon が許可されたら `profile = "full"` に戻す。
 
 ---
 
