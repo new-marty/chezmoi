@@ -41,18 +41,23 @@ ssh は無視する）、毎回 apply で戻すかを決める。
 
 ---
 
-## [Doing] SSH を 1Password のエージェントから外す
+## [Todo] SSH を 1Password のエージェントから外す（残り）
 
 使うたびの確認が煩わしく、ロック中は push も止まるため、SSH は 1Password を使わない形にする。
-マシンごとに1本の鍵（この Mac は `~/.ssh/id_ed25519_macbook`）を、パスフレーズで暗号化して
-macOS のキーチェーンに覚えさせる（`UseKeychain yes`、`AddKeysToAgent yes`）。平文の鍵ファイルを
-読まれて持ち出される危険は防ぎ、ログイン後は確認なしで使える。
+秘密鍵は接続元のマシン1台につき1本（この Mac は `~/.ssh/id_ed25519_macbook`）にして、その公開鍵を
+入りたい先すべてに登録する。秘密鍵はほかのマシンにコピーしない。
 
-手順: 各ホスト（GitHub、debian、unraid、mini）にこの鍵の公開鍵が登録されているか確かめ、
-無ければ 1Password が使えるうちに登録する → パスフレーズとキーチェーン → `~/.ssh/config.local` から
-1Password の `IdentityAgent` を外す → 全ホストで接続を確かめる → 1Password 側の SSH 鍵と、
-サーバーに残る古い公開鍵を片付ける。設定はリポジトリの外（`~/.ssh/config.local`）だけで変わる。
-パスワードや TOTP は下の Vaultwarden 移行の範囲で、ここでは扱わない。
+済み（2026-10-06）: この Mac の `~/.ssh/config.local` から 1Password の `IdentityAgent` を外し、
+`Host *` でこの鍵を使う形にした（控えは取ってある）。unraid、mini、GitHub はこの鍵で入れることを確認。
+unraid と mini の `authorized_keys` にはこの鍵（と mini に iphone）しか無く、消すものは無い。
+
+残り:
+- 鍵にパスフレーズをかけ、キーチェーンに覚えさせる（本人が入力）:
+  `ssh-keygen -p -f ~/.ssh/id_ed25519_macbook`、`ssh-add --apple-use-keychain ~/.ssh/id_ed25519_macbook`
+- debian は接続がタイムアウトして未確認。届くときに、この鍵で入れるか確かめる。
+- GitHub の鍵の整理: 署名をやめたので signing の鍵（Personal MacBook (Signing)、ubuntu 1Password）は
+  不要。ubuntu 1Password（認証）は ubuntu の鍵を 1Password から外すときに作り直す。
+- 1Password の SSH 鍵の項目と、1Password の SSH エージェント設定を片付ける。
 
 ---
 
